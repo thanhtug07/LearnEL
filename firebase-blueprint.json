@@ -1,0 +1,158 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile and learning preferences",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "avatar": { "type": "string" },
+        "level": { "type": "string" },
+        "targetExam": { "type": "string" },
+        "targetScore": { "type": "string" },
+        "dailyMinutesGoal": { "type": "number" },
+        "todayMinutesSpent": { "type": "number" },
+        "currentStreak": { "type": "number" },
+        "totalMinutesStudied": { "type": "number" },
+        "xp": { "type": "number" },
+        "levelNumber": { "type": "number" },
+        "language": { "type": "string" },
+        "soundEnabled": { "type": "boolean" },
+        "onboardingCompleted": { "type": "boolean" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "name", "level", "xp"]
+    },
+    "CourseProgress": {
+      "title": "CourseProgress",
+      "description": "User progress for a course",
+      "type": "object",
+      "properties": {
+        "courseId": { "type": "string" },
+        "completedLessonIds": { "type": "array" },
+        "completedCount": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["courseId", "completedLessonIds"]
+    },
+    "UserVocabulary": {
+      "title": "UserVocabulary",
+      "description": "Vocabulary item tracking or custom item",
+      "type": "object",
+      "properties": {
+        "vocabId": { "type": "string" },
+        "status": { "type": "string" },
+        "reviewCount": { "type": "number" },
+        "isFavorite": { "type": "boolean" },
+        "lastReviewed": { "type": "string" },
+        "nextReviewDate": { "type": "string" },
+        "word": { "type": "string" }
+      },
+      "required": ["vocabId", "status"]
+    },
+    "GrammarProgress": {
+      "title": "GrammarProgress",
+      "description": "User grammar topic mastery",
+      "type": "object",
+      "properties": {
+        "topicId": { "type": "string" },
+        "masteryPercentage": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["topicId", "masteryPercentage"]
+    },
+    "ExamAttempt": {
+      "title": "ExamAttempt",
+      "description": "Recorded practice test attempt",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "testId": { "type": "string" },
+        "testTitle": { "type": "string" },
+        "score": { "type": "number" },
+        "totalQuestions": { "type": "number" },
+        "accuracy": { "type": "number" },
+        "timeSpentSeconds": { "type": "number" },
+        "date": { "type": "string" }
+      },
+      "required": ["id", "testId", "score", "totalQuestions"]
+    },
+    "UserAchievement": {
+      "title": "UserAchievement",
+      "description": "User achievement progress and unlock status",
+      "type": "object",
+      "properties": {
+        "achievementId": { "type": "string" },
+        "progress": { "type": "number" },
+        "unlocked": { "type": "boolean" },
+        "unlockedAt": { "type": "string" }
+      },
+      "required": ["achievementId", "progress", "unlocked"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "Learning activity log for skills and analytics",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "skill": { "type": "string" },
+        "title": { "type": "string" },
+        "minutes": { "type": "number" },
+        "xpEarned": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "skill", "minutes"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Canonical published course syllabus",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "titleVi": { "type": "string" },
+        "level": { "type": "string" },
+        "publicationStatus": { "type": "string" },
+        "totalLessons": { "type": "number" },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "title", "level", "publicationStatus"]
+    }
+  },
+  "firestore": {
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "Published canonical course definitions"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile information"
+    },
+    "/users/{userId}/courseProgress/{courseId}": {
+      "schema": "CourseProgress",
+      "description": "Course progress per user"
+    },
+    "/users/{userId}/vocabulary/{vocabId}": {
+      "schema": "UserVocabulary",
+      "description": "Vocabulary progress per user"
+    },
+    "/users/{userId}/grammarProgress/{grammarId}": {
+      "schema": "GrammarProgress",
+      "description": "Grammar mastery per user"
+    },
+    "/users/{userId}/examAttempts/{attemptId}": {
+      "schema": "ExamAttempt",
+      "description": "Exam attempts recorded per user"
+    },
+    "/users/{userId}/achievements/{achievementId}": {
+      "schema": "UserAchievement",
+      "description": "Achievements tracked per user"
+    },
+    "/users/{userId}/activityLogs/{logId}": {
+      "schema": "ActivityLog",
+      "description": "Activity logs for skills and analytics"
+    }
+  }
+}

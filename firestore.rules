@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Health check test path from skill instructions
+    match /test/{testId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // Published course catalog (Readable by anyone or signed in, write restricted)
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // User profile document
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidId(userId);
+      allow delete: if isOwner(userId);
+
+      // User Course Progress Subcollection
+      match /courseProgress/{courseId} {
+        allow read, write: if isOwner(userId) && isValidId(userId) && isValidId(courseId);
+      }
+
+      // User Vocabulary Tracking Subcollection
+      match /vocabulary/{vocabId} {
+        allow read, write: if isOwner(userId) && isValidId(userId) && isValidId(vocabId);
+      }
+
+      // User Grammar Progress Subcollection
+      match /grammarProgress/{grammarId} {
+        allow read, write: if isOwner(userId) && isValidId(userId) && isValidId(grammarId);
+      }
+
+      // User Exam Attempts Subcollection
+      match /examAttempts/{attemptId} {
+        allow read, write: if isOwner(userId) && isValidId(userId) && isValidId(attemptId);
+      }
+
+      // User Achievements Subcollection
+      match /achievements/{achievementId} {
+        allow read, write: if isOwner(userId) && isValidId(userId) && isValidId(achievementId);
+      }
+
+      // User Activity Logs Subcollection
+      match /activityLogs/{logId} {
+        allow read, write: if isOwner(userId) && isValidId(userId) && isValidId(logId);
+      }
+    }
+  }
+}
