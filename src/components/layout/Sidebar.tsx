@@ -27,45 +27,45 @@ interface SidebarProps {
   onCloseMobile: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile }) => {
-  const { activeTab, setActiveTab, user, language } = useApp();
+const NAV_GROUPS = [
+  {
+    groupTitleVi: 'CỐT LÕI',
+    groupTitleEn: 'CORE',
+    items: [
+      { id: 'dashboard', labelVi: 'Tổng quan', labelEn: 'Dashboard', icon: LayoutDashboard },
+      { id: 'learning-path', labelVi: 'Lộ trình học tập', labelEn: 'Learning Path', icon: Compass },
+      { id: 'courses', labelVi: 'Khóa học & Bài học', labelEn: 'Courses & Lessons', icon: GraduationCap },
+      { id: 'vocabulary', labelVi: 'Từ vựng Flashcards', labelEn: 'Vocabulary Hub', icon: Layers },
+      { id: 'grammar', labelVi: 'Kho Ngữ pháp', labelEn: 'Grammar Center', icon: BookMarked },
+    ]
+  },
+  {
+    groupTitleVi: '4 KỸ NĂNG & THI CỬ',
+    groupTitleEn: 'SKILLS & EXAMS',
+    items: [
+      { id: 'listening', labelVi: 'Luyện Nghe', labelEn: 'Listening Lab', icon: Headphones },
+      { id: 'speaking', labelVi: 'Luyện Nói (Mic)', labelEn: 'Speaking Practice', icon: Mic },
+      { id: 'reading', labelVi: 'Luyện Đọc hiểu', labelEn: 'Reading Hub', icon: BookOpen },
+      { id: 'writing', labelVi: 'Luyện Viết AI', labelEn: 'Writing Workspace', icon: PenTool },
+      { id: 'practice-tests', labelVi: 'Trung tâm luyện đề', labelEn: 'Exam Center', icon: FileCheck2 },
+      { id: 'ielts', labelVi: 'Luyện thi IELTS', labelEn: 'IELTS Master', icon: Award },
+      { id: 'toeic', labelVi: 'Luyện thi TOEIC', labelEn: 'TOEIC Pro', icon: BookAudio },
+    ]
+  },
+  {
+    groupTitleVi: 'THÔNG MINH & TIẾN ĐỘ',
+    groupTitleEn: 'SMART & PROGRESS',
+    items: [
+      { id: 'ai-tutor', labelVi: 'AI English Tutor', labelEn: 'AI English Tutor', icon: Bot, highlight: true },
+      { id: 'analytics', labelVi: 'Tiến độ & Phân tích', labelEn: 'Analytics', icon: BarChart3 },
+      { id: 'achievements', labelVi: 'Thành tựu', labelEn: 'Achievements', icon: Trophy },
+      { id: 'profile', labelVi: 'Hồ sơ & Cài đặt', labelEn: 'Profile & Settings', icon: Sliders },
+    ]
+  }
+];
 
-  const navGroups = [
-    {
-      groupTitleVi: 'CỐT LÕI',
-      groupTitleEn: 'CORE',
-      items: [
-        { id: 'dashboard', labelVi: 'Tổng quan', labelEn: 'Dashboard', icon: LayoutDashboard },
-        { id: 'learning-path', labelVi: 'Lộ trình học tập', labelEn: 'Learning Path', icon: Compass },
-        { id: 'courses', labelVi: 'Khóa học & Bài học', labelEn: 'Courses & Lessons', icon: GraduationCap },
-        { id: 'vocabulary', labelVi: 'Từ vựng Flashcards', labelEn: 'Vocabulary Hub', icon: Layers },
-        { id: 'grammar', labelVi: 'Kho Ngữ pháp', labelEn: 'Grammar Center', icon: BookMarked },
-      ]
-    },
-    {
-      groupTitleVi: '4 KỸ NĂNG & THI CỬ',
-      groupTitleEn: 'SKILLS & EXAMS',
-      items: [
-        { id: 'listening', labelVi: 'Luyện Nghe', labelEn: 'Listening Lab', icon: Headphones },
-        { id: 'speaking', labelVi: 'Luyện Nói (Mic)', labelEn: 'Speaking Practice', icon: Mic },
-        { id: 'reading', labelVi: 'Luyện Đọc hiểu', labelEn: 'Reading Hub', icon: BookOpen },
-        { id: 'writing', labelVi: 'Luyện Viết AI', labelEn: 'Writing Workspace', icon: PenTool },
-        { id: 'practice-tests', labelVi: 'Trung tâm luyện đề', labelEn: 'Exam Center', icon: FileCheck2 },
-        { id: 'ielts', labelVi: 'Luyện thi IELTS', labelEn: 'IELTS Master', icon: Award },
-        { id: 'toeic', labelVi: 'Luyện thi TOEIC', labelEn: 'TOEIC Pro', icon: BookAudio },
-      ]
-    },
-    {
-      groupTitleVi: 'THÔNG MINH & TIẾN ĐỘ',
-      groupTitleEn: 'SMART & PROGRESS',
-      items: [
-        { id: 'ai-tutor', labelVi: 'AI English Tutor', labelEn: 'AI English Tutor', icon: Bot, highlight: true },
-        { id: 'analytics', labelVi: 'Tiến độ & Phân tích', labelEn: 'Analytics', icon: BarChart3 },
-        { id: 'achievements', labelVi: 'Thành tựu', labelEn: 'Achievements', icon: Trophy },
-        { id: 'profile', labelVi: 'Hồ sơ & Cài đặt', labelEn: 'Profile & Settings', icon: Sliders },
-      ]
-    }
-  ];
+export const Sidebar: React.FC<SidebarProps> = React.memo(({ isOpenMobile, onCloseMobile }) => {
+  const { activeTab, setActiveTab, user, language } = useApp();
 
   const handleSelect = (id: string) => {
     setActiveTab(id);
@@ -131,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile })
 
         {/* Navigation List */}
         <div className="flex-1 overflow-y-auto px-3 py-2 space-y-5 custom-scroll">
-          {navGroups.map((group, idx) => (
+          {NAV_GROUPS.map((group, idx) => (
             <div key={idx} className="space-y-1">
               <div className="px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
                 {language === 'vi' ? group.groupTitleVi : group.groupTitleEn}
@@ -189,4 +189,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile })
       </aside>
     </>
   );
-};
+});
+
+Sidebar.displayName = 'Sidebar';

@@ -31,34 +31,36 @@ export const AnalyticsView: React.FC = () => {
 
   const maxMins = Math.max(...weeklyDays.map((d) => d.mins), 30);
 
-  // Skill masteries derived from actual user activities
-  const vocabMastery = Math.round(
-    (vocabulary.filter((v) => v.status === 'mastered').length / Math.max(1, vocabulary.length)) * 100
-  );
-  const grammarMastery = Math.round(
-    grammarTopics.reduce((acc, g) => acc + g.masteryPercentage, 0) / Math.max(1, grammarTopics.length)
-  );
+  // Skill masteries derived from actual user activities (memoized)
+  const { skills, hasActivity } = React.useMemo(() => {
+    const vocabMastery = Math.round(
+      (vocabulary.filter((v) => v.status === 'mastered').length / Math.max(1, vocabulary.length)) * 100
+    );
+    const grammarMastery = Math.round(
+      grammarTopics.reduce((acc, g) => acc + g.masteryPercentage, 0) / Math.max(1, grammarTopics.length)
+    );
+    const completedLessonCount = courses.reduce((acc, c) => acc + c.completedLessons, 0);
+    const avgTestAccuracy = testAttempts.length > 0
+      ? Math.round(testAttempts.reduce((acc, t) => acc + t.accuracy, 0) / testAttempts.length)
+      : 0;
 
-  const completedLessonCount = courses.reduce((acc, c) => acc + c.completedLessons, 0);
-  const avgTestAccuracy = testAttempts.length > 0
-    ? Math.round(testAttempts.reduce((acc, t) => acc + t.accuracy, 0) / testAttempts.length)
-    : 0;
+    const hasActivity = testAttempts.length > 0 || completedLessonCount > 0;
+    const listeningScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 0.95 + completedLessonCount * 5)) : 0;
+    const speakingScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 0.85 + completedLessonCount * 3)) : 0;
+    const readingScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 1.0 + completedLessonCount * 4)) : 0;
+    const writingScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 0.88 + completedLessonCount * 4)) : 0;
 
-  // Real skills score: 0% if no learning activity performed yet
-  const hasActivity = testAttempts.length > 0 || completedLessonCount > 0;
-  const listeningScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 0.95 + completedLessonCount * 5)) : 0;
-  const speakingScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 0.85 + completedLessonCount * 3)) : 0;
-  const readingScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 1.0 + completedLessonCount * 4)) : 0;
-  const writingScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 0.88 + completedLessonCount * 4)) : 0;
+    const skillsList = [
+      { name: 'Listening (Nghe hiểu)', score: listeningScore, color: 'bg-blue-600' },
+      { name: 'Speaking (Phát âm & Phản xạ)', score: speakingScore, color: 'bg-emerald-600' },
+      { name: 'Reading (Đọc hiểu học thuật)', score: readingScore, color: 'bg-indigo-600' },
+      { name: 'Writing (Ngữ pháp & Lập luận)', score: writingScore, color: 'bg-purple-600' },
+      { name: 'Vocabulary (Từ vựng Spaced Repetition)', score: vocabMastery, color: 'bg-amber-500' },
+      { name: 'Grammar (Độ chuẩn xác ngữ pháp)', score: grammarMastery, color: 'bg-rose-500' }
+    ];
 
-  const skills = [
-    { name: 'Listening (Nghe hiểu)', score: listeningScore, color: 'bg-blue-600' },
-    { name: 'Speaking (Phát âm & Phản xạ)', score: speakingScore, color: 'bg-emerald-600' },
-    { name: 'Reading (Đọc hiểu học thuật)', score: readingScore, color: 'bg-indigo-600' },
-    { name: 'Writing (Ngữ pháp & Lập luận)', score: writingScore, color: 'bg-purple-600' },
-    { name: 'Vocabulary (Từ vựng Spaced Repetition)', score: vocabMastery, color: 'bg-amber-500' },
-    { name: 'Grammar (Độ chuẩn xác ngữ pháp)', score: grammarMastery, color: 'bg-rose-500' }
-  ];
+    return { skills: skillsList, hasActivity };
+  }, [vocabulary, grammarTopics, courses, testAttempts]);
 
   // Derived weaknesses from genuine test attempts
   const allWeaknesses = Array.from(

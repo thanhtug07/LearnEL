@@ -46,7 +46,7 @@ describe('Production Firestore Integration & Blueprint Verification', () => {
     const rulesPath = path.resolve(process.cwd(), 'firestore.rules');
     expect(fs.existsSync(rulesPath)).toBe(true);
 
-    const rules = fs.readFileSync(rulesPath, 'utf-8');
+    const rules = fs.readFileSync(rulesPath, 'utf-8').replace(/\r\n/g, '\n');
     expect(rules).toContain("rules_version = '2'");
     expect(rules).toContain('match /{document=**} {\n      allow read, write: if false;\n    }');
     expect(rules).toContain('function isOwner(userId)');

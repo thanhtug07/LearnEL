@@ -47,10 +47,13 @@ export const QuestionBankPipelineView: React.FC<QuestionBankPipelineViewProps> =
   });
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedSkill, setSelectedSkill] = useState<string>('all');
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
   const [selectedSource, setSelectedSource] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   // Selected question for reviewing in detail
   const [activeReviewQuestion, setActiveReviewQuestion] = useState<TestQuestion | null>(null);
@@ -70,6 +73,24 @@ export const QuestionBankPipelineView: React.FC<QuestionBankPipelineViewProps> =
   // Audio preview
   const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
 
+  // Debounce search query (300ms) to avoid expensive re-filters on every keystroke
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      setCurrentPage(1);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  // Clean up speech synthesis on unmount
+  useEffect(() => {
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
   // Sync to localStorage
   useEffect(() => {
     try {
@@ -84,23 +105,32 @@ export const QuestionBankPipelineView: React.FC<QuestionBankPipelineViewProps> =
   const rejectedCount = questions.filter((q) => q.review?.status === 'rejected').length;
   const draftCount = questions.filter((q) => q.review?.status === 'draft').length;
 
-  // Filtered list
-  const filteredQuestions = questions.filter((q) => {
-    if (selectedStatus !== 'all' && q.review?.status !== selectedStatus) return false;
-    if (selectedSkill !== 'all' && q.skill !== selectedSkill) return false;
-    if (selectedLevel !== 'all' && q.cefr !== selectedLevel) return false;
-    if (selectedSource !== 'all' && q.source?.category !== selectedSource) return false;
+  // Filtered list memoized
+  const filteredQuestions = React.useMemo(() => {
+    return questions.filter((q) => {
+      if (selectedStatus !== 'all' && q.review?.status !== selectedStatus) return false;
+      if (selectedSkill !== 'all' && q.skill !== selectedSkill) return false;
+      if (selectedLevel !== 'all' && q.cefr !== selectedLevel) return false;
+      if (selectedSource !== 'all' && q.source?.category !== selectedSource) return false;
 
-    if (searchQuery.trim()) {
-      const lower = searchQuery.toLowerCase();
-      const matchPrompt = q.prompt.toLowerCase().includes(lower);
-      const matchId = q.id.toLowerCase().includes(lower);
-      const matchExp = (q.explanationVi || '').toLowerCase().includes(lower);
-      const matchSec = (q.section || '').toLowerCase().includes(lower);
-      if (!matchPrompt && !matchId && !matchExp && !matchSec) return false;
-    }
-    return true;
-  });
+      if (debouncedSearchQuery.trim()) {
+        const lower = debouncedSearchQuery.toLowerCase();
+        const matchPrompt = q.prompt.toLowerCase().includes(lower);
+        const matchId = q.id.toLowerCase().includes(lower);
+        const matchExp = (q.explanationVi || '').toLowerCase().includes(lower);
+        const matchSec = (q.section || '').toLowerCase().includes(lower);
+        if (!matchPrompt && !matchId && !matchExp && !matchSec) return false;
+      }
+      return true;
+    });
+  }, [questions, selectedStatus, selectedSkill, selectedLevel, selectedSource, debouncedSearchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredQuestions.length / PAGE_SIZE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedQuestions = React.useMemo(() => {
+    const start = (safeCurrentPage - 1) * PAGE_SIZE;
+    return filteredQuestions.slice(start, start + PAGE_SIZE);
+  }, [filteredQuestions, safeCurrentPage, PAGE_SIZE]);
 
   // Handle TTS playback for listening questions
   const handlePlayAudio = (text: string, id: string) => {
@@ -523,7 +553,7 @@ export const QuestionBankPipelineView: React.FC<QuestionBankPipelineViewProps> =
             Không tìm thấy câu hỏi phù hợp với bộ lọc hiện tại.
           </div>
         ) : (
-          filteredQuestions.map((q) => {
+          paginatedQuestions.map((q) => {
             const status = q.review?.status || 'pending_review';
             const isApproved = status === 'approved';
             const isPending = status === 'pending_review';
@@ -693,6 +723,34 @@ export const QuestionBankPipelineView: React.FC<QuestionBankPipelineViewProps> =
               </div>
             );
           })
+        )}
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 text-xs">
+            <span className="text-slate-500 font-medium">
+              Trang {safeCurrentPage} / {totalPages} (Hiển thị {(safeCurrentPage - 1) * PAGE_SIZE + 1} - {Math.min(safeCurrentPage * PAGE_SIZE, filteredQuestions.length)} / {filteredQuestions.length} câu)
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={safeCurrentPage <= 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-700 font-bold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                Trước
+              </button>
+              <span className="px-2 font-bold text-slate-700">
+                {safeCurrentPage}
+              </span>
+              <button
+                disabled={safeCurrentPage >= totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-700 font-bold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                Sau
+              </button>
+            </div>
+          </div>
         )}
       </div>
 

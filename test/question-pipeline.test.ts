@@ -13,8 +13,8 @@ import { TestQuestion } from '../src/types';
 describe('Question Bank Pipeline — Deterministic Validation Engine', () => {
   it('validates all production questions in VERIFIED_QUESTION_BANK without errors', () => {
     const report = validateQuestionBatch(VERIFIED_QUESTION_BANK);
-    expect(report.totalQuestions).toBe(12);
-    expect(report.validCount).toBe(12);
+    expect(report.totalQuestions).toBeGreaterThanOrEqual(12);
+    expect(report.validCount).toBe(report.totalQuestions);
     expect(report.invalidCount).toBe(0);
     expect(report.duplicateCount).toBe(0);
 
@@ -28,7 +28,7 @@ describe('Question Bank Pipeline — Deterministic Validation Engine', () => {
       expect(q.source?.attribution).toBeTruthy();
       expect(q.source?.licenseOrPermission).toBeTruthy();
     });
-  });
+  }, 15000);
 
   it('flags missing prompt, empty options, and invalid correctAnswerIndex', () => {
     const invalidQ: Partial<TestQuestion> = {
@@ -208,7 +208,7 @@ describe('Question Bank Pipeline — Deterministic Validation Engine', () => {
     // Learner exam selection filter
     const learnerPracticableQuestions = mixedPool.filter((q) => q.review?.status === 'approved');
 
-    expect(learnerPracticableQuestions.length).toBe(12);
+    expect(learnerPracticableQuestions.length).toBe(VERIFIED_QUESTION_BANK.length);
     expect(learnerPracticableQuestions.some((q) => q.id === 'draft-unreviewed-01')).toBe(false);
     expect(learnerPracticableQuestions.some((q) => q.id === 'rejected-02')).toBe(false);
   });

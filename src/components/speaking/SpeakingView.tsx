@@ -30,6 +30,7 @@ export const SpeakingView: React.FC = () => {
   } | null>(null);
 
   const recognizerRef = useRef<any>(null);
+  const transcriptRef = useRef<string>('');
 
   // Stop recording and speech audio upon component unmount
   useEffect(() => {
@@ -39,6 +40,7 @@ export const SpeakingView: React.FC = () => {
         try {
           recognizerRef.current.stop();
         } catch {}
+        recognizerRef.current = null;
       }
     };
   }, []);
@@ -50,6 +52,7 @@ export const SpeakingView: React.FC = () => {
     setMicError(null);
     setEvaluation(null);
     setTranscript('');
+    transcriptRef.current = '';
 
     if (!isSpeechRecognitionSupported()) {
       setMicError('Trình duyệt của bạn hiện chưa hỗ trợ Web Speech API. Bạn có thể tự luyện nói theo câu mẫu và nghe phát âm!');
@@ -58,7 +61,10 @@ export const SpeakingView: React.FC = () => {
 
     try {
       const recognizer = createSpeechRecognizer(
-        (text) => setTranscript(text),
+        (text) => {
+          transcriptRef.current = text;
+          setTranscript(text);
+        },
         (err) => {
           console.error('Speech recognition error:', err);
           setIsRecording(false);
@@ -82,14 +88,16 @@ export const SpeakingView: React.FC = () => {
 
   const handleStopRecording = () => {
     if (recognizerRef.current) {
-      recognizerRef.current.stop();
+      try {
+        recognizerRef.current.stop();
+      } catch {}
     }
     setIsRecording(false);
 
-    // Evaluate speech based on transcript
+    // Evaluate speech based on latest transcript ref to avoid stale closure race condition
     setTimeout(() => {
-      evaluateSpeech(transcript);
-    }, 500);
+      evaluateSpeech(transcriptRef.current || transcript);
+    }, 300);
   };
 
   const evaluateSpeech = (spokenText: string) => {

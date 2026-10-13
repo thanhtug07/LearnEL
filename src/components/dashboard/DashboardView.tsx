@@ -30,28 +30,46 @@ export const DashboardView: React.FC = () => {
     language
   } = useApp();
 
-  const totalCompletedLessons = courses.reduce((acc, c) => acc + c.completedLessons, 0);
-  const avgAccuracy = testAttempts.length > 0
-    ? Math.round(testAttempts.reduce((acc, t) => acc + t.accuracy, 0) / testAttempts.length)
-    : 0;
+  const { totalCompletedLessons, avgAccuracy, dueVocabCount, masteredVocabCount, nextLessonInfo } = React.useMemo(() => {
+    const completed = courses.reduce((acc, c) => acc + c.completedLessons, 0);
+    const accuracy = testAttempts.length > 0
+      ? Math.round(testAttempts.reduce((acc, t) => acc + t.accuracy, 0) / testAttempts.length)
+      : 0;
 
-  const dueVocabCount = vocabulary.filter(v => v.status === 'learning').length;
-  const masteredVocabCount = vocabulary.filter(v => v.status === 'mastered').length;
+    let due = 0;
+    let mastered = 0;
+    for (const v of vocabulary) {
+      if (v.status === 'learning') due++;
+      else if (v.status === 'mastered') mastered++;
+    }
 
-  const nextLessonInfo = (() => {
+    let nextLesson: { course: any; lesson: any } | null = null;
     for (const c of courses) {
       for (const m of c.modules) {
         for (const l of m.lessons) {
           if (!l.isCompleted && !l.isLocked) {
-            return { course: c, lesson: l };
+            nextLesson = { course: c, lesson: l };
+            break;
           }
         }
+        if (nextLesson) break;
       }
+      if (nextLesson) break;
     }
-    const firstCourse = courses[0];
-    const firstLesson = firstCourse?.modules[0]?.lessons[0];
-    return { course: firstCourse, lesson: firstLesson };
-  })();
+    if (!nextLesson) {
+      const firstCourse = courses[0];
+      const firstLesson = firstCourse?.modules[0]?.lessons[0];
+      nextLesson = { course: firstCourse, lesson: firstLesson };
+    }
+
+    return {
+      totalCompletedLessons: completed,
+      avgAccuracy: accuracy,
+      dueVocabCount: due,
+      masteredVocabCount: mastered,
+      nextLessonInfo: nextLesson
+    };
+  }, [courses, testAttempts, vocabulary]);
 
   const handleContinueLesson = () => {
     if (nextLessonInfo.course && nextLessonInfo.lesson) {

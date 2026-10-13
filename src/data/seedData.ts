@@ -1,5 +1,8 @@
-import { Course, VocabularyItem, GrammarTopic, PracticeTest, Achievement, WritingPrompt, SpeakingTopic } from '../types';
+import { Course, VocabularyItem, GrammarTopic, PracticeTest, Achievement, WritingPrompt, SpeakingTopic, PracticeSet } from '../types';
 import { VERIFIED_QUESTION_BANK } from './verifiedQuestionBank';
+import { NEW_COURSES_CATALOG } from './courses/coursesCatalog';
+import { NEW_TESTS_CATALOG } from './tests/testsCatalog';
+import { EXPANDED_PRACTICE_SETS } from './practice/practiceCatalog';
 
 export const INITIAL_VOCABULARY: VocabularyItem[] = [
   {
@@ -153,7 +156,7 @@ export const INITIAL_VOCABULARY: VocabularyItem[] = [
   }
 ];
 
-export const INITIAL_COURSES: Course[] = [
+const BASE_COURSES: Course[] = [
   {
     id: 'course-daily-routine',
     title: 'Daily Communication Mastery',
@@ -570,6 +573,11 @@ export const INITIAL_COURSES: Course[] = [
   }
 ];
 
+export const INITIAL_COURSES: Course[] = [
+  ...BASE_COURSES,
+  ...NEW_COURSES_CATALOG
+];
+
 export const INITIAL_GRAMMAR_TOPICS: GrammarTopic[] = [
   {
     id: 'gram-1',
@@ -678,7 +686,7 @@ export const INITIAL_GRAMMAR_TOPICS: GrammarTopic[] = [
   }
 ];
 
-export const INITIAL_PRACTICE_TESTS: PracticeTest[] = [
+const BASE_PRACTICE_TESTS: PracticeTest[] = [
   {
     id: 'test-verified-mastery',
     title: 'LingoPeak Verified Assessment Benchmark (CEFR A1-B2 & Workplace)',
@@ -1000,6 +1008,13 @@ We strongly urge all staff members to synchronize their local documents by 6:00 
     ]
   }
 ];
+
+export const INITIAL_PRACTICE_TESTS: PracticeTest[] = [
+  ...BASE_PRACTICE_TESTS,
+  ...NEW_TESTS_CATALOG
+];
+
+export const INITIAL_PRACTICE_SETS: PracticeSet[] = EXPANDED_PRACTICE_SETS;
 
 export const INITIAL_ACHIEVEMENTS: Achievement[] = [
   {

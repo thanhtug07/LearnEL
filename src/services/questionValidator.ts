@@ -36,21 +36,30 @@ export function normalizePrompt(text: string): string {
 }
 
 /**
+ * Computes Jaccard word similarity between two precomputed word sets with size pruning.
+ */
+export function computeWordSetSimilarity(wordsA: Set<string>, wordsB: Set<string>): number {
+  if (wordsA.size === 0 || wordsB.size === 0) return 0;
+  const minSize = Math.min(wordsA.size, wordsB.size);
+  const maxSize = Math.max(wordsA.size, wordsB.size);
+  if (minSize / maxSize < 0.88) return 0;
+
+  const [smaller, larger] = wordsA.size <= wordsB.size ? [wordsA, wordsB] : [wordsB, wordsA];
+  let intersection = 0;
+  smaller.forEach((w) => {
+    if (larger.has(w)) intersection++;
+  });
+  const union = wordsA.size + wordsB.size - intersection;
+  return union === 0 ? 0 : intersection / union;
+}
+
+/**
  * Computes Jaccard word similarity between two normalized strings.
  */
 export function computePromptSimilarity(promptA: string, promptB: string): number {
   const wordsA = new Set(normalizePrompt(promptA).split(' ').filter(Boolean));
   const wordsB = new Set(normalizePrompt(promptB).split(' ').filter(Boolean));
-
-  if (wordsA.size === 0 || wordsB.size === 0) return 0;
-
-  let intersection = 0;
-  wordsA.forEach((w) => {
-    if (wordsB.has(w)) intersection++;
-  });
-
-  const union = new Set([...wordsA, ...wordsB]).size;
-  return union === 0 ? 0 : intersection / union;
+  return computeWordSetSimilarity(wordsA, wordsB);
 }
 
 /**
@@ -272,7 +281,7 @@ export function validateQuestionBatch(
   });
 
   // Map to track prompts for near-duplicate detection
-  const promptList: { id: string; prompt: string; normalized: string }[] = [];
+  const promptList: { id: string; prompt: string; normalized: string; words: Set<string> }[] = [];
   const duplicateGroups: { id: string; prompt: string; duplicateWithIds: string[] }[] = [];
 
   // Pass 1: Individual validations and ID duplicate counting
@@ -303,10 +312,13 @@ export function validateQuestionBatch(
     }
 
     if (q.prompt) {
+      const normalized = normalizePrompt(q.prompt);
+      const words = new Set(normalized.split(' ').filter(Boolean));
       promptList.push({
         id: qId,
         prompt: q.prompt,
-        normalized: normalizePrompt(q.prompt)
+        normalized,
+        words
       });
     }
 
@@ -320,7 +332,7 @@ export function validateQuestionBatch(
 
     for (let j = i + 1; j < promptList.length; j++) {
       const itemB = promptList[j];
-      const similarity = computePromptSimilarity(itemA.prompt, itemB.prompt);
+      const similarity = computeWordSetSimilarity(itemA.words, itemB.words);
       if (similarity >= 0.88) {
         dupWith.push(itemB.id);
 

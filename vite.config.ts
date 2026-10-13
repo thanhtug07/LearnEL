@@ -8,7 +8,26 @@ export default defineConfig(() => {
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(import.meta.dirname, '.'),
+      },
+    },
+    build: {
+      chunkSizeWarningLimit: 1500,
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            if (id.includes('node_modules')) {
+              if (id.includes('firebase')) return 'vendor-firebase';
+              if (id.includes('lucide-react')) return 'vendor-icons';
+              if (id.includes('canvas-confetti')) return 'vendor-canvas';
+            }
+            const normalized = id.replace(/\\/g, '/');
+            if (normalized.includes('/data/courses/')) return 'content-courses';
+            if (normalized.includes('/data/tests/')) return 'content-tests';
+            if (normalized.includes('/data/questions/')) return 'content-questions';
+            if (normalized.includes('/data/practice/')) return 'content-practice';
+          },
+        },
       },
     },
     server: {

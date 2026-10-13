@@ -39,6 +39,9 @@ export const VocabularyView: React.FC = () => {
   const [filterMode, setFilterMode] = useState<'all' | 'unseen' | 'learning' | 'mastered' | 'favorites'>('all');
   const [selectedCefr, setSelectedCefr] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [listPage, setListPage] = useState(1);
+  const LIST_PAGE_SIZE = 15;
   const [viewMode, setViewMode] = useState<'flashcard' | 'list'>('flashcard');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
@@ -55,29 +58,57 @@ export const VocabularyView: React.FC = () => {
   const [newExampleVi, setNewExampleVi] = useState('');
   const [newCefr, setNewCefr] = useState('B2');
 
-  // Filtered vocabulary list
-  const filteredList = vocabulary.filter((item) => {
-    const matchesSearch =
-      item.word.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.viMeaning.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter =
-      filterMode === 'all'
-        ? true
-        : filterMode === 'favorites'
-        ? item.isFavorite
-        : item.status === filterMode;
-    const matchesCefr = selectedCefr === 'all' || item.cefr === selectedCefr;
-    return matchesSearch && matchesFilter && matchesCefr;
-  });
+  // Debounce search query (300ms)
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      setListPage(1);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  // Filtered vocabulary list (memoized)
+  const filteredList = React.useMemo(() => {
+    const qLower = debouncedSearchQuery.toLowerCase().trim();
+    return vocabulary.filter((item) => {
+      const matchesSearch = !qLower ||
+        item.word.toLowerCase().includes(qLower) ||
+        item.viMeaning.toLowerCase().includes(qLower);
+      const matchesFilter =
+        filterMode === 'all'
+          ? true
+          : filterMode === 'favorites'
+          ? item.isFavorite
+          : item.status === filterMode;
+      const matchesCefr = selectedCefr === 'all' || item.cefr === selectedCefr;
+      return matchesSearch && matchesFilter && matchesCefr;
+    });
+  }, [vocabulary, debouncedSearchQuery, filterMode, selectedCefr]);
 
   // Safely clamp active index within filtered list bounds
   const safeIndex = filteredList.length > 0 ? Math.min(currentIndex, filteredList.length - 1) : 0;
   const currentItem: VocabularyItem | undefined = filteredList[safeIndex];
 
-  // Stats calculation
-  const knowItCount = vocabulary.filter((v) => v.status === 'mastered').length;
-  const stillLearningCount = vocabulary.filter((v) => v.status === 'learning').length;
-  const remainingCount = vocabulary.filter((v) => v.status === 'unseen').length;
+  // Stats calculation (memoized)
+  const { knowItCount, stillLearningCount, remainingCount } = React.useMemo(() => {
+    let know = 0;
+    let learning = 0;
+    let unseen = 0;
+    for (const v of vocabulary) {
+      if (v.status === 'mastered') know++;
+      else if (v.status === 'learning') learning++;
+      else unseen++;
+    }
+    return { knowItCount: know, stillLearningCount: learning, remainingCount: unseen };
+  }, [vocabulary]);
+
+  // Paginated list slice for list mode
+  const totalListPages = Math.max(1, Math.ceil(filteredList.length / LIST_PAGE_SIZE));
+  const safeListPage = Math.min(listPage, totalListPages);
+  const paginatedList = React.useMemo(() => {
+    const start = (safeListPage - 1) * LIST_PAGE_SIZE;
+    return filteredList.slice(start, start + LIST_PAGE_SIZE);
+  }, [filteredList, safeListPage, LIST_PAGE_SIZE]);
 
   const handleNextCard = () => {
     setIsFlipped(false);
@@ -431,7 +462,7 @@ export const VocabularyView: React.FC = () => {
 
           {/* Table of vocabulary */}
           <div className="divide-y divide-slate-100">
-            {filteredList.map((item) => (
+            {paginatedList.map((item) => (
               <div key={item.id} className="p-4 hover:bg-slate-50/70 transition-colors flex items-start justify-between gap-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
@@ -472,6 +503,32 @@ export const VocabularyView: React.FC = () => {
               </div>
             ))}
           </div>
+
+          {/* Vocabulary Pagination */}
+          {totalListPages > 1 && (
+            <div className="p-3.5 border-t border-slate-100 flex items-center justify-between text-xs bg-slate-50/40">
+              <span className="text-slate-500 font-medium">
+                Trang {safeListPage} / {totalListPages} ({filteredList.length} từ)
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={safeListPage <= 1}
+                  onClick={() => setListPage((p) => Math.max(1, p - 1))}
+                  className="px-3 py-1 rounded-lg border border-slate-200 text-slate-700 font-bold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white transition-colors cursor-pointer"
+                >
+                  Trước
+                </button>
+                <span className="px-2 font-bold text-slate-700">{safeListPage}</span>
+                <button
+                  disabled={safeListPage >= totalListPages}
+                  onClick={() => setListPage((p) => Math.min(totalListPages, p + 1))}
+                  className="px-3 py-1 rounded-lg border border-slate-200 text-slate-700 font-bold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white transition-colors cursor-pointer"
+                >
+                  Sau
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { PracticeTest } from '../../types';
-import { ExamEngineModal } from './ExamEngineModal';
-import { QuestionBankPipelineView } from './QuestionBankPipelineView';
+const ExamEngineModal = React.lazy(() => import('./ExamEngineModal').then((m) => ({ default: m.ExamEngineModal })));
+const QuestionBankPipelineView = React.lazy(() => import('./QuestionBankPipelineView').then((m) => ({ default: m.QuestionBankPipelineView })));
 import {
   FileCheck2,
   Clock,
@@ -69,7 +69,9 @@ export const PracticeTestsView: React.FC = () => {
       </div>
 
       {activeSubTab === 'pipeline' ? (
-        <QuestionBankPipelineView />
+        <React.Suspense fallback={<div className="p-8 text-center text-slate-500 text-xs">Đang tải bộ dữ liệu kiểm định...</div>}>
+          <QuestionBankPipelineView />
+        </React.Suspense>
       ) : (
         <>
           {/* Header Banner matching Reference Image #2 */}
@@ -235,10 +237,12 @@ export const PracticeTestsView: React.FC = () => {
 
       {/* Exam Runner Modal */}
       {activeTestToRun && (
-        <ExamEngineModal
-          test={activeTestToRun}
-          onClose={() => setActiveTestToRun(null)}
-        />
+        <React.Suspense fallback={null}>
+          <ExamEngineModal
+            test={activeTestToRun}
+            onClose={() => setActiveTestToRun(null)}
+          />
+        </React.Suspense>
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import { TestQuestion } from '../types';
  * All questions have been carefully curated, structurally validated, and editorial reviewed.
  * Sources are original LingoPeak educational materials or open-licensed CC-BY 4.0 educational curricula.
  */
-export const VERIFIED_QUESTION_BANK: TestQuestion[] = [
+const BASE_VERIFIED_QUESTION_BANK: TestQuestion[] = [
   // ==========================================
   // LEVEL A1 — GRAMMAR & VOCABULARY
   // ==========================================
@@ -509,4 +509,11 @@ export const VERIFIED_QUESTION_BANK: TestQuestion[] = [
       isProductionReady: true
     }
   }
+];
+
+import { NEW_QUESTIONS_CATALOG } from './questions/questionsCatalog';
+
+export const VERIFIED_QUESTION_BANK: TestQuestion[] = [
+  ...BASE_VERIFIED_QUESTION_BANK,
+  ...NEW_QUESTIONS_CATALOG
 ];

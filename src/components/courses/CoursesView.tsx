@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Course, Lesson } from '../../types';
-import { LessonPlayerModal } from './LessonPlayerModal';
+const LessonPlayerModal = React.lazy(() => import('./LessonPlayerModal').then((m) => ({ default: m.LessonPlayerModal })));
 import {
   GraduationCap,
   Clock,
@@ -246,11 +246,13 @@ export const CoursesView: React.FC = () => {
 
       {/* Lesson Player Modal */}
       {activeLessonToPlay && (
-        <LessonPlayerModal
-          lesson={activeLessonToPlay.lesson}
-          courseId={activeLessonToPlay.courseId}
-          onClose={() => setActiveLessonToPlay(null)}
-        />
+        <React.Suspense fallback={null}>
+          <LessonPlayerModal
+            lesson={activeLessonToPlay.lesson}
+            courseId={activeLessonToPlay.courseId}
+            onClose={() => setActiveLessonToPlay(null)}
+          />
+        </React.Suspense>
       )}
     </div>
   );

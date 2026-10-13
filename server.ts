@@ -332,11 +332,11 @@ Provide a JSON object response with these exact keys:
 // ============================================================================
 import { VERIFIED_QUESTION_BANK } from './src/data/verifiedQuestionBank.js';
 import { validateQuestionBatch, validateQuestion } from './src/services/questionValidator.js';
-import { INITIAL_COURSES } from './src/data/seedData.js';
+import { INITIAL_COURSES, INITIAL_PRACTICE_TESTS, INITIAL_PRACTICE_SETS } from './src/data/seedData.js';
 
-// GET /api/courses: Course catalog with publicationStatus and verified structure
+// GET /api/courses: Course catalog with publicationStatus, filtering and bounded pagination
 app.get('/api/courses', (req, res) => {
-  const { category, level } = req.query;
+  const { category, level, page, limit } = req.query;
   let list = [...INITIAL_COURSES];
 
   if (category && category !== 'All') {
@@ -346,9 +346,16 @@ app.get('/api/courses', (req, res) => {
     list = list.filter((c) => c.level === level);
   }
 
+  const pageNum = Math.max(1, parseInt(page as string) || 1);
+  const pageSize = limit ? Math.min(100, Math.max(1, parseInt(limit as string) || 20)) : list.length;
+  const total = list.length;
+  const paginated = limit ? list.slice((pageNum - 1) * pageSize, pageNum * pageSize) : list;
+
   res.json({
-    total: list.length,
-    courses: list
+    total,
+    page: pageNum,
+    pageSize,
+    courses: paginated
   });
 });
 
@@ -361,12 +368,83 @@ app.get('/api/courses/:id', (req, res) => {
   res.json(course);
 });
 
+// GET /api/tests: Practice tests catalog with type and level filtering + pagination
+app.get('/api/tests', (req, res) => {
+  const { type, level, page, limit } = req.query;
+  let list = [...INITIAL_PRACTICE_TESTS];
+
+  if (type && type !== 'All') {
+    list = list.filter((t) => t.type === type);
+  }
+  if (level && level !== 'All') {
+    list = list.filter((t) => t.targetLevel === level);
+  }
+
+  const pageNum = Math.max(1, parseInt(page as string) || 1);
+  const pageSize = limit ? Math.min(100, Math.max(1, parseInt(limit as string) || 20)) : list.length;
+  const total = list.length;
+  const paginated = limit ? list.slice((pageNum - 1) * pageSize, pageNum * pageSize) : list;
+
+  res.json({
+    total,
+    page: pageNum,
+    pageSize,
+    tests: paginated
+  });
+});
+
+// GET /api/tests/:id: Single test detail
+app.get('/api/tests/:id', (req, res) => {
+  const test = INITIAL_PRACTICE_TESTS.find((t) => t.id === req.params.id);
+  if (!test) {
+    return res.status(404).json({ error: 'Test not found' });
+  }
+  res.json(test);
+});
+
+// GET /api/practice: Practice sets catalog with skill and level filtering + pagination
+app.get('/api/practice', (req, res) => {
+  const { skill, level, category, page, limit } = req.query;
+  let list = [...INITIAL_PRACTICE_SETS];
+
+  if (skill && skill !== 'All') {
+    list = list.filter((p) => p.targetSkill === skill);
+  }
+  if (level && level !== 'All') {
+    list = list.filter((p) => p.cefr === level);
+  }
+  if (category && category !== 'All') {
+    list = list.filter((p) => p.category === category);
+  }
+
+  const pageNum = Math.max(1, parseInt(page as string) || 1);
+  const pageSize = limit ? Math.min(100, Math.max(1, parseInt(limit as string) || 20)) : list.length;
+  const total = list.length;
+  const paginated = limit ? list.slice((pageNum - 1) * pageSize, pageNum * pageSize) : list;
+
+  res.json({
+    total,
+    page: pageNum,
+    pageSize,
+    practiceSets: paginated
+  });
+});
+
+// GET /api/practice/:id: Single practice set detail
+app.get('/api/practice/:id', (req, res) => {
+  const set = INITIAL_PRACTICE_SETS.find((p) => p.id === req.params.id);
+  if (!set) {
+    return res.status(404).json({ error: 'Practice set not found' });
+  }
+  res.json(set);
+});
+
 // In-memory runtime storage initialized with verified questions
 let activeQuestionBank = [...VERIFIED_QUESTION_BANK];
 
 // GET /api/questions: filterable by status, skill, level, source
 app.get('/api/questions', (req, res) => {
-  const { status, skill, level, sourceCategory, query } = req.query;
+  const { status, skill, level, sourceCategory, query, page, limit } = req.query;
   const isAdmin = req.headers['x-admin-role'] === 'admin' || req.query.admin === 'true';
 
   let filtered = [...activeQuestionBank];
@@ -400,9 +478,16 @@ app.get('/api/questions', (req, res) => {
     );
   }
 
+  const pageNum = Math.max(1, parseInt(page as string) || 1);
+  const pageSize = limit ? Math.min(100, Math.max(1, parseInt(limit as string) || 20)) : filtered.length;
+  const total = filtered.length;
+  const paginated = limit ? filtered.slice((pageNum - 1) * pageSize, pageNum * pageSize) : filtered;
+
   res.json({
-    total: filtered.length,
-    questions: filtered,
+    total,
+    page: pageNum,
+    pageSize,
+    questions: paginated,
     meta: {
       totalInBank: activeQuestionBank.length,
       approvedCount: activeQuestionBank.filter((q) => q.review?.status === 'approved').length,

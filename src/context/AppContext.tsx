@@ -285,8 +285,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (currentUser) {
         setCloudSyncStatus('syncing');
         try {
-          // 1. Sync User Profile
-          const cloudProfile = await loadUserProfileFromFirestore(currentUser.uid);
+          // Parallelize all 6 Firestore queries concurrently to eliminate sequential waterfall
+          const [
+            cloudProfile,
+            courseProgress,
+            cloudVocab,
+            cloudGrammar,
+            cloudAttempts,
+            cloudAchievements
+          ] = await Promise.all([
+            loadUserProfileFromFirestore(currentUser.uid),
+            loadCourseProgressFromFirestore(currentUser.uid),
+            loadVocabularyFromFirestore(currentUser.uid),
+            loadGrammarProgressFromFirestore(currentUser.uid),
+            loadExamAttemptsFromFirestore(currentUser.uid),
+            loadAchievementsFromFirestore(currentUser.uid)
+          ]);
+
+          // 1. User Profile
           if (cloudProfile) {
             setUser((prev) => ({
               ...prev,
@@ -320,9 +336,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             setUser({ ...DEFAULT_USER, ...initialDoc } as UserProfile);
           }
 
-          // 2. Load Course Progress from Firestore
-          const courseProgress = await loadCourseProgressFromFirestore(currentUser.uid);
-          if (Object.keys(courseProgress).length > 0) {
+          // 2. Course Progress
+          if (courseProgress && Object.keys(courseProgress).length > 0) {
             setCourses((prev) =>
               prev.map((c) => {
                 const prog = courseProgress[c.id];
@@ -357,13 +372,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               })
             );
           } else {
-            // New user: all courses and lessons start at 0% completed
             setCourses(INITIAL_COURSES);
           }
 
-          // 3. Load Vocabulary from Firestore
-          const cloudVocab = await loadVocabularyFromFirestore(currentUser.uid);
-          if (cloudVocab.length > 0) {
+          // 3. Vocabulary
+          if (cloudVocab && cloudVocab.length > 0) {
             setVocabulary((prev) => {
               const cloudMap = new Map(cloudVocab.map((v) => [v.id, v]));
               const merged = prev.map((v) => cloudMap.get(v.id) || v);
@@ -378,9 +391,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             setVocabulary(INITIAL_VOCABULARY);
           }
 
-          // 4. Load Grammar Progress from Firestore
-          const cloudGrammar = await loadGrammarProgressFromFirestore(currentUser.uid);
-          if (Object.keys(cloudGrammar).length > 0) {
+          // 4. Grammar Progress
+          if (cloudGrammar && Object.keys(cloudGrammar).length > 0) {
             setGrammarTopics((prev) =>
               prev.map((g) =>
                 cloudGrammar[g.id] !== undefined
@@ -392,18 +404,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             setGrammarTopics(INITIAL_GRAMMAR_TOPICS);
           }
 
-          // 5. Load Exam Attempts from Firestore
-          const cloudAttempts = await loadExamAttemptsFromFirestore(currentUser.uid);
-          if (cloudAttempts.length > 0) {
+          // 5. Exam Attempts
+          if (cloudAttempts && cloudAttempts.length > 0) {
             setTestAttempts(cloudAttempts);
             cloudAttempts.forEach((a) => processedAttemptIdsRef.current.add(a.id));
           } else {
             setTestAttempts([]);
           }
 
-          // 6. Load Achievements from Firestore
-          const cloudAchievements = await loadAchievementsFromFirestore(currentUser.uid);
-          if (Object.keys(cloudAchievements).length > 0) {
+          // 6. Achievements
+          if (cloudAchievements && Object.keys(cloudAchievements).length > 0) {
             setAchievements((prev) =>
               prev.map((ach) => {
                 const cloudAch = cloudAchievements[ach.id];
@@ -780,44 +790,60 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setAchievements(INITIAL_ACHIEVEMENTS);
   };
 
+  const contextValue = React.useMemo<AppContextType>(
+    () => ({
+      user,
+      updateUser,
+      activeTab,
+      setActiveTab,
+      courses,
+      completeLesson,
+      vocabulary,
+      updateVocabStatus,
+      toggleVocabFavorite,
+      deleteVocabulary,
+      addCustomVocabulary,
+      exportVocabularyCSV,
+      importVocabularyCSV,
+      grammarTopics,
+      updateGrammarMastery,
+      practiceTests,
+      testAttempts,
+      recordTestAttempt,
+      achievements,
+      addMinutesStudied,
+      addXP,
+      resetAllData,
+      language: user.language,
+      toggleLanguage,
+      selectedLesson,
+      setSelectedLesson,
+      activeExamId,
+      setActiveExamId,
+      firebaseUser,
+      cloudSyncStatus,
+      handleGoogleSignIn,
+      handleSignOut,
+      logSkillActivity
+    }),
+    [
+      user,
+      activeTab,
+      courses,
+      vocabulary,
+      grammarTopics,
+      practiceTests,
+      testAttempts,
+      achievements,
+      selectedLesson,
+      activeExamId,
+      firebaseUser,
+      cloudSyncStatus
+    ]
+  );
+
   return (
-    <AppContext.Provider
-      value={{
-        user,
-        updateUser,
-        activeTab,
-        setActiveTab,
-        courses,
-        completeLesson,
-        vocabulary,
-        updateVocabStatus,
-        toggleVocabFavorite,
-        deleteVocabulary,
-        addCustomVocabulary,
-        exportVocabularyCSV,
-        importVocabularyCSV,
-        grammarTopics,
-        updateGrammarMastery,
-        practiceTests,
-        testAttempts,
-        recordTestAttempt,
-        achievements,
-        addMinutesStudied,
-        addXP,
-        resetAllData,
-        language: user.language,
-        toggleLanguage,
-        selectedLesson,
-        setSelectedLesson,
-        activeExamId,
-        setActiveExamId,
-        firebaseUser,
-        cloudSyncStatus,
-        handleGoogleSignIn,
-        handleSignOut,
-        logSkillActivity
-      }}
-    >
+    <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>
   );

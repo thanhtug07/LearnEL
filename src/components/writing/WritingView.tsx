@@ -49,15 +49,35 @@ export const WritingView: React.FC = () => {
     } catch {}
   }, [currentPrompt.id]);
 
-  // Autosave draft on text edit
+  // Autosave draft on text edit with debounce (400ms) to prevent keystroke lag
   React.useEffect(() => {
-    try {
-      if (essayText) {
-        localStorage.setItem(`lingopeak_writing_draft_${currentPrompt.id}`, essayText);
-      } else {
-        localStorage.removeItem(`lingopeak_writing_draft_${currentPrompt.id}`);
-      }
-    } catch {}
+    const timer = setTimeout(() => {
+      try {
+        if (essayText) {
+          localStorage.setItem(`lingopeak_writing_draft_${currentPrompt.id}`, essayText);
+        } else {
+          localStorage.removeItem(`lingopeak_writing_draft_${currentPrompt.id}`);
+        }
+      } catch {}
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [essayText, currentPrompt.id]);
+
+  // Flush pending draft immediately on page exit or unmount
+  React.useEffect(() => {
+    const flushDraft = () => {
+      try {
+        if (essayText) {
+          localStorage.setItem(`lingopeak_writing_draft_${currentPrompt.id}`, essayText);
+        }
+      } catch {}
+    };
+    window.addEventListener('beforeunload', flushDraft);
+    return () => {
+      window.removeEventListener('beforeunload', flushDraft);
+      flushDraft();
+    };
   }, [essayText, currentPrompt.id]);
 
   const currentWordCount = essayText.trim() ? essayText.trim().split(/\s+/).length : 0;

@@ -18,17 +18,29 @@ export const GrammarView: React.FC = () => {
 
   const [selectedTopicId, setSelectedTopicId] = useState<string>(grammarTopics[0]?.id || '');
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
   const [selectedExerciseAnswers, setSelectedExerciseAnswers] = useState<Record<string, string>>({});
   const [exerciseChecked, setExerciseChecked] = useState<Record<string, boolean>>({});
 
-  const filteredTopics = grammarTopics.filter((t) => {
-    const matchesSearch =
-      t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.titleVi.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesLvl = selectedLevel === 'all' || t.level === selectedLevel;
-    return matchesSearch && matchesLvl;
-  });
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 250);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const filteredTopics = React.useMemo(() => {
+    const qLower = debouncedSearchQuery.toLowerCase().trim();
+    return grammarTopics.filter((t) => {
+      const matchesSearch =
+        !qLower ||
+        t.title.toLowerCase().includes(qLower) ||
+        t.titleVi.toLowerCase().includes(qLower);
+      const matchesLvl = selectedLevel === 'all' || t.level === selectedLevel;
+      return matchesSearch && matchesLvl;
+    });
+  }, [grammarTopics, debouncedSearchQuery, selectedLevel]);
 
   const activeTopic = grammarTopics.find((t) => t.id === selectedTopicId) || grammarTopics[0];
 

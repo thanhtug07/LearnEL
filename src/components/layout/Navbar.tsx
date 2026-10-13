@@ -20,7 +20,7 @@ interface NavbarProps {
   onToggleMobileSidebar: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
+export const Navbar: React.FC<NavbarProps> = React.memo(({ onToggleMobileSidebar }) => {
   const {
     user,
     updateUser,
@@ -207,4 +207,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
       </div>
     </header>
   );
-};
+});
+
+Navbar.displayName = 'Navbar';

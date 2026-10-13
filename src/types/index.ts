@@ -233,6 +233,26 @@ export interface TestAttempt {
   recommendedLessonIds: string[];
 }
 
+export interface PracticeSet {
+  id: string;
+  title: string;
+  titleVi: string;
+  targetSkill: 'grammar' | 'vocab' | 'reading' | 'listening' | 'writing' | 'speaking' | 'pronunciation' | 'business';
+  cefr: CEFRLevel;
+  category: 'targeted_practice' | 'mixed_review' | 'error_correction' | 'vocabulary_recall' | 'grammar_application' | 'reading_comprehension' | 'listening_comprehension' | 'speaking_prompt' | 'writing_prompt';
+  objectiveVi: string;
+  instructionsVi: string;
+  estimatedMinutes: number;
+  totalExercises: number;
+  publicationStatus: 'published' | 'draft' | 'archived';
+  exercises: Exercise[];
+  contentVersion: string;
+  source?: {
+    attribution: string;
+    license: string;
+  };
+}
+
 export interface Achievement {
   id: string;
   titleVi: string;

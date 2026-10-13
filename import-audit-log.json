@@ -1,0 +1,736 @@
+{
+  "timestamp": "2026-10-13T05:04:50.492Z",
+  "targetSummary": {
+    "targetCourses": 101,
+    "achievedCourses": 105,
+    "targetTests": 101,
+    "achievedTests": 105,
+    "targetPracticeSets": 101,
+    "achievedPracticeSets": 105,
+    "targetQuestions": 1000,
+    "achievedQuestions": 1020
+  },
+  "totalBatchesRecorded": 72,
+  "batches": [
+    {
+      "batchId": "batch-courses-001",
+      "entityType": "courses",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.425Z"
+    },
+    {
+      "batchId": "batch-courses-002",
+      "entityType": "courses",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.427Z"
+    },
+    {
+      "batchId": "batch-courses-003",
+      "entityType": "courses",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.427Z"
+    },
+    {
+      "batchId": "batch-courses-004",
+      "entityType": "courses",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.427Z"
+    },
+    {
+      "batchId": "batch-courses-005",
+      "entityType": "courses",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.427Z"
+    },
+    {
+      "batchId": "batch-courses-006",
+      "entityType": "courses",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.427Z"
+    },
+    {
+      "batchId": "batch-courses-007",
+      "entityType": "courses",
+      "recordCount": 12,
+      "validCount": 12,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.427Z"
+    },
+    {
+      "batchId": "batch-tests-008",
+      "entityType": "tests",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.431Z"
+    },
+    {
+      "batchId": "batch-tests-009",
+      "entityType": "tests",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.431Z"
+    },
+    {
+      "batchId": "batch-tests-010",
+      "entityType": "tests",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.431Z"
+    },
+    {
+      "batchId": "batch-tests-011",
+      "entityType": "tests",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.431Z"
+    },
+    {
+      "batchId": "batch-tests-012",
+      "entityType": "tests",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.431Z"
+    },
+    {
+      "batchId": "batch-tests-013",
+      "entityType": "tests",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.431Z"
+    },
+    {
+      "batchId": "batch-tests-014",
+      "entityType": "tests",
+      "recordCount": 11,
+      "validCount": 11,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.431Z"
+    },
+    {
+      "batchId": "batch-practice_sets-015",
+      "entityType": "practice_sets",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.432Z"
+    },
+    {
+      "batchId": "batch-practice_sets-016",
+      "entityType": "practice_sets",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.432Z"
+    },
+    {
+      "batchId": "batch-practice_sets-017",
+      "entityType": "practice_sets",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.432Z"
+    },
+    {
+      "batchId": "batch-practice_sets-018",
+      "entityType": "practice_sets",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.432Z"
+    },
+    {
+      "batchId": "batch-practice_sets-019",
+      "entityType": "practice_sets",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.432Z"
+    },
+    {
+      "batchId": "batch-practice_sets-020",
+      "entityType": "practice_sets",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.432Z"
+    },
+    {
+      "batchId": "batch-practice_sets-021",
+      "entityType": "practice_sets",
+      "recordCount": 15,
+      "validCount": 15,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.432Z"
+    },
+    {
+      "batchId": "batch-questions-022",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.439Z"
+    },
+    {
+      "batchId": "batch-questions-023",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.439Z"
+    },
+    {
+      "batchId": "batch-questions-024",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.439Z"
+    },
+    {
+      "batchId": "batch-questions-025",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.440Z"
+    },
+    {
+      "batchId": "batch-questions-026",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.440Z"
+    },
+    {
+      "batchId": "batch-questions-027",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.440Z"
+    },
+    {
+      "batchId": "batch-questions-028",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.440Z"
+    },
+    {
+      "batchId": "batch-questions-029",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.440Z"
+    },
+    {
+      "batchId": "batch-questions-030",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-031",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-032",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-033",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-034",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-035",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-036",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-037",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-038",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-039",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-040",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-041",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-042",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.444Z"
+    },
+    {
+      "batchId": "batch-questions-043",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-044",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-045",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-046",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-047",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-048",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-049",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-050",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-051",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-052",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-053",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-054",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-055",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-056",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.445Z"
+    },
+    {
+      "batchId": "batch-questions-057",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.447Z"
+    },
+    {
+      "batchId": "batch-questions-058",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.447Z"
+    },
+    {
+      "batchId": "batch-questions-059",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.447Z"
+    },
+    {
+      "batchId": "batch-questions-060",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.447Z"
+    },
+    {
+      "batchId": "batch-questions-061",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.447Z"
+    },
+    {
+      "batchId": "batch-questions-062",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.447Z"
+    },
+    {
+      "batchId": "batch-questions-063",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.447Z"
+    },
+    {
+      "batchId": "batch-questions-064",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.447Z"
+    },
+    {
+      "batchId": "batch-questions-065",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.448Z"
+    },
+    {
+      "batchId": "batch-questions-066",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.448Z"
+    },
+    {
+      "batchId": "batch-questions-067",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.448Z"
+    },
+    {
+      "batchId": "batch-questions-068",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.448Z"
+    },
+    {
+      "batchId": "batch-questions-069",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.448Z"
+    },
+    {
+      "batchId": "batch-questions-070",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.448Z"
+    },
+    {
+      "batchId": "batch-questions-071",
+      "entityType": "questions",
+      "recordCount": 20,
+      "validCount": 20,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.448Z"
+    },
+    {
+      "batchId": "batch-questions-072",
+      "entityType": "questions",
+      "recordCount": 8,
+      "validCount": 8,
+      "rejectedCount": 0,
+      "rejectedReasons": [],
+      "status": "persisted",
+      "timestamp": "2026-10-13T05:04:50.448Z"
+    }
+  ]
+}

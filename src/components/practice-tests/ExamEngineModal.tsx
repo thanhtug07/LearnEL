@@ -86,38 +86,67 @@ export const ExamEngineModal: React.FC<ExamEngineModalProps> = ({ test, onClose 
   const [resultAttempt, setResultAttempt] = useState<TestAttempt | null>(null);
   const [reviewMistakesOnly, setReviewMistakesOnly] = useState(false);
 
-  // Autosave progress while test is active (including currentIndex)
+  const secondsRemainingRef = React.useRef(secondsRemaining);
+  secondsRemainingRef.current = secondsRemaining;
+
+  // Persist exam progress safely without writing to disk on every single second
+  const persistProgress = React.useCallback(
+    (currentSecs?: number) => {
+      if (isSubmitted) return;
+      try {
+        localStorage.setItem(
+          progressStorageKey,
+          JSON.stringify({
+            userAnswers,
+            flaggedQuestions: Array.from(flaggedQuestions),
+            secondsRemaining: typeof currentSecs === 'number' ? currentSecs : secondsRemainingRef.current,
+            currentIndex
+          })
+        );
+      } catch {}
+    },
+    [userAnswers, flaggedQuestions, currentIndex, isSubmitted, progressStorageKey]
+  );
+
+  // Save immediately when user answers, flags or changes question
   useEffect(() => {
     if (isSubmitted) {
       localStorage.removeItem(progressStorageKey);
       return;
     }
-    try {
-      localStorage.setItem(
-        progressStorageKey,
-        JSON.stringify({
-          userAnswers,
-          flaggedQuestions: Array.from(flaggedQuestions),
-          secondsRemaining,
-          currentIndex
-        })
-      );
-    } catch {}
-  }, [userAnswers, flaggedQuestions, secondsRemaining, currentIndex, isSubmitted, progressStorageKey]);
+    persistProgress();
+  }, [userAnswers, flaggedQuestions, currentIndex, isSubmitted, progressStorageKey, persistProgress]);
 
-  // Timer countdown
+  // Flush on unmount or tab close
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (!isSubmitted) persistProgress();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      if (!isSubmitted) persistProgress();
+    };
+  }, [isSubmitted, persistProgress]);
+
+  // High-accuracy timer with drift compensation & periodic (every 10s) state persistence
   useEffect(() => {
     if (isSubmitted) return;
+    const targetEnd = Date.now() + secondsRemainingRef.current * 1000;
+
     const interval = setInterval(() => {
-      setSecondsRemaining((prev) => {
-        if (prev <= 1) {
-          return 0;
-        }
-        return prev - 1;
-      });
+      const remaining = Math.max(0, Math.ceil((targetEnd - Date.now()) / 1000));
+      setSecondsRemaining(remaining);
+      secondsRemainingRef.current = remaining;
+
+      // Periodically persist timer every 10 seconds to safeguard progress without disk thrashing
+      if (remaining > 0 && remaining % 10 === 0) {
+        persistProgress(remaining);
+      }
     }, 1000);
+
     return () => clearInterval(interval);
-  }, [isSubmitted]);
+  }, [isSubmitted, persistProgress]);
 
   // Handle timeout auto-submission safely
   useEffect(() => {
