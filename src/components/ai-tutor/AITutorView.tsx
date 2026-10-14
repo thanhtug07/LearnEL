@@ -36,7 +36,8 @@ export const AITutorView: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch('/api/ai/status')
+    const controller = new AbortController();
+    fetch('/api/ai/status', { signal: controller.signal })
       .then((res) => res.json())
       .then((data) => {
         if (data.configured) {
@@ -47,9 +48,15 @@ export const AITutorView: React.FC = () => {
           setIsFallbackNotice(true);
         }
       })
-      .catch(() => {
-        setIsFallbackNotice(true);
+      .catch((err) => {
+        if (err.name !== 'AbortError') {
+          setIsFallbackNotice(true);
+        }
       });
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   const tutorModes = [

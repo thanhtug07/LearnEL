@@ -17,6 +17,7 @@ import {
   BarChart2,
   ShieldCheck
 } from 'lucide-react';
+import { EmptyState, ViewLoadingFallback } from '../common/ViewFeedbackStates';
 
 export const PracticeTestsView: React.FC = () => {
   const { practiceTests, testAttempts, activeExamId, setActiveExamId, language } = useApp();
@@ -133,65 +134,76 @@ export const PracticeTestsView: React.FC = () => {
           {language === 'vi' ? 'ĐỀ THI ĐƯỢC ĐỀ XUẤT CHO BẠN' : 'RECOMMENDED FOR YOU'}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {filteredTests.map((test) => {
-            const pastAttempt = testAttempts.find((a) => a.testId === test.id);
+        {practiceTests.length === 0 ? (
+          <ViewLoadingFallback label="Đang tải danh sách bài thi..." />
+        ) : filteredTests.length === 0 ? (
+          <EmptyState
+            title="Không tìm thấy bài thi phù hợp"
+            description="Hiện chưa có đề thi nào thuộc phân loại đã chọn. Bạn có thể chọn 'Tất cả' để xem toàn bộ danh mục."
+            actionLabel="Xem tất cả đề thi"
+            onAction={() => setFilterType('all')}
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {filteredTests.map((test) => {
+              const pastAttempt = testAttempts.find((a) => a.testId === test.id);
 
-            return (
-              <div
-                key={test.id}
-                className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs flex flex-col justify-between hover:border-blue-400 hover:shadow-sm transition-all"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md uppercase">
-                      {test.targetLevel}
-                    </span>
-                    <span className="text-xs text-slate-500 font-medium flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>{test.durationMinutes} phút</span>
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 className="text-base font-bold text-slate-900">{test.title}</h3>
-                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                      {test.descriptionVi}
-                    </p>
-                  </div>
-
-                  {/* Test parameters */}
-                  <div className="flex items-center gap-4 text-xs text-slate-600 pt-1">
-                    <div className="flex items-center gap-1">
-                      <BookOpen className="w-3.5 h-3.5 text-blue-600" />
-                      <span>{test.totalQuestions} câu hỏi</span>
+              return (
+                <div
+                  key={test.id}
+                  className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs flex flex-col justify-between hover:border-blue-400 hover:shadow-sm transition-all"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md uppercase">
+                        {test.targetLevel}
+                      </span>
+                      <span className="text-xs text-slate-500 font-medium flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span>{test.durationMinutes} phút</span>
+                      </span>
                     </div>
-                    {pastAttempt && (
-                      <div className="flex items-center gap-1 text-emerald-600 font-semibold">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Điểm gần nhất: {pastAttempt.accuracy}%</span>
+
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900">{test.title}</h3>
+                      <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                        {test.descriptionVi}
+                      </p>
+                    </div>
+
+                    {/* Test parameters */}
+                    <div className="flex items-center gap-4 text-xs text-slate-600 pt-1">
+                      <div className="flex items-center gap-1">
+                        <BookOpen className="w-3.5 h-3.5 text-blue-600" />
+                        <span>{test.totalQuestions} câu hỏi</span>
                       </div>
-                    )}
+                      {pastAttempt && (
+                        <div className="flex items-center gap-1 text-emerald-600 font-semibold">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>Điểm gần nhất: {pastAttempt.accuracy}%</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-5 mt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div className="text-[11px] text-slate-400">
+                      {pastAttempt ? `Đã làm: ${pastAttempt.date}` : 'Chưa làm lần nào'}
+                    </div>
+
+                    <button
+                      onClick={() => setActiveTestToRun(test)}
+                      className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                    >
+                      <Play className="w-3.5 h-3.5" />
+                      <span>{pastAttempt ? 'Thi lại ngay' : 'Vào phòng thi'}</span>
+                    </button>
                   </div>
                 </div>
-
-                <div className="pt-5 mt-4 border-t border-slate-100 flex items-center justify-between">
-                  <div className="text-[11px] text-slate-400">
-                    {pastAttempt ? `Đã làm: ${pastAttempt.date}` : 'Chưa làm lần nào'}
-                  </div>
-
-                  <button
-                    onClick={() => setActiveTestToRun(test)}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
-                  >
-                    <Play className="w-3.5 h-3.5" />
-                    <span>{pastAttempt ? 'Thi lại ngay' : 'Vào phòng thi'}</span>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Past Attempt History Section */}

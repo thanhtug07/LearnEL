@@ -44,7 +44,7 @@ import {
 } from '../services/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 
-const DEFAULT_USER: UserProfile = {
+export const DEFAULT_USER: UserProfile = {
   id: 'user-guest-1',
   name: 'Học viên',
   email: '',
@@ -62,6 +62,279 @@ const DEFAULT_USER: UserProfile = {
   soundEnabled: true,
   onboardingCompleted: true,
 };
+
+export function getUserStorageKey(userId: string | null | undefined, key: string): string {
+  if (!userId) {
+    return `lingopeak_guest_${key}`;
+  }
+  return `lingopeak_user_${userId}_${key}`;
+}
+
+const memoryStorage = new Map<string, string>();
+
+function getStorage() {
+  if (typeof globalThis !== 'undefined' && (globalThis as any).localStorage) {
+    return (globalThis as any).localStorage;
+  }
+  if (typeof window !== 'undefined' && window.localStorage) {
+    return window.localStorage;
+  }
+  return {
+    getItem: (key: string) => memoryStorage.get(key) ?? null,
+    setItem: (key: string, val: string) => memoryStorage.set(key, val),
+    removeItem: (key: string) => memoryStorage.delete(key),
+    clear: () => memoryStorage.clear(),
+    key: (index: number) => Array.from(memoryStorage.keys())[index] || null,
+    get length() {
+      return memoryStorage.size;
+    }
+  };
+}
+
+export function saveNamespacedStorage<T>(userId: string | null | undefined, key: string, value: T): void {
+  try {
+    const storageKey = getUserStorageKey(userId, key);
+    getStorage().setItem(storageKey, JSON.stringify(value));
+  } catch (e) {
+    console.error('Failed to save to namespaced storage:', e);
+  }
+}
+
+export function loadNamespacedStorage<T>(userId: string | null | undefined, key: string, fallback: T): T {
+  try {
+    const storageKey = getUserStorageKey(userId, key);
+    const item = getStorage().getItem(storageKey);
+    if (item !== null && item !== undefined) {
+      return JSON.parse(item) as T;
+    }
+  } catch (e) {
+    console.error('Failed to load from namespaced storage:', e);
+  }
+  return fallback;
+}
+
+export function clearNamespacedStorage(userId: string | null | undefined): void {
+  try {
+    const storage = getStorage();
+    const prefix = userId ? `lingopeak_user_${userId}_` : `lingopeak_guest_`;
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < storage.length; i++) {
+      const k = storage.key(i);
+      if (k && k.startsWith(prefix)) {
+        keysToRemove.push(k);
+      }
+    }
+    keysToRemove.forEach((k: string) => storage.removeItem(k));
+  } catch (e) {
+    console.error('Failed to clear namespaced storage:', e);
+  }
+}
+
+export function calculateLevelFromXP(xp: number): number {
+  if (typeof xp !== 'number' || xp <= 0) {
+    return 1;
+  }
+  return Math.floor(xp / 500) + 1;
+}
+
+export function createDefaultUserProfile(
+  userId: string,
+  custom?: Partial<UserProfile> & { displayName?: string; photoURL?: string }
+): UserProfile {
+  return {
+    id: userId,
+    name: custom?.displayName || custom?.name || 'Học viên',
+    email: custom?.email || '',
+    avatar: custom?.photoURL || custom?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    level: 'B1',
+    targetExam: 'IELTS',
+    targetScore: 'Band 7.0',
+    dailyMinutesGoal: 30,
+    todayMinutesSpent: 0,
+    currentStreak: 0,
+    totalMinutesStudied: 0,
+    xp: 0,
+    levelNumber: 1,
+    language: 'vi',
+    soundEnabled: true,
+    onboardingCompleted: false,
+    lastActiveDate: new Date().toISOString().slice(0, 10),
+    ...custom
+  };
+}
+
+export function evaluateDailyReset(profile: UserProfile, currentDate?: string): UserProfile {
+  const today = currentDate || new Date().toISOString().slice(0, 10);
+  if (!profile.lastActiveDate) {
+    return {
+      ...profile,
+      todayMinutesSpent: 0,
+      lastActiveDate: today
+    };
+  }
+
+  if (profile.lastActiveDate === today) {
+    return profile;
+  }
+
+  const lastDate = new Date(profile.lastActiveDate);
+  const curDate = new Date(today);
+  const diffTime = curDate.getTime() - lastDate.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 1) {
+    return {
+      ...profile,
+      todayMinutesSpent: 0,
+      lastActiveDate: today
+    };
+  }
+
+  return {
+    ...profile,
+    todayMinutesSpent: 0,
+    currentStreak: 0,
+    lastActiveDate: today
+  };
+}
+
+export function buildCoursesWithProgress(
+  baseCourses: Course[],
+  progress: Record<string, { completedLessonIds?: string[]; completedCount?: number } | any> = {}
+): Course[] {
+  return baseCourses.map((course) => {
+    const courseProg = progress[course.id];
+    const completedIds = new Set<string>(courseProg?.completedLessonIds || []);
+
+    const updatedModules = course.modules.map((mod) => {
+      const updatedLessons = mod.lessons.map((les) => {
+        const isCompleted = completedIds.has(les.id);
+        const isUnlocked =
+          !les.prerequisites ||
+          les.prerequisites.length === 0 ||
+          les.prerequisites.every((preId: string) => completedIds.has(preId));
+        return {
+          ...les,
+          isCompleted,
+          isLocked: !isUnlocked
+        };
+      });
+      return {
+        ...mod,
+        lessons: updatedLessons
+      };
+    });
+
+    return {
+      ...course,
+      completedLessons: completedIds.size,
+      modules: updatedModules
+    };
+  });
+}
+
+export function buildVocabularyWithProgress(
+  baseVocab: VocabularyItem[],
+  userVocab: VocabularyItem[] | Record<string, any> = []
+): VocabularyItem[] {
+  if (Array.isArray(userVocab) && userVocab.length > 0) {
+    const userMap = new Map(userVocab.map((v) => [v.id, v]));
+    const merged = baseVocab.map((v) => userMap.get(v.id) || v);
+    for (const [id, item] of userMap) {
+      if (!merged.some((m) => m.id === id)) {
+        merged.unshift(item);
+      }
+    }
+    return merged;
+  }
+  return baseVocab.map((v) => ({
+    ...v,
+    status: 'unseen',
+    reviewCount: 0,
+    isFavorite: false
+  }));
+}
+
+export function buildGrammarWithProgress(
+  baseGrammar: GrammarTopic[],
+  userGrammar: Record<string, number> = {}
+): GrammarTopic[] {
+  return baseGrammar.map((g) => ({
+    ...g,
+    masteryPercentage: userGrammar[g.id] !== undefined ? userGrammar[g.id] : 0
+  }));
+}
+
+export function buildAchievementsWithProgress(
+  baseAchievements: Achievement[],
+  userAchievements: Record<string, any> = {}
+): Achievement[] {
+  return baseAchievements.map((ach) => {
+    const saved = userAchievements[ach.id];
+    return saved
+      ? {
+          ...ach,
+          progress: saved.progress ?? ach.progress,
+          unlocked: saved.unlocked ?? ach.unlocked,
+          unlockedAt: saved.unlockedAt ?? ach.unlockedAt
+        }
+      : {
+          ...ach,
+          progress: 0,
+          unlocked: false
+        };
+  });
+}
+
+export function calculateNextReviewInterval(
+  status: 'unseen' | 'learning' | 'mastered',
+  currentInterval = 1
+): number {
+  if (status === 'unseen') return 0;
+  if (status === 'learning') return 1;
+  if (status === 'mastered') {
+    if (currentInterval <= 1) return 4;
+    return currentInterval * 2;
+  }
+  return 1;
+}
+
+export function parseVocabularyCSV(csv: string): Partial<VocabularyItem>[] {
+  if (!csv || !csv.trim()) return [];
+  const lines = csv.trim().split(/\r?\n/).filter((l) => l.trim().length > 0);
+  if (lines.length <= 1) return [];
+
+  const items: Partial<VocabularyItem>[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    const matches = line.match(/(?:^|,)("(?:[^"]|"")*"|[^,]*)/g);
+    if (!matches) continue;
+
+    const parts = matches.map((p) => {
+      let cleaned = p.replace(/^,/, '').trim();
+      if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+        cleaned = cleaned.slice(1, -1).replace(/""/g, '"');
+      }
+      return cleaned;
+    });
+
+    if (parts.length >= 4 && parts[0]) {
+      items.push({
+        word: parts[0],
+        ipa: parts[1] || '',
+        pos: parts[2] || 'noun',
+        viMeaning: parts[3] || '',
+        enDefinition: parts[4] || '',
+        exampleEn: parts[5] || '',
+        exampleVi: parts[6] || '',
+        cefr: (parts[7] as any) || 'B1',
+        status: 'learning',
+        reviewCount: 0
+      });
+    }
+  }
+  return items;
+}
 
 export type CloudSyncStatus = 'synced' | 'syncing' | 'offline' | 'unauthenticated';
 

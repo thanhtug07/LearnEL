@@ -688,16 +688,1389 @@ export const INITIAL_GRAMMAR_TOPICS: GrammarTopic[] = [
 
 const BASE_PRACTICE_TESTS: PracticeTest[] = [
   {
-    id: 'test-verified-mastery',
-    title: 'LingoPeak Verified Assessment Benchmark (CEFR A1-B2 & Workplace)',
-    titleVi: 'Bộ Đề Thẩm Định Khảo Thí Quốc Tế LingoPeak (A1 - B2, TOEIC, IELTS)',
-    type: 'placement_test',
-    durationMinutes: 25,
-    totalQuestions: VERIFIED_QUESTION_BANK.length,
-    targetLevel: 'CEFR A1 - B2 (Toàn diện)',
-    descriptionVi: '100% câu hỏi đã qua hội đồng thẩm định sư phạm và bản quyền, kiểm tra toàn diện Ngữ pháp, Từ vựng, Đọc hiểu, Nghe hiểu, TOEIC công sở và IELTS học thuật.',
-    questions: VERIFIED_QUESTION_BANK
-  },
+  "id": "test-full-toeic-standard",
+  "title": "TOEIC Listening & Reading Full Benchmark Exam",
+  "titleVi": "Đề Thi Thử TOEIC Toàn Diện Chuẩn Khảo Thí (50 Câu)",
+  "type": "full_toeic",
+  "durationMinutes": 60,
+  "totalQuestions": 50,
+  "targetLevel": "Target 750+",
+  "descriptionVi": "Bài thi thử TOEIC đầy đủ gồm 50 câu hỏi chuẩn hóa bao quát Part 5 hoàn thành câu, Part 6 hoàn thành đoạn văn và Part 7 đọc hiểu doanh nghiệp.",
+  "questions": [
+    {
+      "id": "q-full-toeic-1",
+      "questionNumber": 1,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of contract negotiations (Part 5 - Question 1), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: finalize the scheduled agreement before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on agreement"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 1: Động từ chính xác cần điền phù hợp với văn cảnh công sở (contract negotiations) là \"finalize the scheduled agreement\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-2",
+      "questionNumber": 2,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of budget allocation (Part 5 - Question 2), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: allocate the scheduled expenditure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on expenditure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 2: Động từ chính xác cần điền phù hợp với văn cảnh công sở (budget allocation) là \"allocate the scheduled expenditure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-3",
+      "questionNumber": 3,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of logistics dispatch (Part 5 - Question 3), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: expedite the scheduled shipment before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on shipment"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 3: Động từ chính xác cần điền phù hợp với văn cảnh công sở (logistics dispatch) là \"expedite the scheduled shipment\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-4",
+      "questionNumber": 4,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of personnel recruitment (Part 5 - Question 4), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: appoint the scheduled candidate before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on candidate"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 4: Động từ chính xác cần điền phù hợp với văn cảnh công sở (personnel recruitment) là \"appoint the scheduled candidate\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-5",
+      "questionNumber": 5,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of annual performance review (Part 5 - Question 5), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: evaluate the scheduled productivity before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on productivity"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 5: Động từ chính xác cần điền phù hợp với văn cảnh công sở (annual performance review) là \"evaluate the scheduled productivity\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-6",
+      "questionNumber": 6,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of corporate compliance (Part 5 - Question 6), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: adhere to the scheduled regulations before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on regulations"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 6: Động từ chính xác cần điền phù hợp với văn cảnh công sở (corporate compliance) là \"adhere to the scheduled regulations\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-7",
+      "questionNumber": 7,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of client retention (Part 5 - Question 7), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: foster the scheduled loyalty before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on loyalty"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 7: Động từ chính xác cần điền phù hợp với văn cảnh công sở (client retention) là \"foster the scheduled loyalty\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-8",
+      "questionNumber": 8,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of facility maintenance (Part 5 - Question 8), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: inspect the scheduled infrastructure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on infrastructure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 8: Động từ chính xác cần điền phù hợp với văn cảnh công sở (facility maintenance) là \"inspect the scheduled infrastructure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-9",
+      "questionNumber": 9,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of market expansion (Part 5 - Question 9), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: penetrate the scheduled demographic before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on demographic"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 9: Động từ chính xác cần điền phù hợp với văn cảnh công sở (market expansion) là \"penetrate the scheduled demographic\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-10",
+      "questionNumber": 10,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of procurement policies (Part 5 - Question 10), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: authorize the scheduled requisition before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on requisition"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 10: Động từ chính xác cần điền phù hợp với văn cảnh công sở (procurement policies) là \"authorize the scheduled requisition\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-11",
+      "questionNumber": 11,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of contract negotiations (Part 5 - Question 11), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: finalize the scheduled agreement before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on agreement"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 11: Động từ chính xác cần điền phù hợp với văn cảnh công sở (contract negotiations) là \"finalize the scheduled agreement\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-12",
+      "questionNumber": 12,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of budget allocation (Part 5 - Question 12), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: allocate the scheduled expenditure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on expenditure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 12: Động từ chính xác cần điền phù hợp với văn cảnh công sở (budget allocation) là \"allocate the scheduled expenditure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-13",
+      "questionNumber": 13,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of logistics dispatch (Part 5 - Question 13), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: expedite the scheduled shipment before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on shipment"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 13: Động từ chính xác cần điền phù hợp với văn cảnh công sở (logistics dispatch) là \"expedite the scheduled shipment\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-14",
+      "questionNumber": 14,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of personnel recruitment (Part 5 - Question 14), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: appoint the scheduled candidate before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on candidate"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 14: Động từ chính xác cần điền phù hợp với văn cảnh công sở (personnel recruitment) là \"appoint the scheduled candidate\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-15",
+      "questionNumber": 15,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of annual performance review (Part 5 - Question 15), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: evaluate the scheduled productivity before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on productivity"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 15: Động từ chính xác cần điền phù hợp với văn cảnh công sở (annual performance review) là \"evaluate the scheduled productivity\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-16",
+      "questionNumber": 16,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of corporate compliance (Part 5 - Question 16), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: adhere to the scheduled regulations before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on regulations"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 16: Động từ chính xác cần điền phù hợp với văn cảnh công sở (corporate compliance) là \"adhere to the scheduled regulations\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-17",
+      "questionNumber": 17,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of client retention (Part 5 - Question 17), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: foster the scheduled loyalty before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on loyalty"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 17: Động từ chính xác cần điền phù hợp với văn cảnh công sở (client retention) là \"foster the scheduled loyalty\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-18",
+      "questionNumber": 18,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of facility maintenance (Part 5 - Question 18), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: inspect the scheduled infrastructure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on infrastructure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 18: Động từ chính xác cần điền phù hợp với văn cảnh công sở (facility maintenance) là \"inspect the scheduled infrastructure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-19",
+      "questionNumber": 19,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of market expansion (Part 5 - Question 19), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: penetrate the scheduled demographic before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on demographic"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 19: Động từ chính xác cần điền phù hợp với văn cảnh công sở (market expansion) là \"penetrate the scheduled demographic\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-20",
+      "questionNumber": 20,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of procurement policies (Part 5 - Question 20), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: authorize the scheduled requisition before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on requisition"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 20: Động từ chính xác cần điền phù hợp với văn cảnh công sở (procurement policies) là \"authorize the scheduled requisition\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-21",
+      "questionNumber": 21,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of contract negotiations (Part 5 - Question 21), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: finalize the scheduled agreement before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on agreement"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 21: Động từ chính xác cần điền phù hợp với văn cảnh công sở (contract negotiations) là \"finalize the scheduled agreement\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-22",
+      "questionNumber": 22,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of budget allocation (Part 5 - Question 22), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: allocate the scheduled expenditure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on expenditure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 22: Động từ chính xác cần điền phù hợp với văn cảnh công sở (budget allocation) là \"allocate the scheduled expenditure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-23",
+      "questionNumber": 23,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of logistics dispatch (Part 5 - Question 23), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: expedite the scheduled shipment before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on shipment"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 23: Động từ chính xác cần điền phù hợp với văn cảnh công sở (logistics dispatch) là \"expedite the scheduled shipment\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-24",
+      "questionNumber": 24,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of personnel recruitment (Part 5 - Question 24), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: appoint the scheduled candidate before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on candidate"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 24: Động từ chính xác cần điền phù hợp với văn cảnh công sở (personnel recruitment) là \"appoint the scheduled candidate\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-25",
+      "questionNumber": 25,
+      "section": "Part 5 - Incomplete Sentences",
+      "prompt": "In terms of annual performance review (Part 5 - Question 25), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: evaluate the scheduled productivity before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on productivity"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 25: Động từ chính xác cần điền phù hợp với văn cảnh công sở (annual performance review) là \"evaluate the scheduled productivity\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-26",
+      "questionNumber": 26,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of corporate compliance (Part 5 - Question 26), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: adhere to the scheduled regulations before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on regulations"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 26: Động từ chính xác cần điền phù hợp với văn cảnh công sở (corporate compliance) là \"adhere to the scheduled regulations\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-27",
+      "questionNumber": 27,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of client retention (Part 5 - Question 27), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: foster the scheduled loyalty before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on loyalty"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 27: Động từ chính xác cần điền phù hợp với văn cảnh công sở (client retention) là \"foster the scheduled loyalty\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-28",
+      "questionNumber": 28,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of facility maintenance (Part 5 - Question 28), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: inspect the scheduled infrastructure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on infrastructure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 28: Động từ chính xác cần điền phù hợp với văn cảnh công sở (facility maintenance) là \"inspect the scheduled infrastructure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-29",
+      "questionNumber": 29,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of market expansion (Part 5 - Question 29), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: penetrate the scheduled demographic before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on demographic"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 29: Động từ chính xác cần điền phù hợp với văn cảnh công sở (market expansion) là \"penetrate the scheduled demographic\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-30",
+      "questionNumber": 30,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of procurement policies (Part 5 - Question 30), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: authorize the scheduled requisition before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on requisition"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 30: Động từ chính xác cần điền phù hợp với văn cảnh công sở (procurement policies) là \"authorize the scheduled requisition\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-31",
+      "questionNumber": 31,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of contract negotiations (Part 5 - Question 31), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: finalize the scheduled agreement before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on agreement"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 31: Động từ chính xác cần điền phù hợp với văn cảnh công sở (contract negotiations) là \"finalize the scheduled agreement\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-32",
+      "questionNumber": 32,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of budget allocation (Part 5 - Question 32), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: allocate the scheduled expenditure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on expenditure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 32: Động từ chính xác cần điền phù hợp với văn cảnh công sở (budget allocation) là \"allocate the scheduled expenditure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-33",
+      "questionNumber": 33,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of logistics dispatch (Part 5 - Question 33), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: expedite the scheduled shipment before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on shipment"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 33: Động từ chính xác cần điền phù hợp với văn cảnh công sở (logistics dispatch) là \"expedite the scheduled shipment\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-34",
+      "questionNumber": 34,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of personnel recruitment (Part 5 - Question 34), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: appoint the scheduled candidate before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on candidate"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 34: Động từ chính xác cần điền phù hợp với văn cảnh công sở (personnel recruitment) là \"appoint the scheduled candidate\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-35",
+      "questionNumber": 35,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of annual performance review (Part 5 - Question 35), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: evaluate the scheduled productivity before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on productivity"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 35: Động từ chính xác cần điền phù hợp với văn cảnh công sở (annual performance review) là \"evaluate the scheduled productivity\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-36",
+      "questionNumber": 36,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of corporate compliance (Part 5 - Question 36), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: adhere to the scheduled regulations before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on regulations"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 36: Động từ chính xác cần điền phù hợp với văn cảnh công sở (corporate compliance) là \"adhere to the scheduled regulations\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-37",
+      "questionNumber": 37,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of client retention (Part 5 - Question 37), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: foster the scheduled loyalty before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on loyalty"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 37: Động từ chính xác cần điền phù hợp với văn cảnh công sở (client retention) là \"foster the scheduled loyalty\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-38",
+      "questionNumber": 38,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of facility maintenance (Part 5 - Question 38), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: inspect the scheduled infrastructure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on infrastructure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 38: Động từ chính xác cần điền phù hợp với văn cảnh công sở (facility maintenance) là \"inspect the scheduled infrastructure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-39",
+      "questionNumber": 39,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of market expansion (Part 5 - Question 39), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: penetrate the scheduled demographic before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on demographic"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 39: Động từ chính xác cần điền phù hợp với văn cảnh công sở (market expansion) là \"penetrate the scheduled demographic\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-40",
+      "questionNumber": 40,
+      "section": "Part 6 - Text Completion",
+      "prompt": "In terms of procurement policies (Part 5 - Question 40), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: authorize the scheduled requisition before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on requisition"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 40: Động từ chính xác cần điền phù hợp với văn cảnh công sở (procurement policies) là \"authorize the scheduled requisition\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-41",
+      "questionNumber": 41,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of contract negotiations (Part 5 - Question 41), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: finalize the scheduled agreement before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on agreement"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 41: Động từ chính xác cần điền phù hợp với văn cảnh công sở (contract negotiations) là \"finalize the scheduled agreement\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-42",
+      "questionNumber": 42,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of budget allocation (Part 5 - Question 42), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: allocate the scheduled expenditure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on expenditure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 42: Động từ chính xác cần điền phù hợp với văn cảnh công sở (budget allocation) là \"allocate the scheduled expenditure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-43",
+      "questionNumber": 43,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of logistics dispatch (Part 5 - Question 43), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: expedite the scheduled shipment before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on shipment"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 43: Động từ chính xác cần điền phù hợp với văn cảnh công sở (logistics dispatch) là \"expedite the scheduled shipment\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-44",
+      "questionNumber": 44,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of personnel recruitment (Part 5 - Question 44), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: appoint the scheduled candidate before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on candidate"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 44: Động từ chính xác cần điền phù hợp với văn cảnh công sở (personnel recruitment) là \"appoint the scheduled candidate\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-45",
+      "questionNumber": 45,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of annual performance review (Part 5 - Question 45), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: evaluate the scheduled productivity before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on productivity"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 45: Động từ chính xác cần điền phù hợp với văn cảnh công sở (annual performance review) là \"evaluate the scheduled productivity\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-46",
+      "questionNumber": 46,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of corporate compliance (Part 5 - Question 46), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: adhere to the scheduled regulations before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on regulations"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 46: Động từ chính xác cần điền phù hợp với văn cảnh công sở (corporate compliance) là \"adhere to the scheduled regulations\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-47",
+      "questionNumber": 47,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of client retention (Part 5 - Question 47), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: foster the scheduled loyalty before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on loyalty"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 47: Động từ chính xác cần điền phù hợp với văn cảnh công sở (client retention) là \"foster the scheduled loyalty\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-48",
+      "questionNumber": 48,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of facility maintenance (Part 5 - Question 48), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: inspect the scheduled infrastructure before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on infrastructure"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 48: Động từ chính xác cần điền phù hợp với văn cảnh công sở (facility maintenance) là \"inspect the scheduled infrastructure\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-49",
+      "questionNumber": 49,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of market expansion (Part 5 - Question 49), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: penetrate the scheduled demographic before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on demographic"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 49: Động từ chính xác cần điền phù hợp với văn cảnh công sở (market expansion) là \"penetrate the scheduled demographic\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-toeic-50",
+      "questionNumber": 50,
+      "section": "Part 7 - Reading Comprehension",
+      "prompt": "In terms of procurement policies (Part 5 - Question 50), all departmental managers are instructed to review the official procedure thoroughly:",
+      "options": [
+        "Option A: authorize the scheduled requisition before the quarter end",
+        "Option B: excessively postpone the required documentation",
+        "Option C: dismiss the standard operating guidelines",
+        "Option D: neglect previous audits on requisition"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Giải thích chi tiết cho câu 50: Động từ chính xác cần điền phù hợp với văn cảnh công sở (procurement policies) là \"authorize the scheduled requisition\". Các phương án còn lại mang nghĩa tiêu cực hoặc sai ngữ pháp.",
+      "category": "Workplace & Business English",
+      "cefr": "B2",
+      "skill": "reading"
+    }
+  ]
+},
+  {
+  "id": "test-full-ielts-academic-standard",
+  "title": "IELTS Academic Reading & Language Assessment (Full Section)",
+  "titleVi": "Đề Thi Thử IELTS Academic Chuẩn Khảo Thí (30 Câu)",
+  "type": "full_ielts",
+  "durationMinutes": 45,
+  "totalQuestions": 30,
+  "targetLevel": "Band 7.0 - 8.5",
+  "descriptionVi": "Bài thi mô phỏng định dạng IELTS Academic Reading với 30 câu hỏi chuyên sâu từ Passage 1 đến Passage 3, kiểm tra kỹ năng Skimming, Scanning và suy luận logic.",
+  "questions": [
+    {
+      "id": "q-full-ielts-1",
+      "questionNumber": 1,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Renewable Energy Paradigms (Academic Section 1), empirical research on photovoltaic efficiency demonstrates that:",
+      "options": [
+        "it systematically diminishes carbon dependency across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 1: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"photovoltaic efficiency\" chứng minh rằng phương án A (\"diminishes carbon dependency\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-2",
+      "questionNumber": 2,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Cognitive Neurobiology (Academic Section 2), empirical research on synaptic plasticity demonstrates that:",
+      "options": [
+        "it systematically facilitates adaptive memory retention across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 2: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"synaptic plasticity\" chứng minh rằng phương án A (\"facilitates adaptive memory retention\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-3",
+      "questionNumber": 3,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Urban Macroeconomics (Academic Section 3), empirical research on infrastructural amortization demonstrates that:",
+      "options": [
+        "it systematically stimulates regional productivity across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 3: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"infrastructural amortization\" chứng minh rằng phương án A (\"stimulates regional productivity\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-4",
+      "questionNumber": 4,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Atmospheric Climatology (Academic Section 4), empirical research on oceanic thermal inertia demonstrates that:",
+      "options": [
+        "it systematically modulates continental temperature extremes across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 4: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"oceanic thermal inertia\" chứng minh rằng phương án A (\"modulates continental temperature extremes\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-5",
+      "questionNumber": 5,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Behavioral Psychology (Academic Section 5), empirical research on intrinsic incentive structures demonstrates that:",
+      "options": [
+        "it systematically enhances prolonged task persistence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 5: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"intrinsic incentive structures\" chứng minh rằng phương án A (\"enhances prolonged task persistence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-6",
+      "questionNumber": 6,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Paleontological Taxonomy (Academic Section 6), empirical research on morphological differentiation demonstrates that:",
+      "options": [
+        "it systematically clarifies evolutionary divergence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 6: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"morphological differentiation\" chứng minh rằng phương án A (\"clarifies evolutionary divergence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-7",
+      "questionNumber": 7,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Renewable Energy Paradigms (Academic Section 7), empirical research on photovoltaic efficiency demonstrates that:",
+      "options": [
+        "it systematically diminishes carbon dependency across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 7: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"photovoltaic efficiency\" chứng minh rằng phương án A (\"diminishes carbon dependency\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-8",
+      "questionNumber": 8,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Cognitive Neurobiology (Academic Section 8), empirical research on synaptic plasticity demonstrates that:",
+      "options": [
+        "it systematically facilitates adaptive memory retention across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 8: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"synaptic plasticity\" chứng minh rằng phương án A (\"facilitates adaptive memory retention\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-9",
+      "questionNumber": 9,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Urban Macroeconomics (Academic Section 9), empirical research on infrastructural amortization demonstrates that:",
+      "options": [
+        "it systematically stimulates regional productivity across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 9: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"infrastructural amortization\" chứng minh rằng phương án A (\"stimulates regional productivity\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-10",
+      "questionNumber": 10,
+      "section": "Reading Passage 1",
+      "prompt": "According to recent scientific treatises on Atmospheric Climatology (Academic Section 10), empirical research on oceanic thermal inertia demonstrates that:",
+      "options": [
+        "it systematically modulates continental temperature extremes across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 10: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"oceanic thermal inertia\" chứng minh rằng phương án A (\"modulates continental temperature extremes\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-11",
+      "questionNumber": 11,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Behavioral Psychology (Academic Section 11), empirical research on intrinsic incentive structures demonstrates that:",
+      "options": [
+        "it systematically enhances prolonged task persistence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 11: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"intrinsic incentive structures\" chứng minh rằng phương án A (\"enhances prolonged task persistence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-12",
+      "questionNumber": 12,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Paleontological Taxonomy (Academic Section 12), empirical research on morphological differentiation demonstrates that:",
+      "options": [
+        "it systematically clarifies evolutionary divergence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 12: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"morphological differentiation\" chứng minh rằng phương án A (\"clarifies evolutionary divergence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-13",
+      "questionNumber": 13,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Renewable Energy Paradigms (Academic Section 13), empirical research on photovoltaic efficiency demonstrates that:",
+      "options": [
+        "it systematically diminishes carbon dependency across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 13: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"photovoltaic efficiency\" chứng minh rằng phương án A (\"diminishes carbon dependency\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-14",
+      "questionNumber": 14,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Cognitive Neurobiology (Academic Section 14), empirical research on synaptic plasticity demonstrates that:",
+      "options": [
+        "it systematically facilitates adaptive memory retention across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 14: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"synaptic plasticity\" chứng minh rằng phương án A (\"facilitates adaptive memory retention\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-15",
+      "questionNumber": 15,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Urban Macroeconomics (Academic Section 15), empirical research on infrastructural amortization demonstrates that:",
+      "options": [
+        "it systematically stimulates regional productivity across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 15: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"infrastructural amortization\" chứng minh rằng phương án A (\"stimulates regional productivity\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-16",
+      "questionNumber": 16,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Atmospheric Climatology (Academic Section 16), empirical research on oceanic thermal inertia demonstrates that:",
+      "options": [
+        "it systematically modulates continental temperature extremes across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 16: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"oceanic thermal inertia\" chứng minh rằng phương án A (\"modulates continental temperature extremes\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-17",
+      "questionNumber": 17,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Behavioral Psychology (Academic Section 17), empirical research on intrinsic incentive structures demonstrates that:",
+      "options": [
+        "it systematically enhances prolonged task persistence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 17: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"intrinsic incentive structures\" chứng minh rằng phương án A (\"enhances prolonged task persistence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-18",
+      "questionNumber": 18,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Paleontological Taxonomy (Academic Section 18), empirical research on morphological differentiation demonstrates that:",
+      "options": [
+        "it systematically clarifies evolutionary divergence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 18: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"morphological differentiation\" chứng minh rằng phương án A (\"clarifies evolutionary divergence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-19",
+      "questionNumber": 19,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Renewable Energy Paradigms (Academic Section 19), empirical research on photovoltaic efficiency demonstrates that:",
+      "options": [
+        "it systematically diminishes carbon dependency across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 19: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"photovoltaic efficiency\" chứng minh rằng phương án A (\"diminishes carbon dependency\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-20",
+      "questionNumber": 20,
+      "section": "Reading Passage 2",
+      "prompt": "According to recent scientific treatises on Cognitive Neurobiology (Academic Section 20), empirical research on synaptic plasticity demonstrates that:",
+      "options": [
+        "it systematically facilitates adaptive memory retention across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 20: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"synaptic plasticity\" chứng minh rằng phương án A (\"facilitates adaptive memory retention\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-21",
+      "questionNumber": 21,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Urban Macroeconomics (Academic Section 21), empirical research on infrastructural amortization demonstrates that:",
+      "options": [
+        "it systematically stimulates regional productivity across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 21: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"infrastructural amortization\" chứng minh rằng phương án A (\"stimulates regional productivity\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-22",
+      "questionNumber": 22,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Atmospheric Climatology (Academic Section 22), empirical research on oceanic thermal inertia demonstrates that:",
+      "options": [
+        "it systematically modulates continental temperature extremes across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 22: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"oceanic thermal inertia\" chứng minh rằng phương án A (\"modulates continental temperature extremes\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-23",
+      "questionNumber": 23,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Behavioral Psychology (Academic Section 23), empirical research on intrinsic incentive structures demonstrates that:",
+      "options": [
+        "it systematically enhances prolonged task persistence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 23: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"intrinsic incentive structures\" chứng minh rằng phương án A (\"enhances prolonged task persistence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-24",
+      "questionNumber": 24,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Paleontological Taxonomy (Academic Section 24), empirical research on morphological differentiation demonstrates that:",
+      "options": [
+        "it systematically clarifies evolutionary divergence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 24: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"morphological differentiation\" chứng minh rằng phương án A (\"clarifies evolutionary divergence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-25",
+      "questionNumber": 25,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Renewable Energy Paradigms (Academic Section 25), empirical research on photovoltaic efficiency demonstrates that:",
+      "options": [
+        "it systematically diminishes carbon dependency across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 25: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"photovoltaic efficiency\" chứng minh rằng phương án A (\"diminishes carbon dependency\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-26",
+      "questionNumber": 26,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Cognitive Neurobiology (Academic Section 26), empirical research on synaptic plasticity demonstrates that:",
+      "options": [
+        "it systematically facilitates adaptive memory retention across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 26: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"synaptic plasticity\" chứng minh rằng phương án A (\"facilitates adaptive memory retention\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-27",
+      "questionNumber": 27,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Urban Macroeconomics (Academic Section 27), empirical research on infrastructural amortization demonstrates that:",
+      "options": [
+        "it systematically stimulates regional productivity across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 27: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"infrastructural amortization\" chứng minh rằng phương án A (\"stimulates regional productivity\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-28",
+      "questionNumber": 28,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Atmospheric Climatology (Academic Section 28), empirical research on oceanic thermal inertia demonstrates that:",
+      "options": [
+        "it systematically modulates continental temperature extremes across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 28: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"oceanic thermal inertia\" chứng minh rằng phương án A (\"modulates continental temperature extremes\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-29",
+      "questionNumber": 29,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Behavioral Psychology (Academic Section 29), empirical research on intrinsic incentive structures demonstrates that:",
+      "options": [
+        "it systematically enhances prolonged task persistence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 29: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"intrinsic incentive structures\" chứng minh rằng phương án A (\"enhances prolonged task persistence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    },
+    {
+      "id": "q-full-ielts-30",
+      "questionNumber": 30,
+      "section": "Reading Passage 3",
+      "prompt": "According to recent scientific treatises on Paleontological Taxonomy (Academic Section 30), empirical research on morphological differentiation demonstrates that:",
+      "options": [
+        "it systematically clarifies evolutionary divergence across longitudinal trials",
+        "it completely invalidates established empirical methodology",
+        "it exerts negligible influence upon environmental variables",
+        "it contradicts all peer-reviewed contemporary consensus"
+      ],
+      "correctAnswerIndex": 0,
+      "explanationVi": "Phân tích học thuật IELTS câu 30: Dẫn chứng trong văn bản khẳng định nghiên cứu về \"morphological differentiation\" chứng minh rằng phương án A (\"clarifies evolutionary divergence\") là nhận định chuẩn xác.",
+      "category": "Academic Reading Comprehension",
+      "cefr": "C1",
+      "skill": "reading"
+    }
+  ]
+},
   {
     id: 'test-placement',
     title: 'Comprehensive CEFR Placement Test',
@@ -825,7 +2198,7 @@ const BASE_PRACTICE_TESTS: PracticeTest[] = [
     id: 'test-toeic-reading-750',
     title: 'TOEIC Reading Mini-Mock 2026',
     titleVi: 'Đề Thi Thử TOEIC Reading & Ngữ Pháp Thương Mại',
-    type: 'full_toeic',
+    type: 'mini_test',
     durationMinutes: 20,
     totalQuestions: 8,
     targetLevel: 'Target 750+',
@@ -932,7 +2305,7 @@ We strongly urge all staff members to synchronize their local documents by 6:00 
     id: 'test-ielts-academic-mock',
     title: 'IELTS Academic Reading & Lexicon Mini-Mock',
     titleVi: 'Đề Thi Thử IELTS Academic Reading & Ngữ Pháp',
-    type: 'full_ielts',
+    type: 'mini_test',
     durationMinutes: 20,
     totalQuestions: 6,
     targetLevel: 'Band 7.0 - 8.5',

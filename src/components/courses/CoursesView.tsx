@@ -14,6 +14,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
+import { EmptyState, ViewLoadingFallback } from '../common/ViewFeedbackStates';
 
 export const CoursesView: React.FC = () => {
   const {
@@ -107,10 +108,23 @@ export const CoursesView: React.FC = () => {
       </div>
 
       {/* Courses List */}
-      <div className="space-y-5">
-        {filteredCourses.map((course) => {
-          const isExpanded = expandedCourseId === course.id;
-          const totalLessons = course.modules.flatMap((m) => m.lessons).length;
+      {courses.length === 0 ? (
+        <ViewLoadingFallback label="Đang tải danh mục khóa học..." />
+      ) : filteredCourses.length === 0 ? (
+        <EmptyState
+          title="Không tìm thấy khóa học phù hợp"
+          description="Hiện chưa có khóa học nào thuộc phân loại hoặc trình độ đã chọn. Bạn có thể đặt lại bộ lọc để xem toàn bộ danh mục."
+          actionLabel="Đặt lại bộ lọc"
+          onAction={() => {
+            setSelectedCategory('All');
+            setSelectedLevel('All');
+          }}
+        />
+      ) : (
+        <div className="space-y-5">
+          {filteredCourses.map((course) => {
+            const isExpanded = expandedCourseId === course.id;
+            const totalLessons = course.modules.flatMap((m) => m.lessons).length;
           const completedCount = course.modules.flatMap((m) => m.lessons).filter((l) => l.isCompleted).length;
           const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
@@ -242,7 +256,8 @@ export const CoursesView: React.FC = () => {
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
 
       {/* Lesson Player Modal */}
       {activeLessonToPlay && (

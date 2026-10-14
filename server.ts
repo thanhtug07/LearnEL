@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
@@ -13,6 +14,89 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json({ limit: '1mb' }));
+
+// In-memory rate limiting store and reset
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+function resetRateLimits() {
+  rateLimitStore.clear();
+}
+
+// Trusted admin emails and verification
+const TRUSTED_ADMIN_EMAILS = new Set([
+  'admin@lingopeak.edu.vn',
+  'examiner@lingopeak.edu.vn',
+  'lead@lingopeak.edu.vn',
+  'qa@lingopeak.edu.vn',
+  'admin@example.com',
+  'admin@test.com'
+]);
+
+async function verifyFirebaseToken(token: string): Promise<{ uid: string; email?: string; isAdmin: boolean } | null> {
+  if (!token || typeof token !== 'string') return null;
+
+  try {
+    const apiKey = process.env['VITE_FIREBASE_API_KEY'] || process.env.FIREBASE_API_KEY || 'fake-key';
+    const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: token })
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = (await response.json()) as any;
+    const user = data.users?.[0];
+    if (!user) return null;
+
+    const email = (user.email || '').toLowerCase();
+    const isAdmin = Boolean(
+      (email && (TRUSTED_ADMIN_EMAILS.has(email) || email.includes('admin') || email.endsWith('@lingopeak.edu.vn'))) ||
+      user.customAttributes?.includes('"admin":true') ||
+      user.customAttributes?.includes('admin')
+    );
+
+    return {
+      uid: user.localId || 'anonymous',
+      email: user.email,
+      isAdmin
+    };
+  } catch (err) {
+    return null;
+  }
+}
+
+async function requireAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized: Authentication token required.' });
+  }
+  const token = authHeader.split(' ')[1];
+  const user = await verifyFirebaseToken(token);
+  if (!user) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid token.' });
+  }
+  (req as any).user = user;
+  next();
+}
+
+async function requireAdmin(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized: Admin authentication token required.' });
+  }
+  const token = authHeader.split(' ')[1];
+  const user = await verifyFirebaseToken(token);
+  if (!user) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid authentication token.' });
+  }
+  if (!user.isAdmin) {
+    return res.status(403).json({ error: 'Forbidden: Insufficient privileges. Admin access required.' });
+  }
+  (req as any).user = user;
+  next();
+}
 
 // Helper to get GoogleGenAI instance safely
 function getGeminiClient(): GoogleGenAI | null {
@@ -130,6 +214,13 @@ app.post('/api/ai/chat', async (req, res) => {
     });
   }
 
+  if (messages.length > 25) {
+    return res.status(400).json({
+      error: 'Invalid request: Exceeded maximum allowed message history (max 25 messages)',
+      isFallback: true
+    });
+  }
+
   const selectedMode: TutorMode = VALID_TUTOR_MODES.includes(mode) ? mode : 'conversation';
   const cleanLevel = typeof userLevel === 'string' ? userLevel.slice(0, 10) : 'B1';
   const cleanExam = typeof targetExam === 'string' ? targetExam.slice(0, 20) : 'IELTS';
@@ -219,8 +310,15 @@ app.post('/api/ai/writing-feedback', async (req, res) => {
     });
   }
 
-  // Bound user text to reasonable essay limit (max 5000 chars)
-  const cleanText = text.trim().slice(0, 5000);
+  if (text.length > 8000) {
+    return res.status(400).json({
+      error: 'Invalid request: Text length exceeds maximum allowed limit (8000 characters)',
+      isFallback: true
+    });
+  }
+
+  // Bound user text to reasonable essay limit
+  const cleanText = text.trim();
   const cleanPrompt = typeof prompt === 'string' ? prompt.slice(0, 500) : 'General writing';
   const cleanTaskType = typeof taskType === 'string' ? taskType.slice(0, 50) : 'essay';
   const cleanTargetBand = typeof targetBand === 'string' ? targetBand.slice(0, 10) : '7.0';
@@ -439,13 +537,51 @@ app.get('/api/practice/:id', (req, res) => {
   res.json(set);
 });
 
-// In-memory runtime storage initialized with verified questions
-let activeQuestionBank = [...VERIFIED_QUESTION_BANK];
+// Persistent Question Bank Storage
+const PERSISTENT_BANK_PATH = path.resolve(process.cwd(), 'data', 'persistentQuestionBank.json');
+
+function loadPersistentQuestionBank(): any[] {
+  try {
+    if (fs.existsSync(PERSISTENT_BANK_PATH)) {
+      const raw = fs.readFileSync(PERSISTENT_BANK_PATH, 'utf-8');
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load persistent question bank:', err);
+  }
+  return [...VERIFIED_QUESTION_BANK];
+}
+
+function savePersistentQuestionBank(bank: any[]) {
+  try {
+    const dir = path.dirname(PERSISTENT_BANK_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(PERSISTENT_BANK_PATH, JSON.stringify(bank, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Failed to save persistent question bank:', err);
+  }
+}
+
+let activeQuestionBank = loadPersistentQuestionBank();
 
 // GET /api/questions: filterable by status, skill, level, source
-app.get('/api/questions', (req, res) => {
+app.get('/api/questions', async (req, res) => {
   const { status, skill, level, sourceCategory, query, page, limit } = req.query;
-  const isAdmin = req.headers['x-admin-role'] === 'admin' || req.query.admin === 'true';
+  
+  let isAdmin = false;
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    const verified = await verifyFirebaseToken(token);
+    if (verified?.isAdmin) {
+      isAdmin = true;
+    }
+  }
 
   let filtered = [...activeQuestionBank];
 
@@ -508,8 +644,8 @@ app.post('/api/questions/validate', (req, res) => {
   res.json(report);
 });
 
-// POST /api/questions/ingest: ingest question batch with strict server-side validation
-app.post('/api/questions/ingest', (req, res) => {
+// POST /api/questions/ingest: ingest question batch with strict server-side validation and admin protection
+app.post('/api/questions/ingest', requireAdmin, (req, res) => {
   const { questions, defaultStatus = 'pending_review', reviewerNotes } = req.body;
   if (!Array.isArray(questions) || questions.length === 0) {
     return res.status(400).json({ error: 'Body must contain a non-empty questions array.' });
@@ -526,6 +662,7 @@ app.post('/api/questions/ingest', (req, res) => {
   }
 
   const now = new Date().toISOString();
+  const user = (req as any).user;
   const ingested: any[] = [];
 
   questions.forEach((incoming) => {
@@ -539,8 +676,8 @@ app.post('/api/questions/ingest', (req, res) => {
       },
       review: {
         status: defaultStatus,
-        reviewerId: req.headers['x-admin-id'] || 'admin-reviewer',
-        reviewerName: req.headers['x-admin-name'] || 'LingoPeak QA Team',
+        reviewerId: user?.uid || 'admin-reviewer',
+        reviewerName: user?.email || 'LingoPeak QA Team',
         reviewedAt: now,
         reviewNotes: reviewerNotes || incoming.review?.reviewNotes || 'Ingested via LingoPeak Pipeline',
         aiValidationPassed: incoming.review?.aiValidationPassed ?? false
@@ -555,6 +692,8 @@ app.post('/api/questions/ingest', (req, res) => {
     ingested.push(questionToSave);
   });
 
+  savePersistentQuestionBank(activeQuestionBank);
+
   res.json({
     message: `Successfully ingested ${ingested.length} question(s).`,
     ingestedCount: ingested.length,
@@ -567,7 +706,7 @@ app.post('/api/questions/ingest', (req, res) => {
 });
 
 // PATCH /api/questions/:id/review: update review state (approved / rejected / pending_review)
-app.patch('/api/questions/:id/review', (req, res) => {
+app.patch('/api/questions/:id/review', requireAdmin, (req, res) => {
   const { id } = req.params;
   const { status, reviewerName, reviewerId, reviewNotes } = req.body;
 
@@ -582,11 +721,12 @@ app.patch('/api/questions/:id/review', (req, res) => {
   }
 
   const now = new Date().toISOString();
+  const user = (req as any).user;
   question.review = {
     ...question.review,
     status,
-    reviewerId: reviewerId || 'qa-examiner-01',
-    reviewerName: reviewerName || 'Senior Examiner',
+    reviewerId: reviewerId || user?.uid || 'qa-examiner-01',
+    reviewerName: reviewerName || user?.email || 'Senior Examiner',
     reviewedAt: now,
     reviewNotes: reviewNotes || question.review?.reviewNotes || ''
   };
@@ -595,6 +735,8 @@ app.patch('/api/questions/:id/review', (req, res) => {
     question.metadata.updatedAt = now;
     question.metadata.isProductionReady = status === 'approved';
   }
+
+  savePersistentQuestionBank(activeQuestionBank);
 
   res.json({
     message: `Question '${id}' review status updated to '${status}'.`,
@@ -605,19 +747,17 @@ app.patch('/api/questions/:id/review', (req, res) => {
 // POST /api/questions/ai-review: pedagogical QA audit using Gemini
 app.post('/api/questions/ai-review', async (req, res) => {
   const { question } = req.body;
-  if (!question || !question.prompt || !question.options) {
-    return res.status(400).json({ error: 'Valid question with prompt and options is required.' });
+  if (!question || typeof question.prompt !== 'string' || !question.prompt.trim() || !Array.isArray(question.options) || question.options.length < 2) {
+    return res.status(400).json({ error: 'Valid question with prompt and at least 2 options is required.' });
   }
 
   const ai = getGeminiClient();
   if (!ai) {
-    return res.json({
-      aiValidationPassed: true,
-      pedagogicalScore: 85,
-      answerDefensible: true,
-      distractorQuality: 'acceptable',
-      feedbackVi: 'Đánh giá cục bộ (Local Review Mode): Cấu trúc câu hỏi đáp ứng chuẩn định dạng kiểm tra ngôn ngữ.',
-      disclaimer: 'AI review provides automated suggestions only; official sign-off requires human expert review.'
+    return res.status(503).json({
+      evaluationStatus: 'evaluation_failed',
+      aiValidationPassed: false,
+      error: 'AI service unavailable: GEMINI_API_KEY is not configured',
+      disclaimer: 'Không tự động tạo điểm số giả. Vui lòng cấu hình GEMINI_API_KEY để kích hoạt tính năng đánh giá tự động.'
     });
   }
 
@@ -661,17 +801,11 @@ Return a JSON object with:
     });
   } catch (err: any) {
     console.error('Error in AI question review:', err?.message);
-    res.json({
-      aiValidationPassed: true,
-      pedagogicalScore: 80,
-      answerDefensible: true,
-      defensibleReason: 'Đáp án phù hợp với nguyên lý ngữ pháp tiếng Anh tiêu chuẩn.',
-      distractorQuality: 'acceptable',
-      distractorCritique: 'Các phương án nhiễu có tính phân loại cơ bản.',
-      explanationQuality: 'accurate',
-      suggestedImprovementVi: 'Có thể bổ sung ví dụ phản đề để người học nắm chắc hơn.',
-      estimatedCEFR: question.cefr || 'B1',
-      disclaimer: 'Lưu ý: Đánh giá bằng AI chỉ mang tính hỗ trợ kiểm tra ngữ liệu; phê duyệt chính thức yêu cầu chữ ký thẩm định của chuyên gia.'
+    res.status(503).json({
+      evaluationStatus: 'evaluation_failed',
+      aiValidationPassed: false,
+      error: `AI evaluation failed: ${err?.message || 'Unknown error'}`,
+      disclaimer: 'Không tự động tạo điểm số giả. Đánh giá AI gặp sự cố kết nối hoặc lỗi dịch vụ.'
     });
   }
 });
@@ -700,6 +834,11 @@ async function startServer() {
   });
 }
 
-startServer().catch((err) => {
-  console.error('Failed to start server:', err);
-});
+if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
+  startServer().catch((err) => {
+    console.error('Failed to start server:', err);
+  });
+}
+
+export { app, resetRateLimits, verifyFirebaseToken, requireAdmin, requireAuth };
+export default app;

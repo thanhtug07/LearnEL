@@ -227,14 +227,25 @@ export interface UserCourseView {
  */
 export function isLessonUnlockedForUser(
   lesson: LessonDefinition,
-  completedLessonIds: Set<string> | string[]
+  completedLessonIds: Set<string> | string[] | UserCourseEnrollment
 ): boolean {
   if (!lesson.prerequisites || lesson.prerequisites.length === 0) {
     return true;
   }
-  const completedSet = completedLessonIds instanceof Set
-    ? completedLessonIds
-    : new Set(completedLessonIds);
+  let completedSet: Set<string>;
+  if (completedLessonIds instanceof Set) {
+    completedSet = completedLessonIds;
+  } else if (Array.isArray(completedLessonIds)) {
+    completedSet = new Set(completedLessonIds);
+  } else if (
+    completedLessonIds &&
+    typeof completedLessonIds === 'object' &&
+    Array.isArray((completedLessonIds as any).completedLessonIds)
+  ) {
+    completedSet = new Set((completedLessonIds as any).completedLessonIds);
+  } else {
+    completedSet = new Set();
+  }
 
   return lesson.prerequisites.every((prereqId) => completedSet.has(prereqId));
 }

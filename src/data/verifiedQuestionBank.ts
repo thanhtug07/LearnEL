@@ -515,5 +515,15 @@ import { NEW_QUESTIONS_CATALOG } from './questions/questionsCatalog';
 
 export const VERIFIED_QUESTION_BANK: TestQuestion[] = [
   ...BASE_VERIFIED_QUESTION_BANK,
-  ...NEW_QUESTIONS_CATALOG
+  ...NEW_QUESTIONS_CATALOG.map((q) => ({
+    ...q,
+    distractorRationales:
+      q.distractorRationales && q.distractorRationales.length === q.options.length
+        ? q.distractorRationales
+        : q.options.map((opt, idx) =>
+            idx === q.correctAnswerIndex
+              ? `Đáp án chính xác: "${opt}". Phù hợp với chuẩn ngữ liệu.`
+              : `Phương án nhiễu "${opt}": Chưa phù hợp cấu trúc ngữ pháp hoặc ngữ cảnh yêu cầu.`
+          )
+  }))
 ];

@@ -18,15 +18,7 @@ const AITutorView = React.lazy(() => import('./components/ai-tutor/AITutorView')
 const AnalyticsView = React.lazy(() => import('./components/analytics/AnalyticsView').then(m => ({ default: m.AnalyticsView })));
 const AchievementsView = React.lazy(() => import('./components/achievements/AchievementsView').then(m => ({ default: m.AchievementsView })));
 const ProfileView = React.lazy(() => import('./components/profile/ProfileView').then(m => ({ default: m.ProfileView })));
-
-const ViewLoadingFallback: React.FC = () => (
-  <div className="flex items-center justify-center min-h-[400px]">
-    <div className="flex flex-col items-center gap-3">
-      <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-      <span className="text-xs text-slate-500 font-medium">Đang tải dữ liệu...</span>
-    </div>
-  </div>
-);
+import { ViewErrorBoundary, ViewLoadingFallback } from './components/common/ViewFeedbackStates';
 
 const MainContent: React.FC = () => {
   const { activeTab } = useApp();
@@ -86,9 +78,11 @@ const MainContent: React.FC = () => {
 
         {/* Dynamic Page Views */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          <React.Suspense fallback={<ViewLoadingFallback />}>
-            {renderActiveView()}
-          </React.Suspense>
+          <ViewErrorBoundary fallbackTitle="Không thể tải nội dung trang này">
+            <React.Suspense fallback={<ViewLoadingFallback message="Đang tải dữ liệu trang..." />}>
+              {renderActiveView()}
+            </React.Suspense>
+          </ViewErrorBoundary>
         </main>
       </div>
     </div>
