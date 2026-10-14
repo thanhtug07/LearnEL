@@ -336,7 +336,7 @@ export function parseVocabularyCSV(csv: string): Partial<VocabularyItem>[] {
   return items;
 }
 
-export type CloudSyncStatus = 'synced' | 'syncing' | 'offline' | 'unauthenticated';
+export type CloudSyncStatus = 'synced' | 'syncing' | 'offline' | 'unauthenticated' | 'error';
 
 interface AppContextType {
   user: UserProfile;
@@ -361,6 +361,8 @@ interface AppContextType {
   addMinutesStudied: (minutes: number) => void;
   addXP: (amount: number) => void;
   resetAllData: () => void;
+  resetLocalData: () => void;
+  resetUserProgress: (options?: { cloud?: boolean }) => Promise<void>;
   language: 'vi' | 'en';
   toggleLanguage: () => void;
   selectedLesson: { courseId: string; lessonId: string } | null;
@@ -1063,6 +1065,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setAchievements(INITIAL_ACHIEVEMENTS);
   };
 
+  const resetLocalData = () => {
+    resetAllData();
+  };
+
+  const resetUserProgress = async (_options?: { cloud?: boolean }) => {
+    resetAllData();
+  };
+
   const contextValue = React.useMemo<AppContextType>(
     () => ({
       user,
@@ -1087,6 +1097,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       addMinutesStudied,
       addXP,
       resetAllData,
+      resetLocalData,
+      resetUserProgress,
       language: user.language,
       toggleLanguage,
       selectedLesson,

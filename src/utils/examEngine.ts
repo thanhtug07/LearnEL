@@ -4,7 +4,7 @@ export function evaluateTestSubmission(
   test: PracticeTest,
   userAnswers: Record<string, number>,
   secondsRemaining: number,
-  flaggedQuestions: Iterable<string> | string[]
+  flaggedQuestions: Iterable<string> | string[] = []
 ): TestAttempt {
   const questions = test?.questions || [];
   let correctCount = 0;

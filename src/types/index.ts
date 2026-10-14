@@ -76,8 +76,8 @@ export interface Lesson {
   xpReward: number;
   isLocked: boolean;
   isCompleted: boolean;
-  lessonType: 'grammar' | 'vocab' | 'listening' | 'speaking' | 'reading' | 'writing' | 'mixed';
-  type: 'grammar' | 'vocab' | 'listening' | 'speaking' | 'reading' | 'writing' | 'mixed';
+  lessonType: 'grammar' | 'vocab' | 'vocabulary' | 'listening' | 'speaking' | 'reading' | 'writing' | 'mixed' | 'business';
+  type: 'grammar' | 'vocab' | 'vocabulary' | 'listening' | 'speaking' | 'reading' | 'writing' | 'mixed' | 'business';
   prerequisites: string[]; // List of prerequisite lesson IDs
   publicationStatus: 'published' | 'draft' | 'archived';
   objectivesVi: string[];
@@ -106,12 +106,12 @@ export interface Course {
   descriptionVi: string;
   level: CEFRLevel;
   language: string; // e.g. 'en-US' or 'en'
-  skills: ('listening' | 'speaking' | 'reading' | 'writing' | 'grammar' | 'vocabulary')[];
+  skills: ('listening' | 'speaking' | 'reading' | 'writing' | 'grammar' | 'vocabulary' | 'vocab' | 'business')[];
   estimatedDuration: number; // in minutes
   estimatedHours: number;
   publicationStatus: 'published' | 'draft' | 'archived';
   contentVersion: string;
-  category: 'Grammar' | 'Vocabulary' | 'IELTS' | 'TOEIC' | 'Communication' | 'Business';
+  category: 'Grammar' | 'Vocabulary' | 'IELTS' | 'TOEIC' | 'Communication' | 'Business' | 'Writing' | 'Reading' | 'Speaking';
   thumbnail: string;
   totalLessons: number;
   completedLessons: number;
@@ -234,6 +234,7 @@ export interface TestAttempt {
   flaggedQuestions: string[];
   weaknessAnalysisVi: string[];
   recommendedLessonIds: string[];
+  completedAt?: string;
 }
 
 export interface PracticeSet {

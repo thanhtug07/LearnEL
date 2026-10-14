@@ -18,10 +18,11 @@ const AITutorView = React.lazy(() => import('./components/ai-tutor/AITutorView')
 const AnalyticsView = React.lazy(() => import('./components/analytics/AnalyticsView').then(m => ({ default: m.AnalyticsView })));
 const AchievementsView = React.lazy(() => import('./components/achievements/AchievementsView').then(m => ({ default: m.AchievementsView })));
 const ProfileView = React.lazy(() => import('./components/profile/ProfileView').then(m => ({ default: m.ProfileView })));
+const OnboardingModal = React.lazy(() => import('./components/onboarding/OnboardingModal').then(m => ({ default: m.OnboardingModal })));
 import { ViewErrorBoundary, ViewLoadingFallback } from './components/common/ViewFeedbackStates';
 
 const MainContent: React.FC = () => {
-  const { activeTab } = useApp();
+  const { activeTab, user } = useApp();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const renderActiveView = () => {
@@ -84,6 +85,13 @@ const MainContent: React.FC = () => {
             </React.Suspense>
           </ViewErrorBoundary>
         </main>
+
+        {/* First-time Onboarding Modal */}
+        {!user.onboardingCompleted && (
+          <React.Suspense fallback={null}>
+            <OnboardingModal />
+          </React.Suspense>
+        )}
       </div>
     </div>
   );

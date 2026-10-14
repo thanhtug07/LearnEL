@@ -21,7 +21,10 @@ export type CourseCategory =
   | 'IELTS'
   | 'TOEIC'
   | 'Communication'
-  | 'Business';
+  | 'Business'
+  | 'Writing'
+  | 'Reading'
+  | 'Speaking';
 
 export type CourseSkill =
   | 'listening'
@@ -29,16 +32,20 @@ export type CourseSkill =
   | 'reading'
   | 'writing'
   | 'grammar'
-  | 'vocabulary';
+  | 'vocabulary'
+  | 'vocab'
+  | 'business';
 
 export type LessonType =
   | 'grammar'
   | 'vocab'
+  | 'vocabulary'
   | 'listening'
   | 'speaking'
   | 'reading'
   | 'writing'
-  | 'mixed';
+  | 'mixed'
+  | 'business';
 
 /**
  * Theory content block within a lesson
@@ -171,17 +178,19 @@ export interface UserCourseEnrollment {
   /** Date first enrolled */
   enrolledAt: string;
   /** Last activity timestamp */
-  lastAccessedAt: string;
+  lastAccessedAt?: string;
   /** Lifecycle status */
-  status: EnrollmentStatus;
+  status?: EnrollmentStatus;
   /** Set or list of unique completed lesson IDs */
   completedLessonIds: string[];
   /** Total count of completed lessons */
-  completedLessonsCount: number;
+  completedLessonsCount?: number;
   /** Derived progress percentage (0 - 100) */
   progressPercentage: number;
   /** Detailed per-lesson completion records */
   lessonRecords?: Record<string, UserLessonAttemptRecord>;
+  /** ID of last accessed lesson */
+  lastAccessedLessonId?: string;
 }
 
 /**
@@ -226,7 +235,7 @@ export interface UserCourseView {
  * Determines whether a lesson is unlocked for a user based on completed lesson IDs
  */
 export function isLessonUnlockedForUser(
-  lesson: LessonDefinition,
+  lesson: { prerequisites?: string[] },
   completedLessonIds: Set<string> | string[] | UserCourseEnrollment
 ): boolean {
   if (!lesson.prerequisites || lesson.prerequisites.length === 0) {
@@ -247,7 +256,7 @@ export function isLessonUnlockedForUser(
     completedSet = new Set();
   }
 
-  return lesson.prerequisites.every((prereqId) => completedSet.has(prereqId));
+  return lesson.prerequisites.every((prereqId: string) => completedSet.has(prereqId));
 }
 
 /**
@@ -281,6 +290,27 @@ export function calculateProgressPercentage(
   if (totalLessons <= 0) return 0;
   const clamped = Math.max(0, Math.min(completedCount, totalLessons));
   return Math.round((clamped / totalLessons) * 100);
+}
+
+/**
+ * Calculates course progress summary from completed lesson IDs
+ */
+export function calculateCourseProgress(
+  course: CourseDefinition | Course,
+  completedLessonIds: Set<string> | string[]
+): { completedLessonsCount: number; totalLessonsCount: number; progressPercentage: number } {
+  const completedSet = completedLessonIds instanceof Set ? completedLessonIds : new Set(completedLessonIds);
+  const allLessons: Array<{ id: string }> = (course.modules as Array<{ lessons: Array<{ id: string }> }>).flatMap(
+    (m) => m.lessons
+  );
+  const totalLessonsCount = allLessons.length;
+  const completedLessonsCount = allLessons.filter((l) => completedSet.has(l.id)).length;
+  const progressPercentage = calculateProgressPercentage(completedLessonsCount, totalLessonsCount);
+  return {
+    completedLessonsCount,
+    totalLessonsCount,
+    progressPercentage
+  };
 }
 
 /**
