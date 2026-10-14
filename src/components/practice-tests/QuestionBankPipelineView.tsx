@@ -337,14 +337,11 @@ export const QuestionBankPipelineView: React.FC<QuestionBankPipelineViewProps> =
       }
     } catch (err: any) {
       setAiReviewResult({
-        aiValidationPassed: true,
-        pedagogicalScore: 85,
-        answerDefensible: true,
-        defensibleReason: 'Đáp án chuẩn ngữ pháp tiếng Anh tiêu chuẩn.',
-        distractorQuality: 'acceptable',
-        distractorCritique: 'Phương án nhiễu có tính phân loại cơ bản.',
-        suggestedImprovementVi: 'Cung cấp thêm ngữ cảnh cho câu văn.',
-        disclaimer: 'Lưu ý: Đánh giá bằng AI chỉ mang tính hỗ trợ kiểm tra ngữ liệu; phê duyệt chính thức yêu cầu chữ ký thẩm định của chuyên gia.'
+        aiValidationPassed: false,
+        evaluationStatus: 'evaluation_failed',
+        error: err?.message || 'Không thể kết nối dịch vụ AI Review',
+        feedbackVi: 'Đánh giá AI thất bại hoặc dịch vụ tạm thời không khả dụng. Câu hỏi cần được thẩm định trực tiếp bởi chuyên gia sư phạm.',
+        disclaimer: 'Lưu ý: Không tự động duyệt hoặc chấm điểm giả khi dịch vụ AI gặp sự cố.'
       });
     } finally {
       setAiReviewLoading(false);

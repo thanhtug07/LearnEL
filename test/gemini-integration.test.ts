@@ -1,49 +1,84 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import request from 'supertest';
+import { app, resetRateLimits } from '../server';
 
-describe('Gemini Integration & Security Audit Suite', () => {
-  // Test 1: Secret Exposure Prevention
-  it('does not expose GEMINI_API_KEY to frontend code or bundles', () => {
-    // Check that client-facing code does not reference process.env.GEMINI_API_KEY directly
-    const clientEnv = (import.meta as any).env || {};
-    expect(clientEnv.GEMINI_API_KEY).toBeUndefined();
-    expect(clientEnv.VITE_GEMINI_API_KEY).toBeUndefined();
+describe('Gemini AI Integration, Endpoint Validation & Fallback Suite', () => {
+  const originalApiKey = process.env.GEMINI_API_KEY;
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    resetRateLimits();
+    // Default to offline/demo mode for deterministic offline testing without external quota consumption
+    delete process.env.GEMINI_API_KEY;
   });
 
-  // Test 2: Input Validation for Chat Endpoint
-  it('validates incoming chat payload correctly', () => {
-    const validateChatPayload = (body: any) => {
-      if (!body || !Array.isArray(body.messages) || body.messages.length === 0) {
-        return { valid: false, error: 'Invalid request: "messages" must be a non-empty array' };
-      }
-      return { valid: true };
-    };
-
-    expect(validateChatPayload({}).valid).toBe(false);
-    expect(validateChatPayload({ messages: [] }).valid).toBe(false);
-    expect(validateChatPayload({ messages: 'not-an-array' }).valid).toBe(false);
-    expect(validateChatPayload({ messages: [{ role: 'user', content: 'Hello' }] }).valid).toBe(true);
+  afterEach(() => {
+    if (originalApiKey) {
+      process.env.GEMINI_API_KEY = originalApiKey;
+    } else {
+      delete process.env.GEMINI_API_KEY;
+    }
   });
 
-  // Test 3: Input Validation for Writing Feedback Endpoint
-  it('validates incoming writing submission correctly', () => {
-    const validateWritingPayload = (body: any) => {
-      if (!body || typeof body.text !== 'string' || !body.text.trim()) {
-        return { valid: false, error: 'Invalid request: "text" must be a non-empty string' };
-      }
-      return { valid: true, cleanText: body.text.trim().slice(0, 5000) };
-    };
-
-    expect(validateWritingPayload({}).valid).toBe(false);
-    expect(validateWritingPayload({ text: '   ' }).valid).toBe(false);
-    expect(validateWritingPayload({ text: 123 }).valid).toBe(false);
-    const valid = validateWritingPayload({ text: 'An essay on education' });
-    expect(valid.valid).toBe(true);
-    expect(valid.cleanText).toBe('An essay on education');
+  describe('1. Secret Exposure Prevention', () => {
+    it('does not expose GEMINI_API_KEY to frontend code or client bundles', () => {
+      const clientEnv = (import.meta as any).env || {};
+      expect(clientEnv.GEMINI_API_KEY).toBeUndefined();
+      expect(clientEnv.VITE_GEMINI_API_KEY).toBeUndefined();
+    });
   });
 
-  // Test 4: All 8 Tutor Modes Configuration
-  it('supports all 8 AI Tutor modes with educational system instructions and fallbacks', () => {
-    const supportedModes = [
+  describe('2. AI Status Endpoint (/api/ai/status)', () => {
+    it('returns missing_api_key when key is not configured', async () => {
+      delete process.env.GEMINI_API_KEY;
+      const res = await request(app).get('/api/ai/status');
+      expect(res.status).toBe(200);
+      expect(res.body.configured).toBe(false);
+      expect(res.body.model).toBe('gemini-3.8-flash');
+      expect(res.body.status).toBe('missing_api_key');
+    });
+
+    it('returns ready when key is configured', async () => {
+      process.env.GEMINI_API_KEY = 'test-valid-key-format';
+      const res = await request(app).get('/api/ai/status');
+      expect(res.status).toBe(200);
+      expect(res.body.configured).toBe(true);
+      expect(res.body.status).toBe('ready');
+    });
+  });
+
+  describe('3. Chat Endpoint Payload Validation (/api/ai/chat)', () => {
+    it('rejects missing or non-array messages payload with 400', async () => {
+      const res1 = await request(app).post('/api/ai/chat').send({});
+      expect(res1.status).toBe(400);
+      expect(res1.body.error).toContain('"messages" must be a non-empty array');
+      expect(res1.body.isFallback).toBe(true);
+
+      const res2 = await request(app).post('/api/ai/chat').send({ messages: 'not an array' });
+      expect(res2.status).toBe(400);
+      expect(res2.body.error).toContain('"messages" must be a non-empty array');
+    });
+
+    it('rejects empty messages array with 400', async () => {
+      const res = await request(app).post('/api/ai/chat').send({ messages: [] });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('"messages" must be a non-empty array');
+    });
+
+    it('rejects oversized chat history exceeding 25 messages with 400', async () => {
+      const oversizedMessages = Array.from({ length: 26 }, (_, i) => ({
+        role: i % 2 === 0 ? 'user' : 'model',
+        content: `Message ${i}`
+      }));
+
+      const res = await request(app).post('/api/ai/chat').send({ messages: oversizedMessages });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('Exceeded maximum allowed message history');
+    });
+  });
+
+  describe('4. AI Tutor Modes & Controlled Offline Fallbacks', () => {
+    const modes = [
       'conversation',
       'grammar',
       'vocabulary',
@@ -52,97 +87,84 @@ describe('Gemini Integration & Security Audit Suite', () => {
       'ielts',
       'toeic',
       'advisor'
-    ];
+    ] as const;
 
-    expect(supportedModes.length).toBe(8);
-    supportedModes.forEach((mode) => {
-      expect(typeof mode).toBe('string');
-    });
-  });
+    for (const mode of modes) {
+      it(`serves pedagogically grounded fallback for mode: ${mode} when offline`, async () => {
+        delete process.env.GEMINI_API_KEY;
+        const res = await request(app)
+          .post('/api/ai/chat')
+          .send({
+            mode,
+            messages: [{ role: 'user', content: 'Làm thế nào để cải thiện kỹ năng này?' }],
+            userLevel: 'B2',
+            targetExam: 'IELTS'
+          });
 
-  // Test 5: Structured Writing Response Schema Validation
-  it('validates and normalizes structured writing assessment schema', () => {
-    const normalizeWritingFeedback = (raw: any, fallbackWordCount: number) => {
-      return {
-        estimatedScore: String(raw.estimatedScore || '6.0'),
-        wordCount: typeof raw.wordCount === 'number' ? raw.wordCount : fallbackWordCount,
-        summary: String(raw.summary || 'Bài viết đã được đánh giá thành công.'),
-        grammarFeedback: Array.isArray(raw.grammarFeedback) ? raw.grammarFeedback : ['Ngữ pháp tổng quan đạt yêu cầu.'],
-        vocabularyFeedback: Array.isArray(raw.vocabularyFeedback) ? raw.vocabularyFeedback : ['Từ vựng được sử dụng phù hợp.'],
-        coherenceFeedback: String(raw.coherenceFeedback || 'Bài viết có liên kết tốt.'),
-        improvedExcerpt: String(raw.improvedExcerpt || ''),
-        isFallback: false
-      };
-    };
-
-    const parsedMock = {
-      estimatedScore: '7.5',
-      wordCount: 180,
-      summary: 'Bài viết tốt',
-      grammarFeedback: ['Sử dụng câu điều kiện loại 3 chuẩn xác'],
-      vocabularyFeedback: ['Collocation tự nhiên'],
-      coherenceFeedback: 'Mạch lạc',
-      improvedExcerpt: 'Sample improved text'
-    };
-
-    const normalized = normalizeWritingFeedback(parsedMock, 180);
-    expect(normalized.estimatedScore).toBe('7.5');
-    expect(normalized.grammarFeedback.length).toBe(1);
-    expect(normalized.isFallback).toBe(false);
-  });
-
-  // Test 6: Fallback vs Live Transparency
-  it('strictly distinguishes live vs fallback responses and never marks fallback as live', () => {
-    const liveResponse = {
-      content: 'Live response from Gemini',
-      isFallback: false,
-      provider: 'gemini-3.8-flash'
-    };
-
-    const fallbackResponse = {
-      content: 'Fallback notice text',
-      isFallback: true,
-      provider: 'offline-rule-based'
-    };
-
-    expect(liveResponse.isFallback).toBe(false);
-    expect(liveResponse.provider).toBe('gemini-3.8-flash');
-
-    expect(fallbackResponse.isFallback).toBe(true);
-    expect(fallbackResponse.provider).toBe('offline-rule-based');
-  });
-
-  // Test 7: Transient Error Retries (Exponential Backoff Simulation)
-  it('retries on transient 503 / 429 status codes', async () => {
-    let callCount = 0;
-    const mockApiCall = vi.fn(async () => {
-      callCount++;
-      if (callCount < 2) {
-        const error: any = new Error('High demand');
-        error.status = 503;
-        throw error;
-      }
-      return { text: 'Successful response after retry' };
-    });
-
-    async function callWithRetry(fn: () => Promise<any>, maxRetries = 2) {
-      let lastErr: any;
-      for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        try {
-          return await fn();
-        } catch (e: any) {
-          lastErr = e;
-          if ((e.status === 503 || e.status === 429) && attempt < maxRetries) {
-            continue;
-          }
-          throw e;
-        }
-      }
-      throw lastErr;
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('content');
+        expect(res.body.content.length).toBeGreaterThan(20);
+        expect(res.body.isFallback).toBe(true);
+        expect(res.body.provider).toBe('offline-rule-based');
+      });
     }
 
-    const result = await callWithRetry(mockApiCall);
-    expect(result.text).toBe('Successful response after retry');
-    expect(callCount).toBe(2);
+    it('strictly ensures fallback responses are never falsely marked as successful live AI', async () => {
+      delete process.env.GEMINI_API_KEY;
+      const res = await request(app)
+        .post('/api/ai/chat')
+        .send({
+          mode: 'grammar',
+          messages: [{ role: 'user', content: 'Giải thích câu đảo ngữ.' }]
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.isFallback).toBe(true);
+      expect(res.body.provider).toBe('offline-rule-based');
+    });
+  });
+
+  describe('5. Writing Feedback Endpoint Validation (/api/ai/writing-feedback)', () => {
+    it('rejects missing or blank text payload with 400', async () => {
+      const res1 = await request(app).post('/api/ai/writing-feedback').send({});
+      expect(res1.status).toBe(400);
+      expect(res1.body.error).toContain('"text" must be a non-empty string');
+
+      const res2 = await request(app).post('/api/ai/writing-feedback').send({ text: '    ' });
+      expect(res2.status).toBe(400);
+      expect(res2.body.error).toContain('"text" must be a non-empty string');
+    });
+
+    it('rejects submission exceeding 8000 characters limit with 400', async () => {
+      const hugeText = 'a'.repeat(8500);
+      const res = await request(app).post('/api/ai/writing-feedback').send({ text: hugeText });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('Text length exceeds maximum allowed limit');
+    });
+
+    it('evaluates valid writing submission and returns structured feedback schema in offline mode', async () => {
+      delete process.env.GEMINI_API_KEY;
+      const essay =
+        'In recent years, distance learning has become increasingly popular across the world. Although some critics argue that online education lacks face-to-face interaction, I believe that its flexibility and accessibility offer greater advantages for working students.';
+
+      const res = await request(app)
+        .post('/api/ai/writing-feedback')
+        .send({
+          text: essay,
+          prompt: 'Discuss advantages and disadvantages of distance learning.',
+          taskType: 'essay',
+          targetBand: '7.5'
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('estimatedScore');
+      expect(res.body).toHaveProperty('wordCount');
+      expect(res.body.wordCount).toBeGreaterThan(20);
+      expect(res.body).toHaveProperty('summary');
+      expect(Array.isArray(res.body.grammarFeedback)).toBe(true);
+      expect(Array.isArray(res.body.vocabularyFeedback)).toBe(true);
+      expect(res.body).toHaveProperty('coherenceFeedback');
+      expect(res.body.isFallback).toBe(true);
+    });
   });
 });

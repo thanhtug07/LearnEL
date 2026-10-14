@@ -51,6 +51,9 @@ describe('Production Firestore Integration & Blueprint Verification', () => {
     expect(rules).toContain('match /{document=**} {\n      allow read, write: if false;\n    }');
     expect(rules).toContain('function isOwner(userId)');
     expect(rules).toContain('function isValidId(id)');
+    expect(rules).toContain('function isAdmin()');
+    expect(rules).toContain('match /admins/{adminId}');
+    expect(rules).toContain('match /questions/{questionId}');
     expect(rules).toContain('match /users/{userId}');
     expect(rules).toContain('match /courseProgress/{courseId}');
     expect(rules).toContain('match /vocabulary/{vocabId}');

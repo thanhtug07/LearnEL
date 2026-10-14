@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { PracticeTest, TestAttempt, TestQuestion } from '../src/types';
 import { INITIAL_PRACTICE_TESTS } from '../src/data/seedData';
+import { evaluateTestSubmission } from '../src/utils/examEngine';
 
 describe('Examination Engine Reliability & Accuracy Suite (12 Core Cases)', () => {
   const sampleTest: PracticeTest = {
@@ -55,58 +56,6 @@ describe('Examination Engine Reliability & Accuracy Suite (12 Core Cases)', () =
       }
     ]
   };
-
-  // Evaluation helper function mirroring ExamEngineModal exactly
-  function evaluateTestSubmission(
-    test: PracticeTest,
-    userAnswers: Record<string, number>,
-    secondsRemaining: number,
-    flaggedQuestions: string[]
-  ): TestAttempt {
-    const questions = test?.questions || [];
-    let correctCount = 0;
-    const weaknessCategories: Record<string, { total: number; wrong: number }> = {};
-
-    questions.forEach((q) => {
-      const selected = userAnswers[q.id];
-      const isCorrect = typeof selected === 'number' && selected === q.correctAnswerIndex;
-      const cat = q.category || 'General';
-      if (isCorrect) {
-        correctCount++;
-      } else {
-        if (!weaknessCategories[cat]) {
-          weaknessCategories[cat] = { total: 0, wrong: 0 };
-        }
-        weaknessCategories[cat].wrong++;
-      }
-      if (weaknessCategories[cat]) {
-        weaknessCategories[cat].total++;
-      }
-    });
-
-    const totalQuestions = questions.length;
-    const accuracy = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
-    const timeSpent = Math.max(1, (test?.durationMinutes || 15) * 60 - secondsRemaining);
-
-    const weaknessList: string[] = Object.entries(weaknessCategories)
-      .filter(([_, stats]) => stats.wrong > 0)
-      .map(([cat, stats]) => `Cần ôn luyện thêm chủ điểm: ${cat} (Sai ${stats.wrong}/${stats.total} câu)`);
-
-    return {
-      id: `attempt-${test.id}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-      testId: test.id,
-      testTitle: test.title,
-      date: new Date().toISOString().slice(0, 10),
-      timeSpentSeconds: timeSpent,
-      score: correctCount,
-      totalQuestions: totalQuestions,
-      accuracy,
-      userAnswers,
-      flaggedQuestions,
-      weaknessAnalysisVi: weaknessList.length > 0 ? weaknessList : ['Xuất sắc! Không có lỗi sai nghiêm trọng.'],
-      recommendedLessonIds: ['les-toeic-1', 'les-daily-1']
-    };
-  }
 
   // Case 1: All answers correct
   it('Case 1: All answers correct yields 100% accuracy and clean weakness report', () => {

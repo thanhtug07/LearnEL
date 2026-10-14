@@ -16,7 +16,9 @@ import {
   getDocs,
   deleteDoc,
   getDocFromServer,
-  writeBatch
+  writeBatch,
+  query,
+  limit
 } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 import {
@@ -329,13 +331,14 @@ export async function saveExamAttemptToFirestore(userId: string, attempt: TestAt
   }
 }
 
-export async function loadExamAttemptsFromFirestore(userId: string): Promise<TestAttempt[]> {
+export async function loadExamAttemptsFromFirestore(userId: string, maxLimit: number = 50): Promise<TestAttempt[]> {
   if (!userId) return [];
   const path = `users/${userId}/examAttempts`;
   const list: TestAttempt[] = [];
   try {
     const colRef = collection(db, 'users', userId, 'examAttempts');
-    const snap = await getDocs(colRef);
+    const q = maxLimit > 0 ? query(colRef, limit(maxLimit)) : colRef;
+    const snap = await getDocs(q);
     snap.forEach((d) => {
       list.push(d.data() as TestAttempt);
     });
@@ -429,5 +432,43 @@ export async function loadActivityLogsFromFirestore(userId: string): Promise<Act
   } catch (error) {
     handleFirestoreError(error, OperationType.LIST, path);
     return [];
+  }
+}
+
+/**
+ * Resets user learning progress in Firestore (zeroes stats, clears courseProgress)
+ * Enforces ownership check against auth.currentUser.uid
+ */
+export async function resetUserProgressInFirestore(userId: string): Promise<void> {
+  if (!userId || auth.currentUser?.uid !== userId) {
+    throw new Error('Unauthorized: Cannot reset data for another user.');
+  }
+  const path = `users/${userId}`;
+  try {
+    // 1. Reset user statistics
+    const userRef = doc(db, 'users', userId);
+    await setDoc(
+      userRef,
+      {
+        xp: 0,
+        levelNumber: 1,
+        currentStreak: 0,
+        todayMinutesSpent: 0,
+        totalMinutesStudied: 0,
+        updatedAt: new Date().toISOString()
+      },
+      { merge: true }
+    );
+
+    // 2. Clear course progress documents
+    const progressCol = collection(db, 'users', userId, 'courseProgress');
+    const progressSnap = await getDocs(progressCol);
+    const batch = writeBatch(db);
+    progressSnap.forEach((docSnap) => {
+      batch.delete(docSnap.ref);
+    });
+    await batch.commit();
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
   }
 }

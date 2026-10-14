@@ -20,6 +20,7 @@ const VALID_SOURCE_CATEGORIES: Set<ContentSourceCategory> = new Set([
 const VALID_REVIEW_STATUSES: Set<ReviewStatus> = new Set([
   'draft',
   'pending_review',
+  'needs_human_review',
   'approved',
   'rejected'
 ]);

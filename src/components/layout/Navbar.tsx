@@ -35,6 +35,15 @@ export const Navbar: React.FC<NavbarProps> = React.memo(({ onToggleMobileSidebar
 
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const authErrorTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (authErrorTimerRef.current) {
+        clearTimeout(authErrorTimerRef.current);
+      }
+    };
+  }, []);
 
   const xpPercent = Math.min(100, Math.round((user.xp % 500) / 5));
 
@@ -45,7 +54,8 @@ export const Navbar: React.FC<NavbarProps> = React.memo(({ onToggleMobileSidebar
       await handleGoogleSignIn();
     } catch (err: any) {
       setAuthError(err?.message || 'Đăng nhập không thành công');
-      setTimeout(() => setAuthError(null), 4000);
+      if (authErrorTimerRef.current) clearTimeout(authErrorTimerRef.current);
+      authErrorTimerRef.current = setTimeout(() => setAuthError(null), 4000);
     } finally {
       setIsSigningIn(false);
     }
@@ -99,6 +109,26 @@ export const Navbar: React.FC<NavbarProps> = React.memo(({ onToggleMobileSidebar
           >
             <CloudUpload className="w-3.5 h-3.5 text-blue-600 animate-bounce" />
             <span>{language === 'vi' ? 'Đang lưu...' : 'Syncing...'}</span>
+          </div>
+        )}
+
+        {cloudSyncStatus === 'offline' && (
+          <div
+            className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full"
+            title="Đang chạy ở chế độ ngoại tuyến (lưu trên thiết bị này)"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            <span>{language === 'vi' ? 'Lưu cục bộ (Offline)' : 'Offline mode'}</span>
+          </div>
+        )}
+
+        {cloudSyncStatus === 'error' && (
+          <div
+            className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-full"
+            title="Lỗi đồng bộ Cloud Firestore"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+            <span>{language === 'vi' ? 'Lỗi Cloud' : 'Sync error'}</span>
           </div>
         )}
 

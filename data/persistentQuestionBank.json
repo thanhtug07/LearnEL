@@ -1,0 +1,533 @@
+[
+  {
+    "id": "lp-a1-gram-001",
+    "questionNumber": 1,
+    "section": "A1 Grammar Fundamentals",
+    "prompt": "She ______ English with her foreign colleagues every morning.",
+    "options": [
+      "practice",
+      "practices",
+      "practicing",
+      "is practice"
+    ],
+    "correctAnswerIndex": 1,
+    "explanationVi": "Chủ ngữ \"She\" là ngôi thứ 3 số ít. Ở thì Hiện tại đơn (Present Simple) diễn tả thói quen lặp đi lặp lại hàng ngày (\"every morning\"), động từ \"practice\" cần thêm đuôi \"-s\" thành \"practices\".",
+    "commonMistakesVi": "Người học hay quên chia động từ theo ngôi thứ 3 số ít hoặc nhầm lẫn với thì tiếp diễn.",
+    "distractorRationales": [
+      "\"practice\" là dạng nguyên thể, chỉ dùng cho chủ ngữ I/You/We/They.",
+      "Đáp án chính xác.",
+      "\"practicing\" là V-ing, cần có trợ động từ to be đứng trước.",
+      "\"is practice\" sai cấu trúc ngữ pháp; nếu là tiếp diễn phải là \"is practicing\"."
+    ],
+    "category": "Present Simple Tense",
+    "cefr": "A1",
+    "skill": "grammar",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Curriculum Development Team",
+      "licenseOrPermission": "Proprietary Original Educational Content - LingoPeak Core",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.2.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-senior-curriculum-01",
+      "reviewerName": "ThS. Nguyễn Hoàng Anh (Curriculum Lead)",
+      "reviewedAt": "2026-09-15T09:00:00Z",
+      "reviewNotes": "Đã thẩm định: Chìa khóa đáp án duy nhất, phương án nhiễu hợp lý, giải thích chi tiết.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-10T08:00:00Z",
+      "updatedAt": "2026-09-15T09:00:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-a1-voc-002",
+    "questionNumber": 2,
+    "section": "A1 Daily Vocabulary",
+    "prompt": "My brother works in a hospital. He is a ______ and takes care of sick people.",
+    "options": [
+      "doctor",
+      "baker",
+      "mechanic",
+      "pilot"
+    ],
+    "correctAnswerIndex": 0,
+    "explanationVi": "\"Doctor\" (bác sĩ) là người làm việc tại bệnh viện (\"hospital\") và chăm sóc người bệnh (\"takes care of sick people\").",
+    "commonMistakesVi": "Đọc lướt không chú ý từ khóa địa điểm \"hospital\" và hành động \"takes care of sick people\".",
+    "distractorRationales": [
+      "Đáp án chính xác.",
+      "\"baker\" (thợ làm bánh) làm việc ở tiệm bánh (bakery).",
+      "\"mechanic\" (thợ cơ khí) sửa chữa máy móc hoặc xe cộ.",
+      "\"pilot\" (phi công) lái máy bay."
+    ],
+    "category": "Professions & Occupations",
+    "cefr": "A1",
+    "skill": "vocab",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Curriculum Development Team",
+      "licenseOrPermission": "Proprietary Original Educational Content - LingoPeak Core",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.1.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-senior-curriculum-01",
+      "reviewerName": "ThS. Nguyễn Hoàng Anh",
+      "reviewedAt": "2026-09-15T09:15:00Z",
+      "reviewNotes": "Từ vựng cốt lõi A1 theo khung tham chiếu CEFR.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-10T08:30:00Z",
+      "updatedAt": "2026-09-15T09:15:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-a2-gram-003",
+    "questionNumber": 3,
+    "section": "A2 Essential Grammar",
+    "prompt": "Yesterday, while I ______ for the bus, it suddenly started to rain heavily.",
+    "options": [
+      "waited",
+      "was waiting",
+      "am waiting",
+      "have waited"
+    ],
+    "correctAnswerIndex": 1,
+    "explanationVi": "Cấu trúc kết hợp thì Quá khứ tiếp diễn (Past Continuous) và Quá khứ đơn (Past Simple): Khi một hành động đang diễn ra trong quá khứ (\"was waiting for the bus\") thì một hành động khác xen vào (\"it suddenly started to rain\"). Sau liên từ \"while\" thường dùng thì tiếp diễn.",
+    "commonMistakesVi": "Dùng quá khứ đơn \"waited\" sau \"while\" khi muốn nhấn mạnh hành động đang diễn ra làm nền.",
+    "distractorRationales": [
+      "\"waited\" là thì Quá khứ đơn, không diễn tả được tính chất đang tiếp diễn làm nền của hành động.",
+      "Đáp án chính xác.",
+      "\"am waiting\" là Hiện tại tiếp diễn, không phù hợp với mốc thời gian \"Yesterday\" trong quá khứ.",
+      "\"have waited\" là Hiện tại hoàn thành, không dùng cho sự việc đã chấm dứt tại thời điểm xác định trong quá khứ."
+    ],
+    "category": "Past Continuous vs Past Simple",
+    "cefr": "A2",
+    "skill": "grammar",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Assessment Group",
+      "licenseOrPermission": "LingoPeak Standard Educational License",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.2.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-assessment-02",
+      "reviewerName": "Cô Lê Thu Hà (Senior Examiner)",
+      "reviewedAt": "2026-09-16T14:00:00Z",
+      "reviewNotes": "Cấu trúc Past Continuous chuẩn xác, điểm ngữ pháp trọng tâm bậc A2.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-12T10:00:00Z",
+      "updatedAt": "2026-09-16T14:00:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-a2-voc-004",
+    "questionNumber": 4,
+    "section": "A2 Travel & Transportation",
+    "prompt": "Passengers must show their boarding ______ before entering the aircraft.",
+    "options": [
+      "pass",
+      "license",
+      "receipt",
+      "menu"
+    ],
+    "correctAnswerIndex": 0,
+    "explanationVi": "Cụm từ cố định trong du lịch hàng không là \"boarding pass\" (thẻ lên máy bay). Hành khách bắt buộc phải xuất trình thẻ này trước khi lên máy bay (\"entering the aircraft\").",
+    "commonMistakesVi": "Nhầm lẫn giữa \"pass\" (thẻ thông hành/vé) và \"license\" (bằng lái/giấy phép).",
+    "distractorRationales": [
+      "Đáp án chính xác: \"boarding pass\" là thuật ngữ tiêu chuẩn quốc tế.",
+      "\"license\" là giấy phép (ví dụ driver's license: bằng lái xe).",
+      "\"receipt\" là biên lai thanh toán hóa đơn.",
+      "\"menu\" là thực đơn món ăn."
+    ],
+    "category": "Airport & Travel Vocabulary",
+    "cefr": "A2",
+    "skill": "vocab",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Assessment Group",
+      "licenseOrPermission": "LingoPeak Standard Educational License",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.0.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-assessment-02",
+      "reviewerName": "Cô Lê Thu Hà",
+      "reviewedAt": "2026-09-16T14:20:00Z",
+      "reviewNotes": "Collocation tự nhiên, có tính ứng dụng giao tiếp cao.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-12T10:30:00Z",
+      "updatedAt": "2026-09-16T14:20:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-b1-gram-005",
+    "questionNumber": 5,
+    "section": "B1 Intermediate Grammar",
+    "prompt": "If our company ______ the annual budget sooner, we would have upgraded our IT infrastructure last quarter.",
+    "options": [
+      "approved",
+      "had approved",
+      "has approved",
+      "would approve"
+    ],
+    "correctAnswerIndex": 1,
+    "explanationVi": "Câu điều kiện loại 3 (Third Conditional) diễn tả giả định trái ngược với thực tế trong quá khứ. Mệnh đề chính dùng \"would have + V3/ed\" (\"would have upgraded\"), do đó mệnh đề If phải chia ở thì Quá khứ hoàn thành (Past Perfect): \"had + V3/ed\" -> \"had approved\".",
+    "commonMistakesVi": "Dùng câu điều kiện loại 2 \"approved\" hoặc dùng \"would\" trong mệnh đề If.",
+    "distractorRationales": [
+      "\"approved\" là dạng quá khứ đơn thuộc câu điều kiện loại 2, chỉ giả định trái với hiện tại.",
+      "Đáp án chính xác: công thức chuẩn của If loại 3: If + S + had + P.P, S + would have + P.P.",
+      "\"has approved\" là thì Hiện tại hoàn thành, không phù hợp cấu trúc.",
+      "\"would approve\" sai ngữ pháp vì mệnh đề If không chứa \"would\"."
+    ],
+    "category": "Third Conditional",
+    "cefr": "B1",
+    "skill": "grammar",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Editorial Board",
+      "licenseOrPermission": "LingoPeak Standard Educational License",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.3.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-senior-curriculum-01",
+      "reviewerName": "ThS. Nguyễn Hoàng Anh",
+      "reviewedAt": "2026-09-18T11:00:00Z",
+      "reviewNotes": "Câu điều kiện loại 3 chuẩn văn phong kinh doanh, phân tích ngữ pháp rất rõ ràng.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-14T09:00:00Z",
+      "updatedAt": "2026-09-18T11:00:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-b1-voc-006",
+    "questionNumber": 6,
+    "section": "B1 Workplace English",
+    "prompt": "The management decided to ______ the product launch until next month due to unexpected supply chain disruptions.",
+    "options": [
+      "postpone",
+      "accelerate",
+      "commence",
+      "abandon"
+    ],
+    "correctAnswerIndex": 0,
+    "explanationVi": "\"Postpone\" nghĩa là hoãn lại, dời lịch sang thời điểm muộn hơn (đồng nghĩa với \"put off\" hay \"delay\"). Ngữ cảnh câu: do gián đoạn chuỗi cung ứng (\"due to unexpected supply chain disruptions\") nên việc ra mắt sản phẩm bị lùi lại đến tháng sau (\"until next month\").",
+    "commonMistakesVi": "Nhầm lẫn giữa \"postpone\" (hoãn lại có kế hoạch dời ngày) và \"abandon\" (hủy bỏ hoàn toàn).",
+    "distractorRationales": [
+      "Đáp án chính xác: \"postpone until next month\" (hoãn lại tới tháng sau).",
+      "\"accelerate\" mang nghĩa đẩy nhanh tiến độ, trái ngược với ngữ cảnh chuỗi cung ứng bị gián đoạn.",
+      "\"commence\" mang nghĩa bắt đầu/khởi động ngay.",
+      "\"abandon\" mang nghĩa từ bỏ hoàn toàn, không đi với mốc thời gian dời lịch \"until next month\"."
+    ],
+    "category": "Business Operations Vocabulary",
+    "cefr": "B1",
+    "skill": "vocab",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Editorial Board",
+      "licenseOrPermission": "LingoPeak Standard Educational License",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.1.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-senior-curriculum-01",
+      "reviewerName": "ThS. Nguyễn Hoàng Anh",
+      "reviewedAt": "2026-09-18T11:30:00Z",
+      "reviewNotes": "Từ vựng B1 thông dụng trong môi trường công sở quốc tế.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-14T09:30:00Z",
+      "updatedAt": "2026-09-18T11:30:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-b2-gram-007",
+    "questionNumber": 7,
+    "section": "B2 Advanced Structures",
+    "prompt": "Not only ______ the quarterly revenue targets, but they also expanded their customer base by thirty percent.",
+    "options": [
+      "did the sales team exceed",
+      "the sales team exceeded",
+      "had the sales team exceed",
+      "the sales team had exceeded"
+    ],
+    "correctAnswerIndex": 0,
+    "explanationVi": "Cấu trúc đảo ngữ với cụm từ phủ định đứng đầu câu: \"Not only + trợ động từ + S + V (nguyên mẫu), but S + also + V...\". Với mệnh đề thì quá khứ đơn, ta mượn trợ động từ \"did\", theo sau là chủ ngữ \"the sales team\" và động từ nguyên thể \"exceed\".",
+    "commonMistakesVi": "Không đảo ngữ khi trạng từ phủ định/hạn định \"Not only\" đứng đầu câu.",
+    "distractorRationales": [
+      "Đáp án chính xác: Đảo ngữ thì quá khứ đơn \"did + S + V\".",
+      "\"the sales team exceeded\" là trật tự từ thông thường, sai cấu trúc đảo ngữ khi \"Not only\" đứng đầu.",
+      "\"had the sales team exceed\" sai vì sau \"had\" phải là phân từ 2 (exceeded), không thể là nguyên thể.",
+      "\"the sales team had exceeded\" không đảo trợ động từ lên trước chủ ngữ."
+    ],
+    "category": "Negative Inversion",
+    "cefr": "B2",
+    "skill": "grammar",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Academic Committee",
+      "licenseOrPermission": "Open Educational Resource / LingoPeak Curriculum Initiative",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.4.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-assessment-02",
+      "reviewerName": "Cô Lê Thu Hà",
+      "reviewedAt": "2026-09-20T16:00:00Z",
+      "reviewNotes": "Đảo ngữ là trọng tâm B2/IELTS Writing Task 2 GRA band 7.0+.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-18T14:00:00Z",
+      "updatedAt": "2026-09-20T16:00:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-b2-voc-008",
+    "questionNumber": 8,
+    "section": "B2 Professional Discourse",
+    "prompt": "The keynote speaker emphasized that transparent communication is ______ to maintaining shareholder trust during corporate restructuring.",
+    "options": [
+      "paramount",
+      "redundant",
+      "negligible",
+      "superficial"
+    ],
+    "correctAnswerIndex": 0,
+    "explanationVi": "\"Paramount\" (adj) có nghĩa là tối quan trọng, quan trọng hơn hết thảy (\"more important than anything else\"). Cụm \"is paramount to doing something\" mang nghĩa là nhân tố tiên quyết để duy trì lòng tin của cổ đông.",
+    "commonMistakesVi": "Nhầm lẫn với \"redundant\" (dư thừa) hoặc \"negligible\" (không đáng kể).",
+    "distractorRationales": [
+      "Đáp án chính xác: \"paramount\" thể hiện mức độ quan trọng sống còn.",
+      "\"redundant\" nghĩa là dư thừa, không cần thiết.",
+      "\"negligible\" nghĩa là nhỏ bé, không đáng kể.",
+      "\"superficial\" nghĩa là hời hợt, bề nổi."
+    ],
+    "category": "Academic & Professional Lexis",
+    "cefr": "B2",
+    "skill": "vocab",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Academic Committee",
+      "licenseOrPermission": "LingoPeak Advanced Educational Resource",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.2.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-assessment-02",
+      "reviewerName": "Cô Lê Thu Hà",
+      "reviewedAt": "2026-09-20T16:30:00Z",
+      "reviewNotes": "Từ vựng C1/B2 cao cấp, ngữ cảnh học thuật và thương mại chuẩn mực.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-18T14:30:00Z",
+      "updatedAt": "2026-09-20T16:30:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-toeic-p5-009",
+    "questionNumber": 9,
+    "section": "TOEIC Part 5: Incomplete Sentences",
+    "prompt": "All employees requesting reimbursement must submit their expense reports ______ the finance department by Friday afternoon.",
+    "options": [
+      "to",
+      "at",
+      "with",
+      "by"
+    ],
+    "correctAnswerIndex": 0,
+    "explanationVi": "Cụm động từ cố định: \"submit something to somebody/a department\" (nộp cái gì cho ai/bộ phận nào). \"All employees... must submit their expense reports TO the finance department\".",
+    "commonMistakesVi": "Thí sinh hay chọn nhầm \"for\" hoặc \"with\". Cần chú ý động từ \"submit\" đi với giới từ chỉ hướng tiếp nhận là \"to\".",
+    "distractorRationales": [
+      "Đáp án chính xác: collocated preposition \"submit ... to\".",
+      "\"at\" chỉ địa điểm tĩnh, không đi với cấu trúc nộp hồ sơ của \"submit\".",
+      "\"with\" diễn tả đi cùng với hoặc nộp chung, không thể hiện cơ quan tiếp nhận.",
+      "\"by\" chỉ hạn chót thời gian (\"by Friday afternoon\"), không dùng sau danh từ chỉ bộ phận tiếp nhận trong văn cảnh này."
+    ],
+    "category": "TOEIC Workplace Prepositions",
+    "cefr": "B1",
+    "skill": "toeic_reading",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak TOEIC Assessment Specialists",
+      "licenseOrPermission": "Original Workplace English Simulation Materials - LingoPeak",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.0.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-toeic-lead",
+      "reviewerName": "Thầy Trần Đình Trọng (TOEIC 990 Specialist)",
+      "reviewedAt": "2026-09-22T10:00:00Z",
+      "reviewNotes": "Mô phỏng chân thực đề thi TOEIC Part 5, bẫy giới từ công sở phổ biến.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-21T08:00:00Z",
+      "updatedAt": "2026-09-22T10:00:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-toeic-p6-010",
+    "questionNumber": 10,
+    "section": "TOEIC Part 6: Text Completion",
+    "contextPassage": "MEMORANDUM\nTo: All Department Heads\nFrom: Facilities Management\nDate: October 10\nSubject: Office Air Conditioning Maintenance\n\nPlease be informed that regular maintenance on the central cooling system is scheduled for this coming Saturday between 8:00 AM and 2:00 PM. During this window, temperatures throughout the building may rise noticeably. Therefore, staff members planning to work on Saturday are ______ to dress casually and bring personal desk fans if necessary.",
+    "prompt": "What word best completes the blank in the memorandum?",
+    "options": [
+      "advised",
+      "advise",
+      "advisable",
+      "advising"
+    ],
+    "correctAnswerIndex": 0,
+    "explanationVi": "Cấu trúc bị động: \"be + V3/ed + to V\" -> \"are advised to dress casually\" (được khuyên nên mặc trang phục thoải mái). \"Advised\" là phân từ hai đóng vai trò hoàn thiện thể bị động.",
+    "commonMistakesVi": "Chọn \"advisable\" vì nhầm với tính từ sau \"are\", tuy nhiên cấu trúc \"staff members are advisable to\" là sai; chỉ dùng \"It is advisable that...\" hoặc \"It is advisable to...\".",
+    "distractorRationales": [
+      "Đáp án chính xác: cấu trúc bị động \"S + be + advised to V\".",
+      "\"advise\" là động từ nguyên thể, không thể đứng sau to be \"are\" ở dạng chủ động.",
+      "\"advisable\" là tính từ chỉ tính chất của hành động (It is advisable to do sth), không dùng bổ nghĩa trực tiếp cho chủ ngữ chỉ người.",
+      "\"advising\" là dạng V-ing mang nghĩa chủ động nhân viên đang khuyên ai đó, trái ngược ngữ cảnh ban quản lý khuyên nhân viên."
+    ],
+    "category": "Passive Voice & Word Form in Business Context",
+    "cefr": "B2",
+    "skill": "toeic_reading",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak TOEIC Assessment Specialists",
+      "licenseOrPermission": "Original Workplace English Simulation Materials - LingoPeak",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.1.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-toeic-lead",
+      "reviewerName": "Thầy Trần Đình Trọng",
+      "reviewedAt": "2026-09-22T10:45:00Z",
+      "reviewNotes": "Đoạn văn hoàn chỉnh, bẫy từ loại Part 6 chuẩn mực.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-21T09:00:00Z",
+      "updatedAt": "2026-09-22T10:45:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-ielts-read-011",
+    "questionNumber": 11,
+    "section": "IELTS Academic Reading: Environmental Science",
+    "contextPassage": "Urban Heat Island (UHI) mitigation has become a cornerstone of contemporary metropolitan architecture. Research conducted across twenty temperate cities revealed that integrating extensive green roofs reduces ambient rooftop temperatures by an average of 4.2 degrees Celsius during peak summer daylight. Moreover, high-albedo pavements reflect up to eighty percent of solar radiation back into the atmosphere, preventing the thermal mass of asphalt from radiating stored energy during nocturnal hours. Contrary to earlier assumptions that localized cooling requires large municipal parks, interconnected micro-vegetation networks were found to yield comparable thermodynamic equilibrium across commercial districts.",
+    "prompt": "According to the passage, why are high-albedo pavements effective in mitigating urban temperatures at night?",
+    "options": [
+      "They reflect solar radiation during the day, preventing asphalt from storing and releasing heat at night.",
+      "They absorb moisture from the morning dew and evaporate it after dusk.",
+      "They are cheaper to install than municipal green spaces.",
+      "They require continuous nocturnal water sprinkling to dissipate ambient heat."
+    ],
+    "correctAnswerIndex": 0,
+    "explanationVi": "Đoạn văn nêu rõ: \"high-albedo pavements reflect up to eighty percent of solar radiation back into the atmosphere, preventing the thermal mass of asphalt from radiating stored energy during nocturnal hours\" (Mặt đường phản xạ cao phản chiếu tới 80% bức xạ mặt trời trở lại khí quyển, ngăn khối nhựa đường tích trữ và tỏa nhiệt vào ban đêm). Vì vậy đáp án A phản ánh chính xác thông tin trên.",
+    "commonMistakesVi": "Thí sinh bị phân tâm bởi các thông tin ngoại lai không có trong bài như hấp thụ sương sớm (đáp án B) hoặc giá thành thi công (đáp án C).",
+    "distractorRationales": [
+      "Đáp án chính xác: Diễn đạt chuẩn xác luận điểm về cơ chế phản xạ bức xạ và ngăn giữ nhiệt ban đêm.",
+      "Thông tin sai lệch, bài đọc không đề cập đến hiện tượng hấp thụ sương và bốc hơi.",
+      "Thông tin so sánh chi phí không xuất hiện trong bài đọc.",
+      "Thông tin bịa đặt, không có yêu cầu phun nước vào ban đêm."
+    ],
+    "category": "IELTS Reading: Factual Detail Extraction",
+    "cefr": "B2",
+    "skill": "ielts_reading",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Academic IELTS Editorial Team",
+      "licenseOrPermission": "Original IELTS Academic Practice Framework - LingoPeak Research",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.2.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-ielts-examiner",
+      "reviewerName": "Cô Nguyễn Mai Trang (IELTS 8.5, Academic Specialist)",
+      "reviewedAt": "2026-09-24T15:00:00Z",
+      "reviewNotes": "Bài đọc học thuật chuẩn IELTS Band 6.5 - 7.5, lập luận logic và bẫy phương án tinh tế.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-23T11:00:00Z",
+      "updatedAt": "2026-09-24T15:00:00Z",
+      "isProductionReady": true
+    }
+  },
+  {
+    "id": "lp-listen-012",
+    "questionNumber": 12,
+    "section": "Listening Comprehension: Campus Orientation",
+    "audioText": "Good morning, international students! Welcome to the central library. Please remember that borrowing privileges for graduate students allow up to fifteen books for a duration of six weeks, while undergraduate students may check out up to eight books for three weeks. If you need reserve textbooks, those can only be consulted on the second floor for a maximum of two hours per session.",
+    "prompt": "How many books can undergraduate students borrow at one time according to the librarian?",
+    "options": [
+      "Up to 8 books",
+      "Up to 15 books",
+      "Up to 6 books",
+      "Up to 2 books"
+    ],
+    "correctAnswerIndex": 0,
+    "explanationVi": "Người nói nêu rõ: \"undergraduate students may check out up to eight books for three weeks\" (sinh viên đại học có thể mượn tối đa 8 cuốn sách trong 3 tuần). Sinh viên cao học (graduate students) mới được mượn 15 cuốn.",
+    "commonMistakesVi": "Thí sinh hay nhầm lẫn số liệu giữa sinh viên đại học (undergraduate: 8 cuốn) và sinh viên cao học (graduate: 15 cuốn).",
+    "distractorRationales": [
+      "Đáp án chính xác: \"undergraduate students may check out up to eight books\".",
+      "15 cuốn là hạn mức dành cho graduate students (sau đại học).",
+      "Số 6 xuất hiện trong thời hạn mượn của sinh viên cao học (\"six weeks\"), không phải số lượng sách.",
+      "Số 2 xuất hiện trong thời gian tối đa mượn sách tham khảo tại chỗ (\"two hours\")."
+    ],
+    "category": "Listening for Specific Numbers & Information",
+    "cefr": "B1",
+    "skill": "listening",
+    "source": {
+      "category": "original_project",
+      "attribution": "LingoPeak Audio & Listening Lab",
+      "licenseOrPermission": "Original Educational Audio Script - LingoPeak Core",
+      "creationMethod": "human_authored",
+      "contentVersion": "1.0.0"
+    },
+    "review": {
+      "status": "approved",
+      "reviewerId": "rev-senior-curriculum-01",
+      "reviewerName": "ThS. Nguyễn Hoàng Anh",
+      "reviewedAt": "2026-09-25T11:00:00Z",
+      "reviewNotes": "Bản thu phát chuẩn âm thanh Text-To-Speech giọng bản ngữ, bẫy số liệu đối chiếu rõ nét.",
+      "aiValidationPassed": true
+    },
+    "metadata": {
+      "createdAt": "2026-09-24T14:00:00Z",
+      "updatedAt": "2026-09-25T11:00:00Z",
+      "isProductionReady": true
+    }
+  }
+]

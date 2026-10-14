@@ -19,8 +19,19 @@ service cloud.firestore {
       return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
 
+    // Role-based Access Control: Verify admin status from trusted /admins collection
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
     // Health check test path from skill instructions
     match /test/{testId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // Admins list: Readable by authenticated users to verify admin permissions, write restricted to server/admin
+    match /admins/{adminId} {
       allow read: if isSignedIn();
       allow write: if false;
     }
@@ -29,6 +40,13 @@ service cloud.firestore {
     match /courses/{courseId} {
       allow read: if true;
       allow write: if false;
+    }
+
+    // Question Bank Catalog
+    // Learners can only read approved questions. Admins can read all and write.
+    match /questions/{questionId} {
+      allow read: if resource.data.review.status == 'approved' || isAdmin();
+      allow write: if isAdmin() && isValidId(questionId);
     }
 
     // User profile document

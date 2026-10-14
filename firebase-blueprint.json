@@ -119,12 +119,46 @@
         "category": { "type": "string" }
       },
       "required": ["id", "title", "level", "publicationStatus"]
+    },
+    "Question": {
+      "title": "Question",
+      "description": "Question bank item with review status and pedagogical metadata",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "prompt": { "type": "string" },
+        "options": { "type": "array" },
+        "correctAnswerIndex": { "type": "number" },
+        "explanationVi": { "type": "string" },
+        "cefr": { "type": "string" },
+        "skill": { "type": "string" }
+      },
+      "required": ["id", "prompt", "options", "correctAnswerIndex"]
+    },
+    "AdminRole": {
+      "title": "AdminRole",
+      "description": "Admin authorization entry",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "assignedAt": { "type": "string" }
+      },
+      "required": ["role"]
     }
   },
   "firestore": {
+    "/admins/{adminId}": {
+      "schema": "AdminRole",
+      "description": "Authorized administrators list"
+    },
     "/courses/{courseId}": {
       "schema": "Course",
       "description": "Published canonical course definitions"
+    },
+    "/questions/{questionId}": {
+      "schema": "Question",
+      "description": "Question bank catalog with review and approval workflow"
     },
     "/users/{userId}": {
       "schema": "UserProfile",

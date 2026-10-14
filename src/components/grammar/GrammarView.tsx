@@ -12,6 +12,7 @@ import {
   Check,
   AlertCircle
 } from 'lucide-react';
+import { EmptyState } from '../common/ViewFeedbackStates';
 
 export const GrammarView: React.FC = () => {
   const { grammarTopics, updateGrammarMastery, language } = useApp();
@@ -108,34 +109,50 @@ export const GrammarView: React.FC = () => {
             </div>
           </div>
 
-          {/* Topics List */}
-          <div className="space-y-2">
-            {filteredTopics.map((topic) => {
-              const isSelected = topic.id === activeTopic?.id;
-              return (
-                <div
-                  key={topic.id}
-                  onClick={() => setSelectedTopicId(topic.id)}
-                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-white border-blue-500 shadow-sm ring-1 ring-blue-500'
-                      : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md">
-                      {topic.level} • {topic.category}
-                    </span>
-                    <span className="text-[11px] font-semibold text-emerald-600">
-                      {topic.masteryPercentage}% Thành thạo
-                    </span>
+          {/* Topics List with Empty State */}
+          {filteredTopics.length === 0 ? (
+            <EmptyState
+              title={language === 'vi' ? 'Không tìm thấy chủ điểm ngữ pháp' : 'No grammar topics found'}
+              description={
+                language === 'vi'
+                  ? 'Thử thay đổi từ khóa tìm kiếm hoặc chọn lại cấp độ.'
+                  : 'Try changing your search term or CEFR level.'
+              }
+              actionLabel={language === 'vi' ? 'Đặt lại bộ lọc' : 'Reset filter'}
+              onAction={() => {
+                setSearchQuery('');
+                setSelectedLevel('all');
+              }}
+            />
+          ) : (
+            <div className="space-y-2">
+              {filteredTopics.map((topic) => {
+                const isSelected = topic.id === activeTopic?.id;
+                return (
+                  <div
+                    key={topic.id}
+                    onClick={() => setSelectedTopicId(topic.id)}
+                    className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-white border-blue-500 shadow-sm ring-1 ring-blue-500'
+                        : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md">
+                        {topic.level} • {topic.category}
+                      </span>
+                      <span className="text-[11px] font-semibold text-emerald-600">
+                        {topic.masteryPercentage}% Thành thạo
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 mt-2">{topic.title}</h3>
+                    <div className="text-[11px] text-slate-500 mt-0.5">{topic.titleVi}</div>
                   </div>
-                  <h3 className="font-bold text-xs sm:text-sm text-slate-900 mt-2">{topic.title}</h3>
-                  <div className="text-[11px] text-slate-500 mt-0.5">{topic.titleVi}</div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Right Column (2 spans): Active Topic Details */}

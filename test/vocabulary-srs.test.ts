@@ -1,62 +1,48 @@
 import { describe, it, expect } from 'vitest';
+import { parseVocabularyCSV, calculateNextReviewInterval } from '../src/context/AppContext';
 import { VocabularyItem } from '../src/types';
 
-describe('Vocabulary Spaced Repetition & CSV Parser', () => {
-  it('calculates spaced repetition intervals correctly', () => {
-    const item: VocabularyItem = {
-      id: 'v1',
-      word: 'articulate',
-      ipa: '/ɑːˈtɪk.jə.lət/',
-      pos: 'adjective',
-      viMeaning: 'lưu loát',
-      enDefinition: 'express clearly',
-      exampleEn: 'She was articulate.',
-      exampleVi: 'Cô ấy nói lưu loát.',
-      collocations: [],
-      synonyms: [],
-      cefr: 'C1',
-      topic: 'General',
-      status: 'learning',
-      reviewCount: 0
-    };
+describe('Vocabulary Spaced Repetition & Production CSV Parser', () => {
+  it('calculates spaced repetition intervals correctly using production SRS algorithm', () => {
+    // Unseen words
+    expect(calculateNextReviewInterval('unseen')).toBe(0);
 
-    // When marked as mastered, scheduled +4 days
-    const baseDate = new Date('2026-10-12T00:00:00Z');
-    const nextMastered = new Date(baseDate);
-    nextMastered.setDate(nextMastered.getDate() + 4);
+    // Learning words should be reviewed the next day (+1 day)
+    expect(calculateNextReviewInterval('learning')).toBe(1);
 
-    // When marked as learning, scheduled +1 day
-    const nextLearning = new Date(baseDate);
-    nextLearning.setDate(nextLearning.getDate() + 1);
-
-    expect(nextMastered.getDate() - baseDate.getDate()).toBe(4);
-    expect(nextLearning.getDate() - baseDate.getDate()).toBe(1);
+    // Mastered words should be spaced out (minimum +4 days)
+    expect(calculateNextReviewInterval('mastered', 1)).toBe(4);
+    expect(calculateNextReviewInterval('mastered', 4)).toBe(8);
   });
 
-  it('parses CSV input lines including quoted commas and Windows CRLF', () => {
+  it('parses CSV input lines using production parseVocabularyCSV including quoted commas and Windows CRLF', () => {
     const csvContent = `Word,IPA,Part of Speech,Vietnamese Meaning,Definition,Example (EN),Example (VI),CEFR\r\n"lucrative","/ˈluːkrətɪv/","adjective","sinh lời cao","producing great deal of profit","A lucrative business contract.","Hợp đồng sinh lời cao.","B2"\r\nresilient,/rɪˈzɪl.jənt/,adjective,kiên cường,able to recover quickly,Resilient economy.,Nền kinh tế kiên cường.,B2\r\n`;
 
-    const lines = csvContent.trim().split('\n');
-    expect(lines.length).toBe(3); // header + 2 items
-
-    const parsedItems: any[] = [];
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].replace(/\r$/, '');
-      const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map((p) => p.replace(/^"|"$/g, '').trim());
-      if (parts.length >= 4 && parts[0]) {
-        parsedItems.push({
-          word: parts[0],
-          ipa: parts[1],
-          pos: parts[2],
-          viMeaning: parts[3],
-          cefr: parts[7] || 'B1'
-        });
-      }
-    }
+    const parsedItems = parseVocabularyCSV(csvContent);
 
     expect(parsedItems.length).toBe(2);
+
     expect(parsedItems[0].word).toBe('lucrative');
+    expect(parsedItems[0].ipa).toBe('/ˈluːkrətɪv/');
+    expect(parsedItems[0].pos).toBe('adjective');
+    expect(parsedItems[0].viMeaning).toBe('sinh lời cao');
+    expect(parsedItems[0].enDefinition).toBe('producing great deal of profit');
+    expect(parsedItems[0].exampleEn).toBe('A lucrative business contract.');
+    expect(parsedItems[0].exampleVi).toBe('Hợp đồng sinh lời cao.');
     expect(parsedItems[0].cefr).toBe('B2');
+    expect(parsedItems[0].status).toBe('learning');
+    expect(parsedItems[0].reviewCount).toBe(0);
+
     expect(parsedItems[1].word).toBe('resilient');
+    expect(parsedItems[1].ipa).toBe('/rɪˈzɪl.jənt/');
+    expect(parsedItems[1].pos).toBe('adjective');
+    expect(parsedItems[1].viMeaning).toBe('kiên cường');
+    expect(parsedItems[1].cefr).toBe('B2');
+  });
+
+  it('handles empty or malformed CSV gracefully without crashing', () => {
+    expect(parseVocabularyCSV('')).toEqual([]);
+    expect(parseVocabularyCSV('Only header line\n')).toEqual([]);
+    expect(parseVocabularyCSV('Word,IPA,POS,Meaning\n\n\n')).toEqual([]);
   });
 });

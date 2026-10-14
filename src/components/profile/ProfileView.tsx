@@ -27,6 +27,8 @@ export const ProfileView: React.FC = () => {
     user,
     updateUser,
     resetAllData,
+    resetLocalData,
+    resetUserProgress,
     language,
     toggleLanguage,
     firebaseUser,
@@ -43,6 +45,8 @@ export const ProfileView: React.FC = () => {
   const [dailyMinutesGoal, setDailyMinutesGoal] = useState(user.dailyMinutesGoal);
   const [savedNotice, setSavedNotice] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [resetCloudOption, setResetCloudOption] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
 
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -401,23 +405,53 @@ export const ProfileView: React.FC = () => {
             <AlertTriangle className="w-10 h-10 text-red-600 mx-auto" />
             <h3 className="font-bold text-slate-900 text-base">Xác Nhận Đặt Lại Dữ Liệu?</h3>
             <p className="text-xs text-slate-500">
-              Thao tác này sẽ xóa vĩnh viễn tiến độ học tập và bài thi trên trình duyệt này.
+              Bạn có thể chọn đặt lại dữ liệu lưu trên thiết bị này hoặc đồng thời xóa toàn bộ tiến độ đã lưu trên Google Cloud.
             </p>
+
+            {firebaseUser && (
+              <label className="flex items-center gap-2 p-2.5 bg-red-50 border border-red-200/80 rounded-xl text-left cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={resetCloudOption}
+                  onChange={(e) => setResetCloudOption(e.target.checked)}
+                  className="rounded text-red-600 focus:ring-red-500"
+                />
+                <span className="text-[11px] font-semibold text-red-900 leading-tight">
+                  Xóa cả tiến độ và điểm số đã đồng bộ trên Firestore Cloud
+                </span>
+              </label>
+            )}
+
             <div className="flex gap-2 pt-3">
               <button
-                onClick={() => setShowResetConfirm(false)}
-                className="flex-1 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50"
+                onClick={() => {
+                  setShowResetConfirm(false);
+                  setResetCloudOption(false);
+                }}
+                disabled={isResetting}
+                className="flex-1 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer disabled:opacity-50"
               >
                 Hủy bỏ
               </button>
               <button
-                onClick={() => {
-                  resetAllData();
-                  setShowResetConfirm(false);
+                onClick={async () => {
+                  try {
+                    setIsResetting(true);
+                    if (resetCloudOption && firebaseUser) {
+                      await resetUserProgress({ cloud: true });
+                    } else {
+                      resetLocalData();
+                    }
+                    setShowResetConfirm(false);
+                    setResetCloudOption(false);
+                  } finally {
+                    setIsResetting(false);
+                  }
                 }}
-                className="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold"
+                disabled={isResetting}
+                className="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5"
               >
-                Xác nhận xóa
+                {isResetting ? 'Đang xử lý...' : 'Xác nhận xóa'}
               </button>
             </div>
           </div>

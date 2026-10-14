@@ -99,6 +99,14 @@ export const AITutorView: React.FC = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputMessage;
     if (!text.trim() || isLoading) return;
@@ -115,10 +123,15 @@ export const AITutorView: React.FC = () => {
     setInputMessage('');
     setIsLoading(true);
 
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           mode: tutorMode,
           messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
@@ -143,7 +156,10 @@ export const AITutorView: React.FC = () => {
       };
       setMessages((prev) => [...prev, botMsg]);
     } catch (err: any) {
-      console.error(err);
+      if (err.name === 'AbortError') {
+        return; // Component unmounted or request superseded
+      }
+      console.error('AI Tutor error:', err);
       const fallbackMsg: AIMessage = {
         id: `err-${Date.now()}`,
         role: 'model',

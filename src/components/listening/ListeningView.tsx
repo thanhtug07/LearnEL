@@ -97,10 +97,15 @@ export const ListeningView: React.FC = () => {
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
   const [answersChecked, setAnswersChecked] = useState(false);
 
-  // Clean up audio playback when component unmounts
+  const replayTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clean up audio playback and any pending timers when component unmounts
   React.useEffect(() => {
     return () => {
       stopSpeaking();
+      if (replayTimerRef.current) {
+        clearTimeout(replayTimerRef.current);
+      }
     };
   }, []);
 
@@ -120,7 +125,8 @@ export const ListeningView: React.FC = () => {
   const handleReplay = () => {
     stopSpeaking();
     setIsPlaying(false);
-    setTimeout(() => {
+    if (replayTimerRef.current) clearTimeout(replayTimerRef.current);
+    replayTimerRef.current = setTimeout(() => {
       handlePlayAudio();
     }, 200);
   };

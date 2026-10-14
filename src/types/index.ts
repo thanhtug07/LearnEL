@@ -18,6 +18,7 @@ export interface UserProfile {
   language: 'vi' | 'en';
   soundEnabled: boolean;
   onboardingCompleted: boolean;
+  lastActiveDate?: string;
 }
 
 export interface VocabularyItem {
@@ -179,7 +180,9 @@ export type ContentSourceCategory =
   | 'licensed_third_party'
   | 'official_sample';
 
-export type ReviewStatus = 'draft' | 'pending_review' | 'approved' | 'rejected';
+export type ReviewStatus = 'draft' | 'pending_review' | 'needs_human_review' | 'approved' | 'rejected';
+
+export type AIAuditStatus = 'not_evaluated' | 'evaluation_failed' | 'evaluated_pass' | 'evaluated_concerns';
 
 export type CreationMethod = 'human_authored' | 'ai_assisted' | 'imported';
 
@@ -210,7 +213,7 @@ export interface PracticeTest {
   id: string;
   title: string;
   titleVi: string;
-  type: 'full_ielts' | 'full_toeic' | 'topic_quiz' | 'placement_test' | 'grammar_test';
+  type: 'full_ielts' | 'full_toeic' | 'topic_quiz' | 'placement_test' | 'grammar_test' | 'mini_test';
   durationMinutes: number;
   totalQuestions: number;
   targetLevel: string;
