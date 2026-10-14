@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-server
+coverage
+.git
+.github
+.env*
+!.env.example
+*.log
+.DS_Store
+.agents
+.claude
+skills-lock.json

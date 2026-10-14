@@ -4,6 +4,9 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
+import { VERIFIED_QUESTION_BANK } from './src/data/verifiedQuestionBank';
+import { validateQuestionBatch, validateQuestion } from './src/services/questionValidator';
+import { INITIAL_COURSES, INITIAL_PRACTICE_TESTS, INITIAL_PRACTICE_SETS } from './src/data/seedData';
 
 dotenv.config();
 
@@ -13,12 +16,92 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
+// Security and CORS middleware
+app.use((req, res, next) => {
+  const allowedOrigins = (process.env.CORS_ORIGIN || '*')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+  const requestOrigin = req.headers.origin as string;
+
+  if (allowedOrigins.includes('*') || (requestOrigin && allowedOrigins.includes(requestOrigin))) {
+    res.setHeader('Access-Control-Allow-Origin', requestOrigin || '*');
+  } else if (!requestOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Max-Age', '86400');
+
+  // Security Headers
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
+// Sanitized structured request logging
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'test' || process.env.VITEST) {
+    return next();
+  }
+  const start = Date.now();
+  const { method, url } = req;
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const status = res.statusCode;
+    console.log(
+      JSON.stringify({
+        timestamp: new Date().toISOString(),
+        level: status >= 500 ? 'ERROR' : status >= 400 ? 'WARN' : 'INFO',
+        method,
+        path: url.split('?')[0],
+        status,
+        durationMs: duration,
+        clientIp: typeof ip === 'string' ? ip.split(',')[0].trim() : ip
+      })
+    );
+  });
+  next();
+});
+
 app.use(express.json({ limit: '1mb' }));
 
 // In-memory rate limiting store and reset
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
 function resetRateLimits() {
   rateLimitStore.clear();
+}
+
+function rateLimitMiddleware(maxRequests: number, windowMs: number = 60000) {
+  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    const ip = typeof rawIp === 'string' ? rawIp.split(',')[0].trim() : String(rawIp);
+    const now = Date.now();
+    const record = rateLimitStore.get(ip);
+
+    if (!record || now > record.resetAt) {
+      rateLimitStore.set(ip, { count: 1, resetAt: now + windowMs });
+      return next();
+    }
+
+    record.count++;
+    if (record.count > maxRequests) {
+      return res.status(429).json({
+        error: 'Quá nhiều yêu cầu. Vui lòng thử lại sau giây lát (Too many requests).'
+      });
+    }
+
+    next();
+  };
 }
 
 // Trusted admin emails and verification
@@ -148,8 +231,60 @@ app.get('/api/ai/status', (_req, res) => {
   });
 });
 
+// Comprehensive Health & Readiness Check Endpoint
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  const isProd = process.env.NODE_ENV === 'production';
+  const distPath = path.resolve(__dirname, 'dist');
+  const distIndexExists = fs.existsSync(path.resolve(distPath, 'index.html'));
+  const hasAiKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim());
+  const aiClient = getGeminiClient();
+
+  const checks = {
+    server: {
+      status: 'up',
+      uptimeSeconds: Math.floor(process.uptime()),
+      timestamp: new Date().toISOString(),
+      nodeVersion: process.version,
+      environment: process.env.NODE_ENV || 'development',
+      memory: {
+        rssMb: Math.round(process.memoryUsage().rss / 1024 / 1024),
+        heapUsedMb: Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
+      }
+    },
+    staticAssets: {
+      status: isProd ? (distIndexExists ? 'ready' : 'missing_build') : 'vite_dev_mode',
+      requiredInProduction: isProd
+    },
+    dependencies: {
+      geminiAi: {
+        status: hasAiKey && aiClient ? 'connected' : 'offline_fallback',
+        model: 'gemini-3.8-flash',
+        message: hasAiKey ? 'Live AI evaluations active' : 'Operating in pedagogical rule-based fallback mode'
+      },
+      firebaseAuth: {
+        status: 'configured',
+        mode: 'identitytoolkit_v1_validation'
+      }
+    }
+  };
+
+  let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+  let httpStatusCode = 200;
+
+  if (isProd && !distIndexExists) {
+    overallStatus = 'unhealthy';
+    httpStatusCode = 503;
+  } else if (!hasAiKey) {
+    overallStatus = 'degraded';
+    httpStatusCode = 200;
+  }
+
+  res.status(httpStatusCode).json({
+    status: overallStatus === 'healthy' ? 'ok' : overallStatus,
+    health: overallStatus,
+    timestamp: new Date().toISOString(),
+    checks
+  });
 });
 
 const VALID_TUTOR_MODES = [
@@ -203,7 +338,7 @@ function getTutorFallback(mode: string, lastUserMessage: string, prefixNotice: s
 }
 
 // AI Tutor chat endpoint
-app.post('/api/ai/chat', async (req, res) => {
+app.post('/api/ai/chat', rateLimitMiddleware(30, 60000), async (req, res) => {
   const { mode = 'conversation', messages, userLevel = 'B1', targetExam = 'IELTS' } = req.body;
 
   // Validate request payload
@@ -300,7 +435,7 @@ app.post('/api/ai/chat', async (req, res) => {
 });
 
 // Writing evaluation endpoint
-app.post('/api/ai/writing-feedback', async (req, res) => {
+app.post('/api/ai/writing-feedback', rateLimitMiddleware(30, 60000), async (req, res) => {
   const { text, prompt, taskType = 'essay', targetBand = '7.0' } = req.body;
 
   if (typeof text !== 'string' || !text.trim()) {
@@ -428,9 +563,6 @@ Provide a JSON object response with these exact keys:
 // ============================================================================
 // VERIFIED QUESTION BANK PIPELINE & QUALITY QA ENDPOINTS
 // ============================================================================
-import { VERIFIED_QUESTION_BANK } from './src/data/verifiedQuestionBank.js';
-import { validateQuestionBatch, validateQuestion } from './src/services/questionValidator.js';
-import { INITIAL_COURSES, INITIAL_PRACTICE_TESTS, INITIAL_PRACTICE_SETS } from './src/data/seedData.js';
 
 // GET /api/courses: Course catalog with publicationStatus, filtering and bounded pagination
 app.get('/api/courses', (req, res) => {
@@ -745,7 +877,7 @@ app.patch('/api/questions/:id/review', requireAdmin, (req, res) => {
 });
 
 // POST /api/questions/ai-review: pedagogical QA audit using Gemini
-app.post('/api/questions/ai-review', async (req, res) => {
+app.post('/api/questions/ai-review', rateLimitMiddleware(30, 60000), async (req, res) => {
   const { question } = req.body;
   if (!question || typeof question.prompt !== 'string' || !question.prompt.trim() || !Array.isArray(question.options) || question.options.length < 2) {
     return res.status(400).json({ error: 'Valid question with prompt and at least 2 options is required.' });
@@ -810,6 +942,18 @@ Return a JSON object with:
   }
 });
 
+// Global Error Handler - Sanitized for production, never leak stack trace to client
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  const correlationId = `err-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  console.error(`[UnhandledError][${correlationId}]`, err?.message || err);
+
+  const status = typeof err?.status === 'number' && err.status >= 400 && err.status < 600 ? err.status : 500;
+  res.status(status).json({
+    error: status >= 500 ? 'Internal Server Error' : err.message || 'An unexpected error occurred',
+    correlationId
+  });
+});
+
 // Production and Dev serving
 async function startServer() {
   const isProd = process.env.NODE_ENV === 'production';
@@ -823,15 +967,34 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.resolve(__dirname, 'dist');
+    const distIndex = path.resolve(distPath, 'index.html');
+    if (!fs.existsSync(distIndex)) {
+      console.warn('⚠️ WARNING: dist/index.html not found! Run "npm run build" before deploying to production.');
+    }
     app.use(express.static(distPath));
     app.get('*', (_req, res) => {
-      res.sendFile(path.resolve(distPath, 'index.html'));
+      if (fs.existsSync(distIndex)) {
+        res.sendFile(distIndex);
+      } else {
+        res.status(404).send('Application build not found. Please run "npm run build" first.');
+      }
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`LingoPeak server running on http://0.0.0.0:${PORT}`);
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`LingoPeak server running on http://0.0.0.0:${PORT} [mode: ${process.env.NODE_ENV || 'development'}]`);
   });
+
+  const gracefulShutdown = (signal: string) => {
+    console.log(`[${signal}] Initiating graceful shutdown...`);
+    server.close(() => {
+      console.log('HTTP server closed. Exiting process.');
+      process.exit(0);
+    });
+  };
+
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 }
 
 if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
@@ -840,5 +1003,5 @@ if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
   });
 }
 
-export { app, resetRateLimits, verifyFirebaseToken, requireAdmin, requireAuth };
+export { app, resetRateLimits, verifyFirebaseToken, requireAdmin, requireAuth, startServer };
 export default app;

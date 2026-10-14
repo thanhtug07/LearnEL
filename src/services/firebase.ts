@@ -55,8 +55,19 @@ export interface FirestoreErrorInfo {
   };
 }
 
+const effectiveFirebaseConfig = {
+  ...firebaseConfig,
+  apiKey: (import.meta as any).env?.VITE_FIREBASE_API_KEY || firebaseConfig.apiKey,
+  projectId: (import.meta as any).env?.VITE_FIREBASE_PROJECT_ID || firebaseConfig.projectId,
+  authDomain: (import.meta as any).env?.VITE_FIREBASE_AUTH_DOMAIN || firebaseConfig.authDomain,
+  firestoreDatabaseId: (import.meta as any).env?.VITE_FIREBASE_DATABASE_ID || firebaseConfig.firestoreDatabaseId,
+  storageBucket: (import.meta as any).env?.VITE_FIREBASE_STORAGE_BUCKET || firebaseConfig.storageBucket,
+  messagingSenderId: (import.meta as any).env?.VITE_FIREBASE_MESSAGING_SENDER_ID || firebaseConfig.messagingSenderId,
+  appId: (import.meta as any).env?.VITE_FIREBASE_APP_ID || firebaseConfig.appId,
+};
+
 // Initialize Firebase App
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+const app = getApps().length > 0 ? getApp() : initializeApp(effectiveFirebaseConfig);
 
 // Initialize Auth
 export const auth = getAuth(app);
@@ -64,8 +75,8 @@ export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 // Initialize Firestore with configured databaseId
-export const db = firebaseConfig.firestoreDatabaseId
-  ? getFirestore(app, firebaseConfig.firestoreDatabaseId)
+export const db = effectiveFirebaseConfig.firestoreDatabaseId
+  ? getFirestore(app, effectiveFirebaseConfig.firestoreDatabaseId)
   : getFirestore(app);
 
 // Standard error handler conforming to skill specification
