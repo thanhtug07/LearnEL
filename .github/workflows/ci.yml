@@ -31,8 +31,8 @@ jobs:
       - name: TypeScript type checking (Lint)
         run: npm run lint
 
-      - name: Execute Vitest test suite
-        run: npm test
-
       - name: Production build validation
         run: npm run build
+
+      - name: Execute Vitest test suite
+        run: npm test
