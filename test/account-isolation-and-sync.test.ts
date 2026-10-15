@@ -361,4 +361,25 @@ describe('Account Isolation, Firebase Sync & Learning Progress Suite', () => {
       expect(rulesContent).toContain('allow read, write: if isOwner(userId)');
     });
   });
+
+  describe('8. Quick Learner Account Authentication & Offline Resilience', () => {
+    it('generates distinct namespaced storage keys for learner accounts', () => {
+      const learnerIdA = 'learner_tung_lingopeak_io';
+      const learnerIdB = 'learner_guest_lingopeak_io';
+
+      expect(getUserStorageKey(learnerIdA, 'profile')).toBe('lingopeak_user_learner_tung_lingopeak_io_profile');
+      expect(getUserStorageKey(learnerIdB, 'profile')).toBe('lingopeak_user_learner_guest_lingopeak_io_profile');
+    });
+
+    it('isolates learner progress between multiple learner accounts', () => {
+      const learnerA = 'learner_thanhtung';
+      const learnerB = 'learner_hocvien';
+
+      saveNamespacedStorage(learnerA, 'profile', { name: 'Thanh Tung', xp: 450 });
+      saveNamespacedStorage(learnerB, 'profile', { name: 'Hoc Vien Pro', xp: 50 });
+
+      expect(loadNamespacedStorage(learnerA, 'profile', null)).toEqual({ name: 'Thanh Tung', xp: 450 });
+      expect(loadNamespacedStorage(learnerB, 'profile', null)).toEqual({ name: 'Hoc Vien Pro', xp: 50 });
+    });
+  });
 });

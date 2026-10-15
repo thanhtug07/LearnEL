@@ -6,7 +6,9 @@ import {
   GrammarTopic,
   PracticeTest,
   TestAttempt,
-  Achievement
+  Achievement,
+  CEFRLevel,
+  TargetExam
 } from '../types';
 import {
   INITIAL_COURSES,
@@ -371,9 +373,11 @@ interface AppContextType {
   setActiveExamId: (id: string | null) => void;
   // Firebase & Persistent Backend State
   firebaseUser: User | null;
+  isLoggedIn: boolean;
   cloudSyncStatus: CloudSyncStatus;
   handleGoogleSignIn: () => Promise<void>;
   handleSignOut: () => Promise<void>;
+  loginAsLearner: (name: string, email: string, targetExam?: TargetExam, level?: CEFRLevel) => void;
   logSkillActivity: (skill: ActivityLogItem['skill'], title: string, minutes: number, xpEarned: number) => void;
 }
 
@@ -385,6 +389,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [user, setUser] = useState<UserProfile>(() => {
     try {
+      const activeId = localStorage.getItem('lingopeak_active_user_id');
+      if (activeId) {
+        const namespaced = loadNamespacedStorage<UserProfile | null>(activeId, 'profile', null);
+        if (namespaced && typeof namespaced === 'object' && namespaced.id) {
+          return namespaced;
+        }
+      }
       const saved = localStorage.getItem('lingopeak_user');
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -526,30 +537,48 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     new Set(testAttempts.map((a) => a.id))
   );
 
-  // Sync state changes with localStorage
+  // Sync state changes with localStorage and namespaced storage
   useEffect(() => {
     localStorage.setItem('lingopeak_user', JSON.stringify(user));
+    if (user.id && user.id !== 'user-guest-1') {
+      saveNamespacedStorage(user.id, 'profile', user);
+    }
   }, [user]);
 
   useEffect(() => {
     localStorage.setItem('lingopeak_courses', JSON.stringify(courses));
-  }, [courses]);
+    if (user.id && user.id !== 'user-guest-1') {
+      saveNamespacedStorage(user.id, 'courses', courses);
+    }
+  }, [courses, user.id]);
 
   useEffect(() => {
     localStorage.setItem('lingopeak_vocab', JSON.stringify(vocabulary));
-  }, [vocabulary]);
+    if (user.id && user.id !== 'user-guest-1') {
+      saveNamespacedStorage(user.id, 'vocab', vocabulary);
+    }
+  }, [vocabulary, user.id]);
 
   useEffect(() => {
     localStorage.setItem('lingopeak_grammar', JSON.stringify(grammarTopics));
-  }, [grammarTopics]);
+    if (user.id && user.id !== 'user-guest-1') {
+      saveNamespacedStorage(user.id, 'grammar', grammarTopics);
+    }
+  }, [grammarTopics, user.id]);
 
   useEffect(() => {
     localStorage.setItem('lingopeak_attempts', JSON.stringify(testAttempts));
-  }, [testAttempts]);
+    if (user.id && user.id !== 'user-guest-1') {
+      saveNamespacedStorage(user.id, 'attempts', testAttempts);
+    }
+  }, [testAttempts, user.id]);
 
   useEffect(() => {
     localStorage.setItem('lingopeak_achievements', JSON.stringify(achievements));
-  }, [achievements]);
+    if (user.id && user.id !== 'user-guest-1') {
+      saveNamespacedStorage(user.id, 'achievements', achievements);
+    }
+  }, [achievements, user.id]);
 
   /**
    * FIREBASE AUTH & FIRESTORE INITIALIZATION
@@ -726,8 +755,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const handleSignOut = async () => {
-    await logOut();
+    try {
+      await logOut();
+    } catch {
+      // Ignore if not signed into firebase
+    }
     setFirebaseUser(null);
+    localStorage.removeItem('lingopeak_active_user_id');
     setCloudSyncStatus('unauthenticated');
     // Restore clean slate
     setUser(DEFAULT_USER);
@@ -738,6 +772,61 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setAchievements(INITIAL_ACHIEVEMENTS);
     localStorage.removeItem('lingopeak_attempts');
   };
+
+  const loginAsLearner = (
+    name: string,
+    email: string,
+    targetExam?: TargetExam,
+    level?: CEFRLevel
+  ) => {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim() || 'Học viên';
+    const accountId = 'learner_' + (cleanEmail ? cleanEmail.replace(/[^a-z0-9]/g, '_') : 'guest');
+
+    // 1. Load or initialize profile
+    const existingProfile = loadNamespacedStorage<UserProfile | null>(accountId, 'profile', null);
+    const newProfile: UserProfile = existingProfile ? { ...existingProfile } : {
+      ...DEFAULT_USER,
+      id: accountId,
+      name: cleanName,
+      email: cleanEmail,
+      targetExam: targetExam || 'IELTS',
+      level: level || 'B1',
+      onboardingCompleted: true,
+      lastActiveDate: new Date().toISOString().slice(0, 10)
+    };
+
+    if (existingProfile) {
+      if (cleanName && cleanName !== 'Học viên') newProfile.name = cleanName;
+      if (cleanEmail) newProfile.email = cleanEmail;
+      if (targetExam) newProfile.targetExam = targetExam;
+      if (level) newProfile.level = level;
+    }
+
+    setUser(newProfile);
+    localStorage.setItem('lingopeak_active_user_id', accountId);
+    saveNamespacedStorage(accountId, 'profile', newProfile);
+
+    // 2. Load namespaced collections if exist
+    const savedCourses = loadNamespacedStorage<Course[] | null>(accountId, 'courses', null);
+    setCourses(savedCourses && savedCourses.length > 0 ? savedCourses : INITIAL_COURSES);
+
+    const savedVocab = loadNamespacedStorage<VocabularyItem[] | null>(accountId, 'vocab', null);
+    setVocabulary(savedVocab && savedVocab.length > 0 ? savedVocab : INITIAL_VOCABULARY);
+
+    const savedGrammar = loadNamespacedStorage<GrammarTopic[] | null>(accountId, 'grammar', null);
+    setGrammarTopics(savedGrammar && savedGrammar.length > 0 ? savedGrammar : INITIAL_GRAMMAR_TOPICS);
+
+    const savedAttempts = loadNamespacedStorage<TestAttempt[] | null>(accountId, 'attempts', null);
+    setTestAttempts(savedAttempts || []);
+
+    const savedAch = loadNamespacedStorage<Achievement[] | null>(accountId, 'achievements', null);
+    setAchievements(savedAch && savedAch.length > 0 ? savedAch : INITIAL_ACHIEVEMENTS);
+
+    setCloudSyncStatus('offline');
+  };
+
+  const isLoggedIn = Boolean(firebaseUser || (user.id && user.id !== 'user-guest-1' && user.email));
 
   const updateUser = (updates: Partial<UserProfile>) => {
     setUser((prev) => {
@@ -1106,9 +1195,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       activeExamId,
       setActiveExamId,
       firebaseUser,
+      isLoggedIn,
       cloudSyncStatus,
       handleGoogleSignIn,
       handleSignOut,
+      loginAsLearner,
       logSkillActivity
     }),
     [
@@ -1123,6 +1214,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       selectedLesson,
       activeExamId,
       firebaseUser,
+      isLoggedIn,
       cloudSyncStatus
     ]
   );

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { AuthModal } from '../auth/AuthModal';
 import {
   Flame,
   Globe,
@@ -13,7 +14,8 @@ import {
   CloudUpload,
   LogIn,
   LogOut,
-  CheckCircle2
+  CheckCircle2,
+  UserCheck
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -28,38 +30,15 @@ export const Navbar: React.FC<NavbarProps> = React.memo(({ onToggleMobileSidebar
     language,
     setActiveTab,
     firebaseUser,
+    isLoggedIn,
     cloudSyncStatus,
-    handleGoogleSignIn,
     handleSignOut
   } = useApp();
 
-  const [isSigningIn, setIsSigningIn] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
-  const authErrorTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  React.useEffect(() => {
-    return () => {
-      if (authErrorTimerRef.current) {
-        clearTimeout(authErrorTimerRef.current);
-      }
-    };
-  }, []);
-
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const xpPercent = Math.min(100, Math.round((user.xp % 500) / 5));
 
-  const onSignInClick = async () => {
-    try {
-      setIsSigningIn(true);
-      setAuthError(null);
-      await handleGoogleSignIn();
-    } catch (err: any) {
-      setAuthError(err?.message || 'Đăng nhập không thành công');
-      if (authErrorTimerRef.current) clearTimeout(authErrorTimerRef.current);
-      authErrorTimerRef.current = setTimeout(() => setAuthError(null), 4000);
-    } finally {
-      setIsSigningIn(false);
-    }
-  };
+  const isUserAuthenticated = isLoggedIn || Boolean(firebaseUser || (user.id && user.id !== 'user-guest-1' && user.email));
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between">
@@ -172,8 +151,8 @@ export const Navbar: React.FC<NavbarProps> = React.memo(({ onToggleMobileSidebar
           {user.soundEnabled ? <Volume2 className="w-4 h-4 text-slate-600" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
         </button>
 
-        {/* Google Authentication Button / User Profile */}
-        {firebaseUser ? (
+        {/* Authentication Button / User Profile */}
+        {isUserAuthenticated ? (
           <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
             <div
               onClick={() => setActiveTab('profile')}
@@ -181,17 +160,17 @@ export const Navbar: React.FC<NavbarProps> = React.memo(({ onToggleMobileSidebar
               title="Xem hồ sơ và cài đặt"
             >
               <img
-                src={firebaseUser.photoURL || user.avatar}
-                alt={firebaseUser.displayName || user.name}
+                src={firebaseUser?.photoURL || user.avatar}
+                alt={firebaseUser?.displayName || user.name}
                 className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500/30 group-hover:ring-emerald-500 transition-all"
               />
               <div className="hidden xl:block text-left">
                 <div className="text-xs font-semibold text-slate-800 leading-tight group-hover:text-blue-600">
-                  {firebaseUser.displayName || user.name}
+                  {firebaseUser?.displayName || user.name}
                 </div>
                 <div className="text-[10px] text-emerald-600 font-medium flex items-center gap-0.5">
                   <CheckCircle2 className="w-2.5 h-2.5" />
-                  <span>Google Sync</span>
+                  <span>{firebaseUser ? 'Google Sync' : 'Học viên'}</span>
                 </div>
               </div>
             </div>
@@ -207,34 +186,19 @@ export const Navbar: React.FC<NavbarProps> = React.memo(({ onToggleMobileSidebar
         ) : (
           <div className="pl-1 border-l border-slate-200">
             <button
-              onClick={onSignInClick}
-              disabled={isSigningIn}
-              className="flex items-center gap-1.5 bg-white border border-slate-300 hover:border-blue-400 hover:bg-blue-50/50 text-slate-700 px-3 py-1.5 rounded-full text-xs font-semibold shadow-2xs transition-all cursor-pointer disabled:opacity-50"
-              title="Đăng nhập tài khoản Google để lưu trữ tiến độ lên đám mây"
+              onClick={() => setIsAuthModalOpen(true)}
+              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs hover:shadow-md transition-all cursor-pointer"
+              title="Đăng nhập tài khoản Học viên hoặc Google"
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.04h3.88c2.27-2.09 3.66-5.17 3.66-9.14z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.04c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.13C3.26 21.41 7.33 24 12 24z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.28 14.28c-.25-.72-.38-1.49-.38-2.28s.13-1.56.38-2.28V6.59H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.41l4.03-3.13z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.59 1.25 6.59l4.03 3.13c.95-2.83 3.6-4.97 6.72-4.97z"
-                />
-              </svg>
-              <span>{isSigningIn ? (language === 'vi' ? 'Đang kết nối...' : 'Connecting...') : (language === 'vi' ? 'Đăng nhập Google' : 'Google Sign-In')}</span>
+              <LogIn className="w-3.5 h-3.5" />
+              <span>{language === 'vi' ? 'Đăng nhập' : 'Sign In'}</span>
             </button>
           </div>
         )}
       </div>
+
+      {/* Auth Modal for Quick Learner & Google Sign-In */}
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </header>
   );
 });

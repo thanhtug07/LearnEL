@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { CEFRLevel, TargetExam } from '../../types';
+import { AuthModal } from '../auth/AuthModal';
 import {
   Sliders,
   User,
@@ -19,7 +20,8 @@ import {
   Database,
   LogIn,
   LogOut,
-  ShieldCheck
+  ShieldCheck,
+  UserCheck
 } from 'lucide-react';
 
 export const ProfileView: React.FC = () => {
@@ -32,6 +34,7 @@ export const ProfileView: React.FC = () => {
     language,
     toggleLanguage,
     firebaseUser,
+    isLoggedIn,
     cloudSyncStatus,
     handleGoogleSignIn,
     handleSignOut
@@ -48,6 +51,7 @@ export const ProfileView: React.FC = () => {
   const [resetCloudOption, setResetCloudOption] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,7 +109,7 @@ export const ProfileView: React.FC = () => {
         </div>
       )}
 
-      {/* Cloud Firestore & Google Account Card */}
+      {/* Cloud Firestore & Account Card */}
       <div className="bg-gradient-to-br from-blue-50/80 via-indigo-50/40 to-white rounded-3xl p-6 border border-blue-200/80 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -115,63 +119,64 @@ export const ProfileView: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-slate-900 text-sm">
-                  {language === 'vi' ? 'Đồng Bộ Hóa Google Cloud Firestore' : 'Google Cloud Firestore Sync'}
+                  {language === 'vi' ? 'Tài Khoản & Dữ Liệu Học Tập' : 'Account & Study Synchronization'}
                 </h3>
                 {firebaseUser ? (
                   <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
                     <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                    <span>Live Connected</span>
+                    <span>Google Cloud Synced</span>
+                  </span>
+                ) : user.id && user.id !== 'user-guest-1' && user.email ? (
+                  <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    <UserCheck className="w-3 h-3 text-blue-600" />
+                    <span>Tài khoản Học viên</span>
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                    <span>Local Mode</span>
+                    <span>Chế độ Khách (Local)</span>
                   </span>
                 )}
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
                 {firebaseUser
-                  ? `Đang lưu tự động dưới tài khoản: ${firebaseUser.email || firebaseUser.uid}`
-                  : 'Đăng nhập Google để đồng bộ vĩnh viễn tiến độ học, từ vựng và lịch sử làm bài thi.'}
+                  ? `Đang lưu tự động dưới tài khoản Google: ${firebaseUser.email || firebaseUser.displayName}`
+                  : user.id && user.id !== 'user-guest-1' && user.email
+                  ? `Đang lưu tiến độ cá nhân dưới tài khoản: ${user.name} (${user.email})`
+                  : 'Đăng nhập tài khoản Học viên hoặc Google để lưu trữ bền vững tiến độ học và lịch sử thi.'}
               </p>
             </div>
           </div>
 
-          <div>
-            {firebaseUser ? (
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 hover:border-red-300 hover:bg-red-50 text-slate-700 hover:text-red-600 rounded-xl text-xs font-semibold shadow-2xs transition-all cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>{language === 'vi' ? 'Đăng xuất' : 'Sign Out'}</span>
-              </button>
+          <div className="flex items-center gap-2">
+            {firebaseUser || (user.id && user.id !== 'user-guest-1' && user.email) ? (
+              <>
+                {!firebaseUser && (
+                  <button
+                    type="button"
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+                  >
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span>Đổi tài khoản</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 hover:border-red-300 hover:bg-red-50 text-slate-700 hover:text-red-600 rounded-xl text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>{language === 'vi' ? 'Đăng xuất' : 'Sign Out'}</span>
+                </button>
+              </>
             ) : (
               <button
                 type="button"
-                onClick={onGoogleLogin}
-                disabled={isSigningIn}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 hover:border-blue-500 hover:bg-blue-50/50 text-slate-800 rounded-xl text-xs font-bold shadow-2xs transition-all cursor-pointer disabled:opacity-50"
+                onClick={() => setIsAuthModalOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.04h3.88c2.27-2.09 3.66-5.17 3.66-9.14z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.04c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.13C3.26 21.41 7.33 24 12 24z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.28 14.28c-.25-.72-.38-1.49-.38-2.28s.13-1.56.38-2.28V6.59H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.41l4.03-3.13z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.59 1.25 6.59l4.03 3.13c.95-2.83 3.6-4.97 6.72-4.97z"
-                  />
-                </svg>
-                <span>{isSigningIn ? 'Đang kết nối...' : 'Đăng nhập Google'}</span>
+                <LogIn className="w-4 h-4" />
+                <span>Đăng nhập ngay</span>
               </button>
             )}
           </div>
@@ -457,6 +462,9 @@ export const ProfileView: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </div>
   );
 };
