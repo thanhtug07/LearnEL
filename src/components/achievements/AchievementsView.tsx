@@ -55,7 +55,11 @@ export const AchievementsView: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
         {achievements.map((ach) => {
           const Icon = getIcon(ach.iconName);
-          const percent = Math.min(100, Math.round((ach.progress / ach.maxProgress) * 100));
+          const max = Math.max(1, ach.maxProgress);
+          // Keep the badge and the bar consistent: an unlocked achievement always
+          // shows full progress instead of a contradictory "0 / 1".
+          const progress = ach.unlocked ? Math.max(ach.progress, max) : ach.progress;
+          const percent = Math.min(100, Math.round((progress / max) * 100));
 
           return (
             <div
@@ -101,7 +105,7 @@ export const AchievementsView: React.FC = () => {
               <div className="pt-5 mt-3 border-t border-slate-100 space-y-1.5">
                 <div className="flex justify-between text-[11px] font-semibold text-slate-500">
                   <span>Tiến độ</span>
-                  <span>{ach.progress} / {ach.maxProgress}</span>
+                  <span>{progress} / {ach.maxProgress}</span>
                 </div>
                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div

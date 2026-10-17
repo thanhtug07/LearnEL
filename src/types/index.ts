@@ -141,6 +141,7 @@ export interface TestQuestion {
   audioText?: string;
   audioUrl?: string;
   prompt: string;
+  text?: string;
   options: string[];
   correctAnswerIndex: number;
   acceptedAnswers?: string[];
@@ -149,13 +150,37 @@ export interface TestQuestion {
   distractorRationales?: string[];
   category: string;
   cefr?: CEFRLevel;
-  skill?: 'grammar' | 'vocab' | 'reading' | 'listening' | 'writing' | 'speaking' | 'toeic_reading' | 'toeic_listening' | 'ielts_reading' | 'ielts_listening';
+  cefrLevel?: CEFRLevel;
+  examType?: 'toeic' | 'ielts' | 'general' | 'placement' | 'cefr_benchmark';
+  skill?: 'grammar' | 'vocab' | 'reading' | 'listening' | 'writing' | 'speaking' | 'toeic_reading' | 'toeic_listening' | 'ielts_reading' | 'ielts_listening' | 'ielts_writing' | 'ielts_speaking';
+  itemType?: QuestionItemType;
+  questionType?: QuestionItemType;
+  difficulty?: 'beginner' | 'elementary' | 'intermediate' | 'upper_intermediate' | 'advanced' | 'proficiency' | 'easy' | 'medium' | 'hard';
+  topic?: string;
+  sourceId?: string;
+  answerKey?: string | number;
+  explanation?: string;
+  passageId?: string;
+  audioId?: string;
+  groupId?: string;
+  rubric?: QuestionRubric;
+  speakingPrepSeconds?: number;
+  speakingRecordSeconds?: number;
+  targetWordCount?: { min: number; max?: number };
   source?: {
     category: ContentSourceCategory;
     attribution: string;
     licenseOrPermission: string;
     creationMethod: CreationMethod;
     contentVersion: string;
+    sourceId?: string;
+    sourceName?: string;
+    sourceUrl?: string;
+    retrievedAt?: string;
+    owner?: string;
+    license?: string;
+    permissions?: ('reference' | 'verbatim' | 'adapt' | 'distribute')[];
+    isLicenseVerified?: boolean;
   };
   review?: {
     status: ReviewStatus;
@@ -172,13 +197,43 @@ export interface TestQuestion {
     authorId?: string;
     isProductionReady: boolean;
   };
+  exactHash?: string;
+  normalizedHash?: string;
+  examAppearances?: string[];
+  usageCount?: number;
+}
+
+export type QuestionItemType =
+  | 'multiple_choice'
+  | 'fill_in_blank'
+  | 'matching'
+  | 'sentence_ordering'
+  | 'short_answer'
+  | 'essay'
+  | 'speaking_recording';
+
+export interface RubricCriteria {
+  criterion: string;
+  maxScore: number;
+  descriptionVi: string;
+}
+
+export interface QuestionRubric {
+  totalPoints: number;
+  criteria: RubricCriteria[];
+  sampleResponse?: string;
+  evaluatorNotesVi?: string;
 }
 
 export type ContentSourceCategory =
   | 'original_project'
   | 'ai_assisted_reviewed'
   | 'licensed_third_party'
-  | 'official_sample';
+  | 'official_sample'
+  | 'open_licensed'
+  | 'academic_curated'
+  | 'lingopeak_original'
+  | 'ai_assisted_draft';
 
 export type ReviewStatus = 'draft' | 'pending_review' | 'needs_human_review' | 'approved' | 'rejected';
 
@@ -209,6 +264,21 @@ export interface QuestionBatchValidationReport {
   duplicateGroups: { id: string; prompt: string; duplicateWithIds: string[] }[];
 }
 
+export interface BlueprintSkillBreakdown {
+  skill: 'listening' | 'reading' | 'speaking' | 'writing';
+  questionCount: number;
+  durationMinutes: number;
+  sectionNames: string[];
+}
+
+export interface ExamBlueprint {
+  blueprintId: 'toeic_2skills' | 'toeic_4skills' | 'ielts_custom_mock';
+  standardName: string;
+  officialDisclaimer?: string;
+  totalItems: number;
+  skillsBreakdown: BlueprintSkillBreakdown[];
+}
+
 export interface PracticeTest {
   id: string;
   title: string;
@@ -219,6 +289,7 @@ export interface PracticeTest {
   targetLevel: string;
   descriptionVi: string;
   questions: TestQuestion[];
+  blueprint?: ExamBlueprint;
 }
 
 export interface TestAttempt {
@@ -230,11 +301,20 @@ export interface TestAttempt {
   score: number;
   totalQuestions: number;
   accuracy: number;
-  userAnswers: Record<string, number>;
+  userAnswers: Record<string, number | string>;
   flaggedQuestions: string[];
   weaknessAnalysisVi: string[];
   recommendedLessonIds: string[];
   completedAt?: string;
+  skillScores?: Record<string, {
+    rawScore: number;
+    maxScore: number;
+    percentage: number;
+    status: 'graded' | 'pending_evaluation' | 'reference_ai_evaluated';
+    detailsVi?: string;
+  }>;
+  speakingRecordings?: Record<string, string>;
+  writingResponses?: Record<string, string>;
 }
 
 export interface PracticeSet {
@@ -272,7 +352,7 @@ export interface Achievement {
 export interface WritingPrompt {
   id: string;
   title: string;
-  category: 'IELTS_TASK_1' | 'IELTS_TASK_2' | 'TOEIC_EMAIL' | 'OPINION_PARAGRAPH' | 'BUSINESS';
+  category: 'IELTS_TASK_1' | 'IELTS_TASK_2' | 'TOEIC_EMAIL' | 'TOEIC_ESSAY' | 'OPINION_PARAGRAPH' | 'BUSINESS';
   promptEn: string;
   promptVi: string;
   sampleAnswerEn: string;
@@ -284,7 +364,7 @@ export interface SpeakingTopic {
   id: string;
   title: string;
   titleVi: string;
-  part: 'daily_roleplay' | 'ielts_part1' | 'ielts_part2' | 'ielts_part3';
+  part: 'daily_roleplay' | 'ielts_part1' | 'ielts_part2' | 'ielts_part3' | 'toeic_part1' | 'toeic_part2' | 'toeic_part3' | 'toeic_part4' | 'toeic_part5';
   cueCardEn?: string;
   questions: {
     promptEn: string;

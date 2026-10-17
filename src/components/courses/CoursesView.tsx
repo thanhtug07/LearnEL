@@ -14,7 +14,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
-import { EmptyState, ViewLoadingFallback } from '../common/ViewFeedbackStates';
+import { EmptyState } from '../common/ViewFeedbackStates';
 
 export const CoursesView: React.FC = () => {
   const {
@@ -31,20 +31,21 @@ export const CoursesView: React.FC = () => {
 
   // If selectedLesson is passed from Dashboard, open it
   React.useEffect(() => {
-    if (selectedLesson) {
-      const course = courses.find((c) => c.id === selectedLesson.courseId);
-      if (course) {
-        for (const mod of course.modules) {
-          const l = mod.lessons.find((les) => les.id === selectedLesson.lessonId);
-          if (l) {
-            setActiveLessonToPlay({ lesson: l, courseId: course.id });
-            setExpandedCourseId(course.id);
-            break;
-          }
-        }
+    if (!selectedLesson) return;
+    const course = courses.find((c) => c.id === selectedLesson.courseId);
+    // Courses (e.g. from Firestore) may not be loaded yet: keep the pending
+    // selection so this effect retries once they arrive instead of dropping it.
+    if (!course) return;
+
+    for (const mod of course.modules) {
+      const l = mod.lessons.find((les) => les.id === selectedLesson.lessonId);
+      if (l) {
+        setActiveLessonToPlay({ lesson: l, courseId: course.id });
+        setExpandedCourseId(course.id);
+        break;
       }
-      setSelectedLesson(null);
     }
+    setSelectedLesson(null);
   }, [selectedLesson, courses, setSelectedLesson]);
 
   const categories = ['All', 'Communication', 'IELTS', 'TOEIC', 'Grammar'];
@@ -109,7 +110,10 @@ export const CoursesView: React.FC = () => {
 
       {/* Courses List */}
       {courses.length === 0 ? (
-        <ViewLoadingFallback label="Đang tải danh mục khóa học..." />
+        <EmptyState
+          title="Chưa có khóa học nào"
+          description="Danh mục khóa học hiện đang trống. Vui lòng quay lại sau hoặc liên hệ quản trị viên để được cấp nội dung học tập."
+        />
       ) : filteredCourses.length === 0 ? (
         <EmptyState
           title="Không tìm thấy khóa học phù hợp"
@@ -195,12 +199,22 @@ export const CoursesView: React.FC = () => {
                       {/* Lessons Grid */}
                       <div className="space-y-2 pt-1">
                         {module.lessons.map((lesson, lIndex) => {
+                          const openLesson = () => {
+                            if (!lesson.isLocked) {
+                              setActiveLessonToPlay({ lesson, courseId: course.id });
+                            }
+                          };
                           return (
                             <div
                               key={lesson.id}
-                              onClick={() => {
-                                if (!lesson.isLocked) {
-                                  setActiveLessonToPlay({ lesson, courseId: course.id });
+                              role="button"
+                              tabIndex={lesson.isLocked ? -1 : 0}
+                              aria-disabled={lesson.isLocked}
+                              onClick={openLesson}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  openLesson();
                                 }
                               }}
                               className={`p-3 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
@@ -240,7 +254,13 @@ export const CoursesView: React.FC = () => {
                                   {lesson.durationMinutes} min • +{lesson.xpReward} XP
                                 </span>
                                 {!lesson.isLocked && (
-                                  <button className="px-3 py-1 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-bold transition-colors">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openLesson();
+                                    }}
+                                    className="px-3 py-1 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-bold transition-colors"
+                                  >
                                     {lesson.isCompleted ? 'Học lại' : 'Bắt đầu'}
                                   </button>
                                 )}

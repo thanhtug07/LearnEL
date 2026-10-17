@@ -103,28 +103,28 @@ export const SpeakingView: React.FC = () => {
   const evaluateSpeech = (spokenText: string) => {
     if (!spokenText.trim()) {
       setEvaluation({
-        score: 60,
-        feedbackVi: 'Chưa phát hiện rõ giọng nói. Hãy nói to hơn và gần micro hơn nhé!',
+        score: 0,
+        feedbackVi: 'Chưa nhận diện được giọng nói. Hãy nói to hơn và gần micro hơn rồi thử lại. (Chỉ số bên dưới là ước lượng tham khảo, không phải điểm phát âm chính thức.)',
         matchedWords: []
       });
       return;
     }
 
-    const words = spokenText.toLowerCase().split(/\s+/);
-    const targetWords = currentQuestion.modelAnswerEn.toLowerCase().split(/\s+/);
+    const words = spokenText.toLowerCase().split(/\s+/).filter(Boolean);
     const keyVocabs = currentQuestion.keyVocabulary.map((v) => v.toLowerCase());
 
     const matchedKeyWords = keyVocabs.filter((k) => spokenText.toLowerCase().includes(k));
     const wordCount = words.length;
 
-    let calculatedScore = 70;
-    if (wordCount >= 10) calculatedScore += 10;
-    if (matchedKeyWords.length > 0) calculatedScore += 15;
-    calculatedScore = Math.min(95, calculatedScore);
+    // Transparent heuristic: rewards response length and coverage of the target
+    // key vocabulary. It does NOT measure pronunciation or intonation.
+    const lengthScore = Math.min(60, wordCount * 4);
+    const keywordScore = keyVocabs.length > 0 ? (matchedKeyWords.length / keyVocabs.length) * 40 : 0;
+    const calculatedScore = Math.min(100, Math.round(lengthScore + keywordScore));
 
     setEvaluation({
       score: calculatedScore,
-      feedbackVi: `Phát âm rõ ràng, nhịp điệu tương đối tự nhiên. Đã sử dụng được ${matchedKeyWords.length}/${keyVocabs.length} từ vựng then chốt!`,
+      feedbackVi: `Chỉ số phản xạ (tham khảo): bạn đã nói ${wordCount} từ và dùng được ${matchedKeyWords.length}/${keyVocabs.length} từ khóa gợi ý. Hệ thống chưa phân tích phát âm/ngữ điệu chi tiết — hãy so sánh bản thu với câu trả lời mẫu để cải thiện.`,
       matchedWords: matchedKeyWords
     });
 
@@ -134,6 +134,16 @@ export const SpeakingView: React.FC = () => {
     if (calculatedScore >= 85) {
       confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
     }
+  };
+
+  const goToQuestion = (index: number) => {
+    if (index < 0 || index >= currentTopic.questions.length) return;
+    stopSpeaking();
+    setActiveQuestionIndex(index);
+    setTranscript('');
+    transcriptRef.current = '';
+    setEvaluation(null);
+    setMicError(null);
   };
 
   return (
@@ -187,9 +197,31 @@ export const SpeakingView: React.FC = () => {
 
         {/* Current Question */}
         <div className="space-y-1">
-          <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md uppercase">
-            CÂU HỎI {activeQuestionIndex + 1}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md uppercase">
+              CÂU HỎI {activeQuestionIndex + 1} / {currentTopic.questions.length}
+            </span>
+            {currentTopic.questions.length > 1 && (
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => goToQuestion(activeQuestionIndex - 1)}
+                  disabled={activeQuestionIndex === 0}
+                  className="px-2 py-0.5 rounded-md text-[11px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  ← Câu trước
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goToQuestion(activeQuestionIndex + 1)}
+                  disabled={activeQuestionIndex >= currentTopic.questions.length - 1}
+                  className="px-2 py-0.5 rounded-md text-[11px] font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  Câu tiếp →
+                </button>
+              </div>
+            )}
+          </div>
           <h2 className="text-lg sm:text-xl font-bold text-slate-900 mt-1">
             {currentQuestion.promptEn}
           </h2>
@@ -271,10 +303,10 @@ export const SpeakingView: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                <h3 className="font-bold text-emerald-950 text-sm">Kết Quả Đánh Giá Bài Nói</h3>
+                <h3 className="font-bold text-emerald-950 text-sm">Chỉ Số Phản Xạ Nói (Ước lượng)</h3>
               </div>
               <div className="px-3 py-1 bg-emerald-600 text-white font-black text-sm rounded-xl">
-                {evaluation.score} / 100 ĐIỂM
+                {evaluation.score} / 100 (tham khảo)
               </div>
             </div>
 

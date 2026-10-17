@@ -109,10 +109,11 @@ const TRUSTED_ADMIN_EMAILS = new Set([
   'admin@lingopeak.edu.vn',
   'examiner@lingopeak.edu.vn',
   'lead@lingopeak.edu.vn',
-  'qa@lingopeak.edu.vn',
-  'admin@example.com',
-  'admin@test.com'
+  'qa@lingopeak.edu.vn'
 ]);
+
+// Organizational domain allowed to hold admin privileges (must be a verified email)
+const ADMIN_EMAIL_DOMAIN = '@lingopeak.edu.vn';
 
 async function verifyFirebaseToken(token: string): Promise<{ uid: string; email?: string; isAdmin: boolean } | null> {
   if (!token || typeof token !== 'string') return null;
@@ -133,12 +134,26 @@ async function verifyFirebaseToken(token: string): Promise<{ uid: string; email?
     const user = data.users?.[0];
     if (!user) return null;
 
-    const email = (user.email || '').toLowerCase();
-    const isAdmin = Boolean(
-      (email && (TRUSTED_ADMIN_EMAILS.has(email) || email.includes('admin') || email.endsWith('@lingopeak.edu.vn'))) ||
-      user.customAttributes?.includes('"admin":true') ||
-      user.customAttributes?.includes('admin')
-    );
+    const email = (user.email || '').trim().toLowerCase();
+    const emailVerified = Boolean(user.emailVerified);
+
+    // Firebase returns custom claims as a JSON string. Parse it so a claim like
+    // {"admin":true} is honoured, but never treat an arbitrary substring as proof
+    // of privilege (e.g. an email such as "notadmin@gmail.com").
+    let customClaims: Record<string, unknown> = {};
+    if (typeof user.customAttributes === 'string' && user.customAttributes.trim()) {
+      try {
+        customClaims = JSON.parse(user.customAttributes) || {};
+      } catch {
+        customClaims = {};
+      }
+    }
+
+    const isAdmin =
+      Boolean(email) &&
+      (TRUSTED_ADMIN_EMAILS.has(email) ||
+        (emailVerified && email.endsWith(ADMIN_EMAIL_DOMAIN)) ||
+        customClaims.admin === true);
 
     return {
       uid: user.localId || 'anonymous',

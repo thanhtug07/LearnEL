@@ -110,8 +110,12 @@ export const VocabularyView: React.FC = () => {
     return filteredList.slice(start, start + LIST_PAGE_SIZE);
   }, [filteredList, safeListPage, LIST_PAGE_SIZE]);
 
-  const handleNextCard = () => {
+  // After a status change the active filter may drop the current card. If it does
+  // the next card shifts into the same index, so advancing would skip a card.
+  const advanceAfterStatusChange = (newStatus: 'learning' | 'mastered') => {
     setIsFlipped(false);
+    const staysVisible = filterMode === 'all' || filterMode === 'favorites' || filterMode === newStatus;
+    if (!staysVisible) return;
     if (safeIndex < filteredList.length - 1) {
       setCurrentIndex(safeIndex + 1);
     } else {
@@ -123,13 +127,13 @@ export const VocabularyView: React.FC = () => {
     if (!currentItem) return;
     updateVocabStatus(currentItem.id, 'mastered');
     confetti({ particleCount: 25, spread: 45, origin: { y: 0.8 } });
-    handleNextCard();
+    advanceAfterStatusChange('mastered');
   };
 
   const handleStillLearning = () => {
     if (!currentItem) return;
     updateVocabStatus(currentItem.id, 'learning');
-    handleNextCard();
+    advanceAfterStatusChange('learning');
   };
 
   const handleShuffle = () => {
@@ -167,6 +171,10 @@ export const VocabularyView: React.FC = () => {
   const handleProcessImport = () => {
     if (!importCsvText) return;
     const count = importVocabularyCSV(importCsvText);
+    if (count <= 0) {
+      setImportNotice('Không tìm thấy từ vựng hợp lệ trong tệp CSV. Vui lòng kiểm tra lại định dạng cột.');
+      return;
+    }
     setImportNotice(`Đã thêm thành công ${count} từ vựng mới.`);
     setTimeout(() => {
       setShowImportModal(false);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Lesson, Exercise } from '../../types';
 import { speakEnglish } from '../../utils/speech';
@@ -36,6 +36,26 @@ export const LessonPlayerModal: React.FC<LessonPlayerModalProps> = ({
   const [score, setScore] = useState(0);
 
   const currentExercise: Exercise | undefined = lesson.exercises[exerciseIndex];
+  const totalExercises = lesson.exercises.length;
+  const progressPct = totalExercises > 0 ? Math.round(((exerciseIndex + 1) / totalExercises) * 100) : 100;
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+
+  const handleStartExercises = () => {
+    if (totalExercises === 0) {
+      completeLesson(courseId, lesson.id);
+      confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+      setStep('completed');
+      return;
+    }
+    setStep('exercises');
+  };
 
   const handleCheckAnswer = () => {
     if (!currentExercise || !userSelectedAnswer) return;
@@ -63,8 +83,14 @@ export const LessonPlayerModal: React.FC<LessonPlayerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-      <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 flex flex-col max-h-[90vh] overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 flex flex-col max-h-[90vh] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Modal Top Header */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
           <div>
@@ -151,13 +177,13 @@ export const LessonPlayerModal: React.FC<LessonPlayerModalProps> = ({
                   {language === 'vi' ? 'Câu hỏi' : 'Question'} {exerciseIndex + 1} / {lesson.exercises.length}
                 </span>
                 <span className="font-bold text-blue-600">
-                  {Math.round(((exerciseIndex) / lesson.exercises.length) * 100)}% {language === 'vi' ? 'hoàn thành' : 'done'}
+                  {progressPct}% {language === 'vi' ? 'hoàn thành' : 'done'}
                 </span>
               </div>
               <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-600 transition-all duration-300"
-                  style={{ width: `${((exerciseIndex + 1) / lesson.exercises.length) * 100}%` }}
+                  style={{ width: `${progressPct}%` }}
                 />
               </div>
 
@@ -256,7 +282,7 @@ export const LessonPlayerModal: React.FC<LessonPlayerModalProps> = ({
         <div className="p-4 sm:p-5 border-t border-slate-100 flex items-center justify-between bg-slate-50/60">
           {step === 'theory' ? (
             <button
-              onClick={() => setStep('exercises')}
+              onClick={handleStartExercises}
               className="ml-auto flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm shadow-blue-500/20 cursor-pointer"
             >
               <span>{language === 'vi' ? 'Làm bài tập ứng dụng' : 'Start Exercises'}</span>

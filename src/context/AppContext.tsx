@@ -200,6 +200,43 @@ export function evaluateDailyReset(profile: UserProfile, currentDate?: string): 
   };
 }
 
+export function getLocalDateString(date: Date = new Date()): string {
+  return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Returns the minutes studied today. If the stored profile was last active on a
+ * previous day, today's counter is 0 (the stored value belongs to that day).
+ */
+export function getTodayMinutesSpent(profile: UserProfile, currentDate?: string): number {
+  const today = currentDate || getLocalDateString();
+  return profile.lastActiveDate === today ? profile.todayMinutesSpent : 0;
+}
+
+/**
+ * Called at the moment the learner actually studies. Rolls the daily minute
+ * counter over to the new day and advances (or resets) the streak. Returns the
+ * same object unchanged when the learner already studied today.
+ */
+export function recordStudyDay(profile: UserProfile, currentDate?: string): UserProfile {
+  const today = currentDate || getLocalDateString();
+  if (!profile.lastActiveDate) {
+    return { ...profile, lastActiveDate: today, currentStreak: Math.max(1, profile.currentStreak) };
+  }
+  if (profile.lastActiveDate === today) {
+    return profile;
+  }
+  const diffDays = Math.floor(
+    (new Date(today).getTime() - new Date(profile.lastActiveDate).getTime()) / (1000 * 60 * 60 * 24)
+  );
+  return {
+    ...profile,
+    todayMinutesSpent: 0,
+    lastActiveDate: today,
+    currentStreak: diffDays === 1 ? profile.currentStreak + 1 : 1
+  };
+}
+
 export function buildCoursesWithProgress(
   baseCourses: Course[],
   progress: Record<string, { completedLessonIds?: string[]; completedCount?: number } | any> = {}
@@ -453,10 +490,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // If stored courses contain old demo completion (completedLessons === 3 on course-daily-routine), discard
-          if (parsed[0]?.completedLessons === 3 && parsed[0]?.modules?.[0]?.lessons?.[0]?.isCompleted === true) {
-            return INITIAL_COURSES;
-          }
           return parsed;
         }
       }
@@ -470,10 +503,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Check if stored vocab is old demo status
-          if (parsed[0]?.status === 'learning' && parsed[0]?.reviewCount === 3) {
-            return INITIAL_VOCABULARY;
-          }
           return parsed;
         }
       }
@@ -487,10 +516,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Discard old demo mastery percentages
-          if (parsed[0]?.masteryPercentage === 75) {
-            return INITIAL_GRAMMAR_TOPICS;
-          }
           return parsed;
         }
       }
@@ -521,10 +546,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Discard old achievements where ach-first-step was unlocked: true
-          if (parsed[0]?.unlocked === true && parsed[0]?.progress === 1) {
-            return INITIAL_ACHIEVEMENTS;
-          }
           return parsed;
         }
       }
@@ -579,6 +600,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       saveNamespacedStorage(user.id, 'achievements', achievements);
     }
   }, [achievements, user.id]);
+
+  // Keep streak achievements in sync with the learner's actual streak.
+  useEffect(() => {
+    if (!user.currentStreak || user.currentStreak <= 0) return;
+    setAchievements((prev) => {
+      let changed = false;
+      const next = prev.map((a) => {
+        if (a.category !== 'streak') return a;
+        const progress = Math.min(a.maxProgress, Math.max(a.progress, user.currentStreak));
+        const unlocked = a.unlocked || user.currentStreak >= a.maxProgress;
+        if (progress === a.progress && unlocked === a.unlocked) return a;
+        changed = true;
+        return { ...a, progress, unlocked, unlockedAt: unlocked ? a.unlockedAt || new Date().toISOString() : a.unlockedAt };
+      });
+      if (!changed) return prev;
+      if (firebaseUser) saveAchievementsToFirestore(firebaseUser.uid, next);
+      return next;
+    });
+  }, [user.currentStreak, firebaseUser]);
 
   /**
    * FIREBASE AUTH & FIRESTORE INITIALIZATION
@@ -870,15 +910,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const addMinutesStudied = (minutes: number) => {
     setUser((prev) => {
+      const rolled = recordStudyDay(prev);
       const next = {
-        ...prev,
-        todayMinutesSpent: prev.todayMinutesSpent + minutes,
+        ...rolled,
+        todayMinutesSpent: rolled.todayMinutesSpent + minutes,
         totalMinutesStudied: prev.totalMinutesStudied + minutes
       };
       if (firebaseUser) {
         saveUserProfileToFirestore(firebaseUser.uid, {
           todayMinutesSpent: next.todayMinutesSpent,
-          totalMinutesStudied: next.totalMinutesStudied
+          totalMinutesStudied: next.totalMinutesStudied,
+          currentStreak: next.currentStreak,
+          lastActiveDate: next.lastActiveDate
         });
       }
       return next;
@@ -924,6 +967,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (newlyCompleted) {
           addXP(50);
           addMinutesStudied(15);
+          setAchievements((prev) => {
+            const next = prev.map((a) =>
+              a.id === 'ach-first-step'
+                ? { ...a, progress: a.maxProgress, unlocked: true, unlockedAt: a.unlockedAt || new Date().toISOString() }
+                : a
+            );
+            if (firebaseUser) saveAchievementsToFirestore(firebaseUser.uid, next);
+            return next;
+          });
           if (firebaseUser) {
             setCloudSyncStatus('syncing');
             saveCourseProgressToFirestore(firebaseUser.uid, courseId, completedLessonIds, count)
@@ -1120,7 +1172,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (attempt.accuracy >= 85) {
       setAchievements((prev) => {
-        const next = prev.map((a) => (a.id === 'ach-exam-ace' ? { ...a, unlocked: true } : a));
+        const next = prev.map((a) =>
+          a.id === 'ach-exam-ace'
+            ? { ...a, progress: Math.max(a.progress, 1), unlocked: true, unlockedAt: a.unlockedAt || new Date().toISOString() }
+            : a
+        );
         if (firebaseUser) {
           saveAchievementsToFirestore(firebaseUser.uid, next);
         }

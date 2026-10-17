@@ -141,7 +141,9 @@ export const AITutorView: React.FC = () => {
         signal: controller.signal,
         body: JSON.stringify({
           mode: tutorMode,
-          messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
+          // Send only the most recent turns: the server rejects payloads over 25
+          // messages, and Gemini only needs recent context anyway.
+          messages: newMessages.slice(-20).map((m) => ({ role: m.role, content: m.content })),
           userLevel: user.level,
           targetExam: user.targetExam
         })

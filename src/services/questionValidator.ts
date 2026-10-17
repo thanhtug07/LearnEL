@@ -14,7 +14,11 @@ const VALID_SOURCE_CATEGORIES: Set<ContentSourceCategory> = new Set([
   'original_project',
   'ai_assisted_reviewed',
   'licensed_third_party',
-  'official_sample'
+  'official_sample',
+  'open_licensed',
+  'academic_curated',
+  'lingopeak_original',
+  'ai_assisted_draft'
 ]);
 
 const VALID_REVIEW_STATUSES: Set<ReviewStatus> = new Set([

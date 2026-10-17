@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useApp } from '../../context/AppContext';
+import { useApp, getTodayMinutesSpent } from '../../context/AppContext';
 import {
   BarChart3,
   Clock,
@@ -18,21 +18,35 @@ export const AnalyticsView: React.FC = () => {
 
   const [timeFilter, setTimeFilter] = useState<'7d' | '30d' | 'all'>('7d');
 
-  // Real weekly study minutes (today is actual, prior days 0 unless recorded)
-  const weeklyDays = [
-    { day: 'Thứ 2', mins: 0 },
-    { day: 'Thứ 3', mins: 0 },
-    { day: 'Thứ 4', mins: 0 },
-    { day: 'Thứ 5', mins: 0 },
-    { day: 'Thứ 6', mins: 0 },
-    { day: 'Thứ 7', mins: 0 },
-    { day: 'CN (Hôm nay)', mins: user.todayMinutesSpent }
-  ];
+  // Attempts within the selected time window (used for every attempt-derived metric)
+  const scopedAttempts = React.useMemo(() => {
+    if (timeFilter === 'all') return testAttempts;
+    const windowDays = timeFilter === '7d' ? 7 : 30;
+    const cutoff = Date.now() - windowDays * 24 * 60 * 60 * 1000;
+    return testAttempts.filter((t) => {
+      const ts = new Date(t.completedAt || t.date).getTime();
+      return Number.isFinite(ts) ? ts >= cutoff : true;
+    });
+  }, [testAttempts, timeFilter]);
 
-  const maxMins = Math.max(...weeklyDays.map((d) => d.mins), 30);
+  // Real weekly study minutes for the current week (Mon..Sun). Only today's value
+  // is known precisely; previous days are 0 because no per-day history is stored.
+  const { weeklyDays, maxMins } = React.useMemo(() => {
+    const labels = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
+    const jsDay = new Date().getDay(); // 0 = Sunday .. 6 = Saturday
+    const todayIndex = (jsDay + 6) % 7; // 0 = Monday
+    const todayMinutes = getTodayMinutesSpent(user);
+    const days = labels.map((label, idx) => ({
+      day: idx === todayIndex ? `${label} (Hôm nay)` : label,
+      mins: idx === todayIndex ? todayMinutes : 0
+    }));
+    return { weeklyDays: days, maxMins: Math.max(...days.map((d) => d.mins), 30) };
+  }, [user]);
+
+  const hasWeeklyActivity = weeklyDays.some((d) => d.mins > 0);
 
   // Skill masteries derived from actual user activities (memoized)
-  const { skills, hasActivity } = React.useMemo(() => {
+  const { skills, hasActivity, avgAccuracy, allWeaknesses } = React.useMemo(() => {
     const vocabMastery = Math.round(
       (vocabulary.filter((v) => v.status === 'mastered').length / Math.max(1, vocabulary.length)) * 100
     );
@@ -40,32 +54,49 @@ export const AnalyticsView: React.FC = () => {
       grammarTopics.reduce((acc, g) => acc + g.masteryPercentage, 0) / Math.max(1, grammarTopics.length)
     );
     const completedLessonCount = courses.reduce((acc, c) => acc + c.completedLessons, 0);
-    const avgTestAccuracy = testAttempts.length > 0
-      ? Math.round(testAttempts.reduce((acc, t) => acc + t.accuracy, 0) / testAttempts.length)
+
+    // Aggregate only objectively graded skill scores. Pending (speaking/writing)
+    // evaluations are submission-progress, not accuracy, so they are excluded.
+    const agg: Record<string, { sum: number; count: number }> = {};
+    for (const attempt of scopedAttempts) {
+      if (!attempt.skillScores) continue;
+      for (const [skillKey, info] of Object.entries(attempt.skillScores)) {
+        if (!info || info.status !== 'graded' || typeof info.percentage !== 'number') continue;
+        const key = skillKey.toLowerCase();
+        if (!agg[key]) agg[key] = { sum: 0, count: 0 };
+        agg[key].sum += info.percentage;
+        agg[key].count += 1;
+      }
+    }
+    const skillScore = (key: string): number => {
+      const entry = agg[key];
+      return entry && entry.count > 0 ? Math.round(entry.sum / entry.count) : 0;
+    };
+
+    const accuracy = scopedAttempts.length > 0
+      ? Math.round(scopedAttempts.reduce((acc, t) => acc + t.accuracy, 0) / scopedAttempts.length)
       : 0;
 
-    const hasActivity = testAttempts.length > 0 || completedLessonCount > 0;
-    const listeningScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 0.95 + completedLessonCount * 5)) : 0;
-    const speakingScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 0.85 + completedLessonCount * 3)) : 0;
-    const readingScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 1.0 + completedLessonCount * 4)) : 0;
-    const writingScore = hasActivity ? Math.min(100, Math.round(avgTestAccuracy * 0.88 + completedLessonCount * 4)) : 0;
-
     const skillsList = [
-      { name: 'Listening (Nghe hiểu)', score: listeningScore, color: 'bg-blue-600' },
-      { name: 'Speaking (Phát âm & Phản xạ)', score: speakingScore, color: 'bg-emerald-600' },
-      { name: 'Reading (Đọc hiểu học thuật)', score: readingScore, color: 'bg-indigo-600' },
-      { name: 'Writing (Ngữ pháp & Lập luận)', score: writingScore, color: 'bg-purple-600' },
+      { name: 'Listening (Nghe hiểu)', score: skillScore('listening'), color: 'bg-blue-600' },
+      { name: 'Speaking (Phát âm & Phản xạ)', score: skillScore('speaking'), color: 'bg-emerald-600' },
+      { name: 'Reading (Đọc hiểu học thuật)', score: skillScore('reading'), color: 'bg-indigo-600' },
+      { name: 'Writing (Ngữ pháp & Lập luận)', score: skillScore('writing'), color: 'bg-purple-600' },
       { name: 'Vocabulary (Từ vựng Spaced Repetition)', score: vocabMastery, color: 'bg-amber-500' },
       { name: 'Grammar (Độ chuẩn xác ngữ pháp)', score: grammarMastery, color: 'bg-rose-500' }
     ];
 
-    return { skills: skillsList, hasActivity };
-  }, [vocabulary, grammarTopics, courses, testAttempts]);
+    const weaknesses = Array.from(
+      new Set(scopedAttempts.flatMap((t) => t.weaknessAnalysisVi || []))
+    );
 
-  // Derived weaknesses from genuine test attempts
-  const allWeaknesses = Array.from(
-    new Set(testAttempts.flatMap((t) => t.weaknessAnalysisVi || []))
-  );
+    return {
+      skills: skillsList,
+      hasActivity: scopedAttempts.length > 0 || completedLessonCount > 0,
+      avgAccuracy: accuracy,
+      allWeaknesses: weaknesses
+    };
+  }, [vocabulary, grammarTopics, courses, scopedAttempts]);
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12">
@@ -139,7 +170,7 @@ export const AnalyticsView: React.FC = () => {
             <span>ĐỘ CHÍNH XÁC TEST</span>
           </div>
           <div className="text-3xl font-extrabold text-slate-900 mt-2">
-            {testAttempts.length > 0 ? `${Math.round(testAttempts.reduce((a, b) => a + b.accuracy, 0) / testAttempts.length)}%` : '0%'}
+            {avgAccuracy}%
           </div>
           <div className="text-[11px] text-slate-400 mt-0.5">Trung bình bài thi</div>
         </div>
@@ -184,7 +215,7 @@ export const AnalyticsView: React.FC = () => {
           })}
         </div>
 
-        {weeklyDays.every((d) => d.mins === 0) && (
+        {!hasWeeklyActivity && (
           <p className="text-xs text-slate-400 text-center italic pt-2">
             Chưa có thời gian học trong tuần. Hãy hoàn thành bài học hôm nay để bắt đầu ghi nhận nhịp học tập!
           </p>

@@ -32,6 +32,154 @@ interface ReadingPassage {
 
 const READING_PASSAGES: ReadingPassage[] = [
   {
+    id: 'pass-a1-habits',
+    title: 'Healthy Daily Habits and Morning Routines',
+    titleVi: 'Thói Quen Lành Mạnh & Lịch Trình Buổi Sáng Tích Cực',
+    type: 'CEFR A1 Everyday Reading',
+    cefr: 'A1',
+    estimatedMinutes: 3,
+    text: `Starting your day with good habits can make you feel happy and energetic. Many healthy people wake up early at six o'clock every morning. First, they drink a large glass of warm water. Next, they do light exercise or take a fifteen-minute walk in the neighborhood park. Eating a balanced breakfast with fruit, eggs, and bread gives your brain the energy it needs for work and study. Finally, planning your daily tasks in a notebook helps you stay calm and organized throughout the day.`,
+    vocabularyTooltips: {
+      energetic: { ipa: '/ˌen.əˈdʒet.ɪk/', pos: 'adj', vi: 'tràn đầy năng lượng, nhiệt huyết' },
+      balanced: { ipa: '/ˈbæl.ənst/', pos: 'adj', vi: 'cân bằng, điều độ dinh dưỡng' },
+      organized: { ipa: '/ˈɔː.ɡən.aɪzd/', pos: 'adj', vi: 'có tổ chức, ngăn nắp, khoa học' }
+    },
+    questions: [
+      {
+        id: 'rq-a1-1',
+        prompt: 'What do many healthy people do first after waking up?',
+        options: [
+          'They drink a large glass of warm water',
+          'They watch television for two hours',
+          'They eat sweet chocolate candies',
+          'They go back to bed immediately'
+        ],
+        correctAnswer: 'They drink a large glass of warm water',
+        explanationVi: 'Đoạn văn nêu rõ: "First, they drink a large glass of warm water".'
+      },
+      {
+        id: 'rq-a1-2',
+        prompt: 'How does planning daily tasks in a notebook help you?',
+        options: [
+          'It helps you stay calm and organized throughout the day',
+          'It makes you feel tired quickly',
+          'It makes you forget your breakfast',
+          'It replaces the need for exercise'
+        ],
+        correctAnswer: 'It helps you stay calm and organized throughout the day',
+        explanationVi: 'Bài đọc viết: "planning your daily tasks in a notebook helps you stay calm and organized throughout the day".'
+      }
+    ]
+  },
+  {
+    id: 'pass-a2-travel',
+    title: 'Traveling on a Budget: Discovering Local Markets',
+    titleVi: 'Du Lịch Tiết Kiệm: Trải Nghiệm & Khám Phá Chợ Địa Phương',
+    type: 'CEFR A2 Lifestyle & Travel',
+    cefr: 'A2',
+    estimatedMinutes: 3,
+    text: `Traveling does not always have to be expensive. One of the best ways to explore a new city while saving money is by visiting local outdoor markets. Unlike expensive tourist restaurants, street vendors at local markets offer authentic traditional cuisine at affordable prices. Furthermore, walking through food stalls gives travelers a unique opportunity to interact with friendly local residents and practice everyday conversational phrases. Always remember to carry small bills and comfortable walking shoes.`,
+    vocabularyTooltips: {
+      affordable: { ipa: '/əˈfɔː.də.bəl/', pos: 'adj', vi: 'giá cả phải chăng, hợp túi tiền' },
+      authentic: { ipa: '/ɔːˈθen.tɪk/', pos: 'adj', vi: 'chính gốc, đích thực, truyền thống' },
+      vendors: { ipa: '/ˈven.dəs/', pos: 'noun', vi: 'những người bán hàng rong/quầy hàng' }
+    },
+    questions: [
+      {
+        id: 'rq-a2-1',
+        prompt: 'Why are local outdoor markets recommended for budget travelers?',
+        options: [
+          'They offer authentic traditional cuisine at affordable prices',
+          'They are exclusively open at midnight',
+          'They only accept credit cards from luxury hotels',
+          'They sell expensive foreign goods'
+        ],
+        correctAnswer: 'They offer authentic traditional cuisine at affordable prices',
+        explanationVi: 'Bài đọc khẳng định: "street vendors at local markets offer authentic traditional cuisine at affordable prices".'
+      },
+      {
+        id: 'rq-a2-2',
+        prompt: 'What advice is given to travelers visiting outdoor markets?',
+        options: [
+          'Carry small bills and wear comfortable walking shoes',
+          'Never talk to local vendors',
+          'Hire an expensive limousine',
+          'Only visit modern supermarkets'
+        ],
+        correctAnswer: 'Carry small bills and wear comfortable walking shoes',
+        explanationVi: 'Câu cuối bài đọc khuyên: "Always remember to carry small bills and comfortable walking shoes".'
+      }
+    ]
+  },
+  {
+    id: 'pass-b1-remote-work',
+    title: 'The Evolution of Modern Hybrid Workspaces',
+    titleVi: 'Sự Phát Triển Của Mô Hình Làm Việc Kết Hợp (Hybrid Work)',
+    type: 'CEFR B1 Workplace & Technology',
+    cefr: 'B1',
+    estimatedMinutes: 4,
+    text: `In recent years, the concept of the standard office workplace has transformed significantly. Many international corporations have adopted a hybrid work model, allowing employees to split their working hours between their homes and centralized corporate offices. Employees frequently report that reduced commuting times contribute positively to their work-life balance and psychological well-being. However, human resource directors also point out that managing virtual teams requires deliberate communication strategies and reliable digital collaboration platforms to maintain team cohesion.`,
+    vocabularyTooltips: {
+      significantly: { ipa: '/sɪɡˈnɪf.ɪ.kənt.li/', pos: 'adv', vi: 'một cách đáng kể, rõ rệt' },
+      commuting: { ipa: '/kəˈmjuː.tɪŋ/', pos: 'noun', vi: 'việc di chuyển đi lại giữa nhà và nơi làm việc' },
+      cohesion: { ipa: '/kəʊˈhiː.ʒən/', pos: 'noun', vi: 'sự gắn kết, tính liên kết chặt chẽ' }
+    },
+    questions: [
+      {
+        id: 'rq-b1-1',
+        prompt: 'What major benefit of the hybrid work model is reported by employees?',
+        options: [
+          'Reduced commuting times contribute to work-life balance',
+          'Complete elimination of all work meetings',
+          'Guaranteed salary increases every month',
+          'Working without any computers or internet'
+        ],
+        correctAnswer: 'Reduced commuting times contribute to work-life balance',
+        explanationVi: 'Bài đọc nêu: "Employees frequently report that reduced commuting times contribute positively to their work-life balance".'
+      },
+      {
+        id: 'rq-b1-2',
+        prompt: 'What challenge do HR directors emphasize regarding virtual teams?',
+        options: [
+          'Maintaining team cohesion requires deliberate communication strategies',
+          'Virtual workers cannot use electricity',
+          'Offices can no longer purchase paper',
+          'Employees forget their job titles'
+        ],
+        correctAnswer: 'Maintaining team cohesion requires deliberate communication strategies',
+        explanationVi: 'Đoạn văn kết luận: "managing virtual teams requires deliberate communication strategies and reliable digital collaboration platforms to maintain team cohesion".'
+      }
+    ]
+  },
+  {
+    id: 'pass-2',
+    title: 'Autonomous Fulfillment in Cross-Border Logistics',
+    titleVi: 'Hệ Thống Tự Động Hóa Trong Logistics Xuyên Biên Giới',
+    type: 'TOEIC Business Reading',
+    cefr: 'B2',
+    estimatedMinutes: 4,
+    text: `Global supply chains have increasingly leveraged robotic automated storage and retrieval systems (ASRS) to accelerate warehouse turnaround times. Prior to automation, cross-docking facilities struggled with sorting bottlenecks during peak holiday quarters. Modern autonomous guided vehicles now coordinate seamlessly with radio-frequency inventory tags, diminishing shipment error rates to under 0.05 percent. For international retailers, this technological deployment yields exceptional operational cost savings.`,
+    vocabularyTooltips: {
+      turnaround: { ipa: '/ˈtɜːn.ə.raʊnd/', pos: 'noun', vi: 'thời gian hoàn thành chu kỳ xử lý' },
+      bottlenecks: { ipa: '/ˈbɒt.əl.neks/', pos: 'noun', vi: 'điểm nghẽn, sự ứ đọng quy trình' },
+      diminishing: { ipa: '/dɪˈmɪn.ɪ.ʃɪŋ/', pos: 'adj', vi: 'làm giảm bớt, hạ thấp' }
+    },
+    questions: [
+      {
+        id: 'rq-3',
+        prompt: 'What was the primary difficulty before the introduction of automated systems?',
+        options: [
+          'Sorting bottlenecks during peak seasons.',
+          'Lack of international shipping routes.',
+          'Complete failure of radio frequencies.',
+          'High government taxes.'
+        ],
+        correctAnswer: 'Sorting bottlenecks during peak seasons.',
+        explanationVi: 'Bài đọc nêu: "cross-docking facilities struggled with sorting bottlenecks during peak holiday quarters".'
+      }
+    ]
+  },
+  {
     id: 'pass-1',
     title: 'The Proliferation of Decentralized Renewable Microgrids',
     titleVi: 'Sự Phát Triển Nhanh Chóng Của Mạng Lưới Điện Tái Tạo Cục Bộ',
@@ -76,30 +224,44 @@ Furthermore, economic analysts emphasize that the modular scalability of microgr
     ]
   },
   {
-    id: 'pass-2',
-    title: 'Autonomous Fulfillment in Cross-Border Logistics',
-    titleVi: 'Hệ Thống Tự Động Hóa Trong Logistics Xuyên Biên Giới',
-    type: 'TOEIC Business Reading',
-    cefr: 'B2',
-    estimatedMinutes: 4,
-    text: `Global supply chains have increasingly leveraged robotic automated storage and retrieval systems (ASRS) to accelerate warehouse turnaround times. Prior to automation, cross-docking facilities struggled with sorting bottlenecks during peak holiday quarters. Modern autonomous guided vehicles now coordinate seamlessly with radio-frequency inventory tags, diminishing shipment error rates to under 0.05 percent. For international retailers, this technological deployment yields exceptional operational cost savings.`,
+    id: 'pass-c2-linguistics',
+    title: 'Epistemological Shifts in Cognitive Linguistics and Language Acquisition',
+    titleVi: 'Chuyển Dịch Nhận Thức Luận Trong Ngôn Ngữ Học Tri Nhận',
+    type: 'CEFR C2 Advanced Linguistics',
+    cefr: 'C2',
+    estimatedMinutes: 6,
+    text: `The intellectual trajectory of contemporary linguistics has witnessed a pronounced departure from generative modularity toward embodied constructionist paradigms. Rather than postulating an innate, autonomous Universal Grammar detached from general sensorimotor cognition, cognitive linguists assert that grammatical structures emerge organically through domain-general cognitive faculties. Usage-based models elucidate how statistical regularities in communicative discourse undergo entrenchment and automatization via neural plasticity.
+
+Consequently, second language acquisition is increasingly reconceptualized as a dynamic complex system wherein idiosyncratic communicative interactions shape idiosyncratic neural representations. These theoretical insights fundamentally challenge prescriptive pedagogical conventions, demonstrating that semantic competence cannot be divorced from contextual pragmatic embodiment.`,
     vocabularyTooltips: {
-      turnaround: { ipa: '/ˈtɜːn.ə.raʊnd/', pos: 'noun', vi: 'thời gian hoàn thành chu kỳ xử lý' },
-      bottlenecks: { ipa: '/ˈbɒt.əl.neks/', pos: 'noun', vi: 'điểm nghẽn, sự ứ đọng quy trình' },
-      diminishing: { ipa: '/dɪˈmɪn.ɪ.ʃɪŋ/', pos: 'adj', vi: 'làm giảm bớt, hạ thấp' }
+      epistemological: { ipa: '/ɪˌpɪs.tə.məˈlɒdʒ.ɪ.kəl/', pos: 'adj', vi: 'thuộc về nhận thức luận, lý thuyết về bản chất tri thức' },
+      entrenchment: { ipa: '/ɪnˈtrentʃ.mənt/', pos: 'noun', vi: 'sự hằn sâu, khắc sâu vào cấu trúc nhận thức' },
+      prescriptive: { ipa: '/prɪˈskrɪp.tɪv/', pos: 'adj', vi: 'mang tính quy chuẩn, áp đặt quy tắc cứng nhắc' }
     },
     questions: [
       {
-        id: 'rq-3',
-        prompt: 'What was the primary difficulty before the introduction of automated systems?',
+        id: 'rq-c2-1',
+        prompt: 'According to the passage, how do cognitive linguists view the origin of grammatical structures?',
         options: [
-          'Sorting bottlenecks during peak seasons.',
-          'Lack of international shipping routes.',
-          'Complete failure of radio frequencies.',
-          'High government taxes.'
+          'They emerge organically through domain-general cognitive faculties',
+          'They are mechanically determined by a genetic computer chip',
+          'They are exclusively dictated by dictionary publishers',
+          'They bear no connection to communicative discourse'
         ],
-        correctAnswer: 'Sorting bottlenecks during peak seasons.',
-        explanationVi: 'Bài đọc nêu: "cross-docking facilities struggled with sorting bottlenecks during peak holiday quarters".'
+        correctAnswer: 'They emerge organically through domain-general cognitive faculties',
+        explanationVi: 'Bài đọc nêu: "cognitive linguists assert that grammatical structures emerge organically through domain-general cognitive faculties".'
+      },
+      {
+        id: 'rq-c2-2',
+        prompt: 'How has second language acquisition been reconceptualized in modern linguistics?',
+        options: [
+          'As a dynamic complex system shaped by communicative interactions',
+          'As a rigid rote-memorization discipline',
+          'As an impossible biological feat for adults',
+          'As completely detached from neural plasticity'
+        ],
+        correctAnswer: 'As a dynamic complex system shaped by communicative interactions',
+        explanationVi: 'Tác giả khẳng định: "second language acquisition is increasingly reconceptualized as a dynamic complex system wherein idiosyncratic communicative interactions shape idiosyncratic neural representations".'
       }
     ]
   }
@@ -117,6 +279,8 @@ export const ReadingView: React.FC = () => {
   const currentPassage = READING_PASSAGES[activePassageIndex];
 
   const handleSaveWordToVocab = (word: string, data: any) => {
+    // Guard against duplicate flashcards from repeated clicks.
+    if (savedWords.has(word)) return;
     addCustomVocabulary({
       word,
       ipa: data.ipa,
@@ -237,7 +401,8 @@ export const ReadingView: React.FC = () => {
 
             <button
               onClick={() => handleSaveWordToVocab(selectedWordTooltip.word, selectedWordTooltip.data)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer self-start sm:self-auto"
+              disabled={savedWords.has(selectedWordTooltip.word)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:bg-emerald-600 disabled:cursor-default text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer self-start sm:self-auto"
             >
               <Bookmark className="w-3.5 h-3.5" />
               <span>{savedWords.has(selectedWordTooltip.word) ? 'Đã lưu vào Spaced Repetition' : 'Lưu vào Flashcards'}</span>

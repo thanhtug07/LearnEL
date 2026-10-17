@@ -3,6 +3,8 @@ import { VERIFIED_QUESTION_BANK } from './verifiedQuestionBank';
 import { NEW_COURSES_CATALOG } from './courses/coursesCatalog';
 import { NEW_TESTS_CATALOG } from './tests/testsCatalog';
 import { EXPANDED_PRACTICE_SETS } from './practice/practiceCatalog';
+import { STANDARDIZED_BLUEPRINT_TESTS } from './blueprints';
+import { STANDARDIZED_CEFR_BENCHMARK_TESTS } from './cefr/cefrBenchmarkTests';
 
 export const INITIAL_VOCABULARY: VocabularyItem[] = [
   {
@@ -2383,6 +2385,8 @@ We strongly urge all staff members to synchronize their local documents by 6:00 
 ];
 
 export const INITIAL_PRACTICE_TESTS: PracticeTest[] = [
+  ...STANDARDIZED_BLUEPRINT_TESTS,
+  ...STANDARDIZED_CEFR_BENCHMARK_TESTS,
   ...BASE_PRACTICE_TESTS,
   ...NEW_TESTS_CATALOG
 ];
@@ -2498,6 +2502,41 @@ Thank you for your prompt cooperation.
 Sincerely,
 David Nguyen
 Purchasing Director, Zenith Corp.`
+  },
+  {
+    id: 'w-ielts-2',
+    title: 'Renewable Electricity Generation Trends (IELTS Task 1 Report)',
+    category: 'IELTS_TASK_1',
+    promptEn: 'The graph illustrates the proportion of electricity generated from wind and solar power in four European nations between 2010 and 2025. Summarize the main features and make comparisons where relevant.',
+    promptVi: 'Biểu đồ minh họa tỷ lệ điện năng được sản xuất từ năng lượng gió và mặt trời tại 4 quốc gia châu Âu từ 2010 đến 2025. Tóm tắt các đặc điểm chính và so sánh đối chiếu.',
+    bandOrLevel: 'Band 8.0 Target',
+    tipsVi: [
+      'Viết câu tổng quan (Overview) nêu xu hướng tăng trưởng chung của toàn bộ các quốc gia.',
+      'Sử dụng động từ miêu tả xu hướng: "witnessed an upward trajectory", "surged substantially".',
+      'Đưa số liệu dẫn chứng cụ thể từ các mốc năm 2010 và 2025.'
+    ],
+    sampleAnswerEn: `The line graph details the percentage of electricity generated via wind and solar facilities across four distinct European countries over a fifteen-year period commencing in 2010.
+
+Overall, all surveyed nations registered substantial increases in renewable electricity production. While Germany consistently commanded the highest generation shares throughout the timeframe, Spain experienced the most dramatic acceleration post-2018.
+
+In 2010, Germany generated approximately 12% of its domestic electricity from wind and solar arrays. This proportion expanded steadily, culminating at nearly 38% by 2025. Similarly, Spain began at a modest 8% before experiencing an exponential surge between 2018 and 2025, ultimately reaching 34%. In contrast, Denmark and the Netherlands exhibited moderate yet continuous growth, concluding the period at 26% and 21% respectively.`
+  },
+  {
+    id: 'w-toeic-2',
+    title: 'Corporate Wellness & Productivity (TOEIC Part 3 Essay)',
+    category: 'TOEIC_ESSAY',
+    promptEn: 'Some enterprises provide extensive wellness stipends and flexible hours to retain top talent. Do you believe corporate wellness incentives directly boost employee productivity? Support your opinion with reasons and examples.',
+    promptVi: 'Nhiều tập đoàn cung cấp phụ cấp sức khỏe và giờ làm linh hoạt để giữ chân nhân tài. Bạn có tin rằng các chính sách này trực tiếp thúc đẩy năng suất lao động không? Trình bày quan điểm có dẫn chứng.',
+    bandOrLevel: 'TOEIC 190+/200',
+    tipsVi: [
+      'Cấu trúc bài viết mạch lạc: Mở bài nêu rõ quan điểm, hai đoạn thân bài kèm dẫn chứng, và kết luận tóm lược.',
+      'Dùng các thuật ngữ kinh doanh: "human capital", "absenteeism", "organizational loyalty".'
+    ],
+    sampleAnswerEn: `In today's competitive corporate landscape, human capital represents an organization's most invaluable asset. In my perspective, comprehensive corporate wellness initiatives yield profound positive impacts on overall workforce productivity and organizational resilience.
+
+First and foremost, physical and psychological well-being directly mitigates chronic burnout. When corporations subsidize fitness regimens and promote ergonomic work environments, absenteeism declines sharply while cognitive alertness during critical decision-making increases. 
+
+Furthermore, demonstrable employer empathy cultivates intense organizational loyalty. Talented professionals who feel genuinely valued consistently demonstrate higher discretionary effort, directly enhancing corporate innovation and operational bottom lines.`
   }
 ];
 
@@ -2539,6 +2578,40 @@ And explain how this decision positively transformed your journey.`,
         promptVi: 'Bạn sẽ đề xuất cải tiến quy trình báo cáo hàng tuần như thế nào?',
         modelAnswerEn: 'Good morning Marcus. I have analyzed our current workflow and noticed that automating our client metrics dashboard could save the team roughly four hours every Monday.',
         keyVocabulary: ['streamline', 'workflow automation', 'tangible ROI', 'bandwidth']
+      }
+    ]
+  },
+  {
+    id: 'spk-ielts-2',
+    title: 'IELTS Speaking Part 1: Hometown, Studies & Ambitions',
+    titleVi: 'IELTS Part 1: Quê hương, Học tập & Mục tiêu tương lai',
+    part: 'ielts_part1',
+    questions: [
+      {
+        promptEn: 'Let us talk about your hometown. Where did you grow up and what makes it special?',
+        promptVi: 'Hãy nói về quê hương của bạn. Bạn lớn lên ở đâu và điều gì làm nơi đó trở nên đặc biệt?',
+        modelAnswerEn: 'I was born and raised in Da Nang, a vibrant coastal metropolis in central Vietnam known for its pristine beaches and welcoming community.',
+        keyVocabulary: ['vibrant metropolis', 'coastal city', 'pristine beaches', 'hospitable residents']
+      },
+      {
+        promptEn: 'What do you enjoy most about your current studies or profession?',
+        promptVi: 'Điều bạn thích nhất trong việc học hoặc công việc hiện tại là gì?',
+        modelAnswerEn: 'What captivates me most is the opportunity to solve multifaceted challenges and collaborate with forward-thinking international peers.',
+        keyVocabulary: ['multifaceted challenges', 'intellectual stimulation', 'forward-thinking']
+      }
+    ]
+  },
+  {
+    id: 'spk-toeic-1',
+    title: 'TOEIC Speaking: Proposing Solutions in Project Management',
+    titleVi: 'TOEIC Speaking: Đề xuất giải pháp quản lý dự án',
+    part: 'toeic_part5',
+    questions: [
+      {
+        promptEn: 'Our marketing campaign launch has been delayed by two weeks due to graphic design revisions. How would you resolve this dilemma?',
+        promptVi: 'Chiến dịch marketing bị trễ hai tuần do chỉnh sửa thiết kế. Bạn sẽ giải quyết tình huống này ra sao?',
+        modelAnswerEn: 'Good morning executive committee. To address this bottleneck without inflating operational overhead, I propose prioritizing the core digital banner assets for an initial soft launch, while contracting temporary freelance illustrators for secondary collaterals.',
+        keyVocabulary: ['address this bottleneck', 'soft launch', 'contingency plan', 'expedite delivery']
       }
     ]
   }

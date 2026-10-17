@@ -23,6 +23,7 @@ export const GrammarView: React.FC = () => {
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
   const [selectedExerciseAnswers, setSelectedExerciseAnswers] = useState<Record<string, string>>({});
   const [exerciseChecked, setExerciseChecked] = useState<Record<string, boolean>>({});
+  const [masteryGain, setMasteryGain] = useState<Record<string, number>>({});
 
   React.useEffect(() => {
     const handler = setTimeout(() => {
@@ -57,7 +58,12 @@ export const GrammarView: React.FC = () => {
 
     const isCorrect = chosen.trim().toLowerCase() === String(exercise.correctAnswer).trim().toLowerCase();
     if (isCorrect && activeTopic) {
-      updateGrammarMastery(activeTopic.id, Math.min(100, activeTopic.masteryPercentage + 15));
+      const next = Math.min(100, activeTopic.masteryPercentage + 15);
+      const gained = next - activeTopic.masteryPercentage;
+      updateGrammarMastery(activeTopic.id, next);
+      setMasteryGain((prev) => ({ ...prev, [exercise.id]: gained }));
+    } else {
+      setMasteryGain((prev) => ({ ...prev, [exercise.id]: 0 }));
     }
   };
 
@@ -286,7 +292,11 @@ export const GrammarView: React.FC = () => {
                             <div className="p-3 bg-white border border-slate-200 rounded-xl w-full">
                               <div className="font-bold flex items-center gap-1.5 mb-0.5">
                                 {isCorrect ? (
-                                  <span className="text-emerald-700">Chính xác! (+15% Thành thạo)</span>
+                                  <span className="text-emerald-700">
+                                    {masteryGain[ex.id] > 0
+                                      ? `Chính xác! (+${masteryGain[ex.id]}% Thành thạo)`
+                                      : 'Chính xác! (Đã đạt mức thành thạo tối đa)'}
+                                  </span>
                                 ) : (
                                   <span className="text-red-700">Chưa chính xác!</span>
                                 )}

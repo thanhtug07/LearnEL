@@ -6,6 +6,11 @@ import {
   parseQuestionsFromJSON,
   parseQuestionsFromCSV
 } from '../../services/questionValidator';
+import {
+  ingestQuestionBatch,
+  getSourceRegistry,
+  DEFAULT_AUTHORIZED_SOURCES
+} from '../../services/multiSourcePipeline';
 import { VERIFIED_QUESTION_BANK } from '../../data/verifiedQuestionBank';
 import {
   CheckCircle2,
@@ -198,59 +203,28 @@ export const QuestionBankPipelineView: React.FC<QuestionBankPipelineViewProps> =
     );
     const validBatch = parsedQuestions.filter((q) => q.id && validIds.has(q.id));
 
-    const now = new Date().toISOString();
-    const updated = [...questions];
-
-    validBatch.forEach((incoming) => {
-      const fullQuestion: TestQuestion = {
-        id: incoming.id!,
-        questionNumber: updated.length + 1,
-        section: incoming.section || 'Ingested Question Pool',
-        prompt: incoming.prompt!,
-        options: incoming.options!,
-        correctAnswerIndex: incoming.correctAnswerIndex ?? 0,
-        explanationVi: incoming.explanationVi!,
-        category: incoming.category || 'General Ingestion',
-        cefr: incoming.cefr || 'B1',
-        skill: incoming.skill || 'grammar',
-        contextPassage: incoming.contextPassage,
-        audioText: incoming.audioText,
-        source: incoming.source || {
-          category: 'original_project',
-          attribution: 'LingoPeak Curriculum Ingestion Pipeline',
-          licenseOrPermission: 'Standard Editorial License',
-          creationMethod: 'imported',
-          contentVersion: '1.0.0'
-        },
-        review: {
-          status: targetStatus,
-          reviewerId: 'admin-qa-lead',
-          reviewerName: 'Hội đồng Khảo thí LingoPeak',
-          reviewedAt: now,
-          reviewNotes: 'Nhập tự động qua pipeline xử lý dữ liệu.',
-          aiValidationPassed: false
-        },
-        metadata: {
-          createdAt: now,
-          updatedAt: now,
-          isProductionReady: targetStatus === 'approved'
-        }
-      };
-
-      const existingIdx = updated.findIndex((q) => q.id === fullQuestion.id);
-      if (existingIdx >= 0) {
-        updated[existingIdx] = fullQuestion;
-      } else {
-        updated.push(fullQuestion);
+    // Ingest through multi-source pipeline with multi-tier deduplication and licensing checks
+    const batchWithTargetStatus = validBatch.map((q) => ({
+      ...q,
+      review: {
+        ...(q.review || {}),
+        status: targetStatus,
+        reviewerId: 'admin-qa-lead',
+        reviewerName: 'Hội đồng Khảo thí LingoPeak',
+        reviewedAt: new Date().toISOString(),
+        reviewNotes: 'Nhập tự động qua pipeline xử lý dữ liệu với kiểm định bản quyền.'
       }
+    }));
+
+    const report = ingestQuestionBatch(batchWithTargetStatus, questions, {
+      defaultSourceId: 'src-lingopeak-original',
+      autoApproveVerified: targetStatus === 'approved'
     });
 
-    setQuestions(updated);
+    setQuestions(report.updatedBank);
     setImportNotification({
       type: 'success',
-      message: `Đã nạp thành công ${validBatch.length} câu hỏi vào ngân hàng với trạng thái: ${
-        targetStatus === 'approved' ? 'Đã phê duyệt (Approved)' : 'Chờ thẩm định (Pending Review)'
-      }.`
+      message: `Pipeline hoàn tất: Thêm mới ${report.importedCount}, Cập nhật ${report.updatedCount}, Bỏ qua trùng lặp ${report.skippedDuplicateCount}, Chờ kiểm duyệt ${report.pendingReviewCount}.`
     });
     setValidationReport(null);
     setImportRawText('');
@@ -529,10 +503,14 @@ export const QuestionBankPipelineView: React.FC<QuestionBankPipelineViewProps> =
               className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 font-medium cursor-pointer"
             >
               <option value="all">Mọi nguồn cấp phép</option>
-              <option value="original_project">Bản quyền gốc LingoPeak</option>
-              <option value="ai_assisted_reviewed">AI hỗ trợ đã thẩm định</option>
-              <option value="licensed_third_party">Tài liệu OER / CC-BY có phép</option>
+              <option value="lingopeak_original">Bản quyền gốc LingoPeak Core</option>
+              <option value="open_licensed">Tài liệu mở OER / CC-BY-4.0</option>
+              <option value="academic_curated">Bộ ngữ liệu học thuật CEFR</option>
               <option value="official_sample">Đề mẫu công khai hợp lệ</option>
+              <option value="ai_assisted_draft">AI Blueprint Draft (Chờ duyệt)</option>
+              <option value="original_project">Dự án gốc LingoPeak</option>
+              <option value="ai_assisted_reviewed">AI hỗ trợ đã thẩm định</option>
+              <option value="licensed_third_party">Tài liệu bên thứ 3 có phép</option>
             </select>
           </div>
         </div>
